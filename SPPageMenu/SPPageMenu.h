@@ -2,14 +2,15 @@
 //  SPPageMenu.h
 //  SPPageMenu
 //
-//  Created by leshengping on 16/9/6.
+//  Created by lanou on 16/12/17.
 //  Copyright © 2016年 leshengping. All rights reserved.
 //
 
 #import <UIKit/UIKit.h>
-@class SPPageMenu;
 
+@class SPPageMenu;
 @protocol SPPageMenuDelegate <NSObject>
+
 @optional
 - (void)pageMenu:(SPPageMenu *)pageMenu buttonClickedAtIndex:(NSInteger)index;
 - (void)pageMenu:(SPPageMenu *)pageMenu buttonClickedFromIndex:(NSInteger)fromIndex toIndex:(NSInteger)toIndex;
@@ -19,33 +20,39 @@
 
 @property (nonatomic, weak) id<SPPageMenuDelegate> delegate;
 
-/** 分割线颜色 */
-@property (nonatomic, strong) UIColor *breaklineColor;
+/** button之间的间距,默认为30 */
+@property (nonatomic, assign) CGFloat spacing;
+/** 第一个button的左边距，默认为间距的一半 */
+@property (nonatomic, assign) CGFloat firstButtonX;
 /** button的字体,默认为15号字体 */
 @property (nonatomic, strong) UIFont *buttonFont;
-/** 选中的button的字体颜色（跟踪器的颜色始终与选中的button的字体颜色是一致的）*/
-@property (nonatomic, strong) UIColor *selectedColor;
-/** 未选中的button字体颜色 */
-@property (nonatomic, strong) UIColor *unSelectedColor;
+/** 选中的button的字体颜色 */
+@property (nonatomic, strong) UIColor *selectedTitleColor;
+/** 未选中的button字体颜色,默认为黑色 */
+@property (nonatomic, strong) UIColor *unSelectedTitleColor;
+/** 分割线颜色，默认为亮灰色 */
+@property (nonatomic, strong) UIColor *breaklineColor;
 /** 是否显示分割线,默认为YES */
 @property (nonatomic, assign, getter=isShowBreakline) BOOL showBreakline;
-/** 是否开启动画,默认为NO */
-@property (nonatomic, assign, getter=isOpenAnimation) BOOL openAnimation;
 /** 是否显示跟踪器，默认为YES */
 @property (nonatomic, assign, getter=isShowTracker) BOOL showTracker;
-/** 跟踪器(跟踪button的下划线) */
-@property (nonatomic, weak) UIView *tracker;
-/** 跟踪器的高度 */
+/** 跟踪器的高度,默认为2.0f */
 @property (nonatomic, assign) CGFloat trackerHeight;
-/** button之间的间距 */
-@property (nonatomic, assign) CGFloat padding;
+/** 跟踪器的颜色，默认与选中的button字体颜色一致 */
+@property (nonatomic, strong) UIColor *trackerColor;
+/** 是否开启动画,默认为NO */
+@property (nonatomic, assign, getter=isOpenAnimation) BOOL openAnimation;
 
-@property (nonatomic, weak, readonly) UIButton *selectedButton;  // 选中的button
 
-/*
- *  调用这个方法创建菜单栏
- */
+/** 当以下两个属性同时为NO时，spacing和firstButtonX属性将不受用户控制，这是合情合理的 */
+/** 是否允许超出屏幕,默认为YES,如果设置了NO,则菜单上的所有button都将显示在屏幕范围之内，并且每个button默认等宽，整体居中显示 ，如果想要button根据文字自适应宽度，还要配合下面的“equalWidths”属性 */
+@property (nonatomic, assign, getter=isAllowBeyondScreen) BOOL allowBeyondScreen;
+/** 是否等宽，默认为YES,这个属性是针对在屏幕范围之内的布局方式才有效 */
+@property (nonatomic, assign, getter=isEqualWidths) BOOL equalWidths;
+
+/** 快速创建菜单 */
 + (SPPageMenu *)pageMenuWithFrame:(CGRect)frame array:(NSArray *)array;
+
 
 /*
  *  外界只要告诉该类index,内部会处理哪个button被选中
@@ -56,19 +63,11 @@
  *  1.这个方法的功能是实现跟踪器跟随scrollView的滚动而滚动;
  *  2.调用这个方法必须在scrollViewDidScrollView里面调;
  *  3.beginOffset:scrollView刚开始滑动的时候起始偏移量,在scrollViewWillBeginDragging:方法内部获取起始偏移量;
- *  4.scrollView:正在滑动的scrollView;
- *  5.因此针对这个功能外界必须实现scrollViewWillBeginDragging:和scrollViewDidScrollView两个代理方法
+ *  4.scrollView:外面正在拖拽的scrollView;
+ *  5.针对这个功能外界必须实现scrollViewWillBeginDragging:和scrollViewDidScrollView两个代理方法
  */
-- (void)makeTrackerFollowScrollViewMoveWithBeginOffset:(CGFloat)beginOffset scrollView:(UIScrollView *)scrollView;
-
+- (void)moveTrackerFollowScrollView:(UIScrollView *)scrollView beginOffset:(CGFloat)beginOffset;
 @end
-
-
-
-
-
-
-
 
 
 
