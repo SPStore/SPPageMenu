@@ -8,9 +8,7 @@
 
 #import "SPPageMenu.h"
 
-@interface SPPageMenu() {
-    CGFloat _breakLineH;
-}
+@interface SPPageMenu()
 
 @property (nonatomic, strong) UIView *backgroundView;
 @property (nonatomic, strong) UIScrollView *scrollView;
@@ -60,7 +58,6 @@ static NSInteger tagIndex = 2016;
     _selectedTitleColor = [UIColor redColor];
     _unSelectedTitleColor = [UIColor blackColor];
     _breaklineColor = [UIColor lightGrayColor];
-    _breakLineH = 0.5;
     _showBreakline = YES;
     _openAnimation = NO;
     _showTracker = YES;
@@ -96,6 +93,7 @@ static NSInteger tagIndex = 2016;
     scrollView.backgroundColor = [UIColor clearColor];
     
     [self layoutIfNeeded];
+    
 }
 
 #pragma mark - public method
@@ -170,6 +168,14 @@ static NSInteger tagIndex = 2016;
     // 执行代理方法
     [self delegatePerformMethodWithFromIndex:self.selectedButton.tag - tagIndex
                                      toIndex:button.tag - tagIndex];
+    // 回调block
+    if (self.buttonClickedBlock) {
+        self.buttonClickedBlock(button.tag - tagIndex);
+    }
+    
+    if (self.buttonClicked_from_to_Block) {
+        self.buttonClicked_from_to_Block(self.selectedButton.tag - tagIndex,button.tag - tagIndex);
+    }
     
     // 如果点击的是同一个button，retun掉，因为后面的操作没必要重复。
     if (self.selectedButton == button) {
@@ -262,7 +268,7 @@ static NSInteger tagIndex = 2016;
     // canScroll的状态决定着菜单中的button的布局方式
     // menuButton的宽度
     CGFloat menuButtonW = [menuButton.titleLabel.text boundingRectWithSize:CGSizeMake(MAXFLOAT, 0) options:NSStringDrawingUsesLineFragmentOrigin attributes:@{NSFontAttributeName:_buttonFont} context:nil].size.width;
-    CGFloat menuButtonH = self.scrollView.frame.size.height-_breakLineH;
+    CGFloat menuButtonH = self.scrollView.frame.size.height-1;
     CGFloat menuButtonX = (index == 0) ? _firstButtonX : (lastMenuButtonMaxX + _spacing);
     CGFloat menuButtonY = 0;
     menuButton.frame = CGRectMake(menuButtonX, menuButtonY, menuButtonW, menuButtonH);
@@ -283,7 +289,7 @@ static NSInteger tagIndex = 2016;
                 menuButton.titleLabel.font = self.buttonFont;
                 
                 CGFloat menuButtonW = (self.scrollView.frame.size.width-2*_firstButtonX-(self.menuTitleArray.count-1)*_spacing) / self.menuTitleArray.count;
-                CGFloat menuButtonH = self.scrollView.frame.size.height-_breakLineH;
+                CGFloat menuButtonH = self.scrollView.frame.size.height-1;
                 CGFloat menuButtonX = _firstButtonX + idx * (menuButtonW+_spacing);
                 CGFloat menuButtonY = 0;
                 menuButton.backgroundColor = [UIColor clearColor];
@@ -307,9 +313,8 @@ static NSInteger tagIndex = 2016;
             _spacing = (scrollViewWidth - menuButtonW_Sum) / (count+1);
             
             [self.menuButtonArray enumerateObjectsUsingBlock:^(UIButton * _Nonnull menuButton, NSUInteger idx, BOOL * _Nonnull stop) {
-                menuButton.titleLabel.font = _buttonFont;
                 CGFloat menuButtonW = [menuButtonW_Array[idx] floatValue];
-                CGFloat menuButtonH = self.scrollView.frame.size.height-_breakLineH;
+                CGFloat menuButtonH = self.scrollView.frame.size.height-1;
                 CGFloat menuButtonX = _spacing + lastMenuButtonMaxX;
                 CGFloat menuButtonY = 0;
                 menuButton.frame = CGRectMake(menuButtonX, menuButtonY, menuButtonW, menuButtonH);
@@ -333,7 +338,7 @@ static NSInteger tagIndex = 2016;
     
     self.backgroundView.frame = CGRectMake(0, 0, w, h);
     
-    self.breakline.frame = CGRectMake(0, h - _breakLineH, w, _breakLineH);
+    self.breakline.frame = CGRectMake(0, h - 1, w, 1);
     
     // 减_breaklineHeight是为了有分割线的效果
     self.scrollView.frame = CGRectMake(0, 0, w, h);
