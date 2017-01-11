@@ -8,7 +8,9 @@
 
 #import "SPPageMenu.h"
 
-@interface SPPageMenu()
+@interface SPPageMenu() {
+    CGFloat _breakLineH;
+}
 
 @property (nonatomic, strong) UIView *backgroundView;
 @property (nonatomic, strong) UIScrollView *scrollView;
@@ -58,6 +60,7 @@ static NSInteger tagIndex = 2016;
     _selectedTitleColor = [UIColor redColor];
     _unSelectedTitleColor = [UIColor blackColor];
     _breaklineColor = [UIColor lightGrayColor];
+    _breakLineH = 0.5;
     _showBreakline = YES;
     _openAnimation = NO;
     _showTracker = YES;
@@ -67,6 +70,7 @@ static NSInteger tagIndex = 2016;
     _firstButtonX = 0.5 * _spacing;
     _allowBeyondScreen = YES;
     _equalWidths = YES;
+    _index = 0;
     
     [self setupSubView];
 }
@@ -93,12 +97,14 @@ static NSInteger tagIndex = 2016;
     scrollView.backgroundColor = [UIColor clearColor];
     
     [self layoutIfNeeded];
-    
 }
 
 #pragma mark - public method
-// 此方法是留给外界的接口，以创建菜单栏
+// 此方法是留给外界的接口，方便创建菜单栏
 + (SPPageMenu *)pageMenuWithFrame:(CGRect)frame array:(NSArray *)array {
+    if (array.count == 0) {
+        return nil;
+    }
     SPPageMenu *menu = [[SPPageMenu alloc] initWithFrame:frame];
     menu.menuTitleArray = array;
     return menu;
@@ -144,7 +150,8 @@ static NSInteger tagIndex = 2016;
     // 创建跟踪器
     [self creatTracker:self.scrollView.subviews.firstObject];
     
-    [self menuBtnClick:self.scrollView.subviews.firstObject];
+    // 默认选中第一个
+    [self menuBtnClick:self.scrollView.subviews[_index]];
 }
 
 // 创建跟踪器
@@ -165,17 +172,12 @@ static NSInteger tagIndex = 2016;
     // 是不是第一次进入,先默认为YES
     static BOOL firstEnter = YES;
     
-    // 执行代理方法
-    [self delegatePerformMethodWithFromIndex:self.selectedButton.tag - tagIndex
-                                     toIndex:button.tag - tagIndex];
-    // 回调block
-    if (self.buttonClickedBlock) {
-        self.buttonClickedBlock(button.tag - tagIndex);
+    if (!firstEnter) {
+        // 执行代理方法
+        [self delegatePerformMethodWithFromIndex:self.selectedButton.tag - tagIndex
+                                         toIndex:button.tag - tagIndex];
     }
     
-    if (self.buttonClicked_from_to_Block) {
-        self.buttonClicked_from_to_Block(self.selectedButton.tag - tagIndex,button.tag - tagIndex);
-    }
     
     // 如果点击的是同一个button，retun掉，因为后面的操作没必要重复。
     if (self.selectedButton == button) {
@@ -268,7 +270,7 @@ static NSInteger tagIndex = 2016;
     // canScroll的状态决定着菜单中的button的布局方式
     // menuButton的宽度
     CGFloat menuButtonW = [menuButton.titleLabel.text boundingRectWithSize:CGSizeMake(MAXFLOAT, 0) options:NSStringDrawingUsesLineFragmentOrigin attributes:@{NSFontAttributeName:_buttonFont} context:nil].size.width;
-    CGFloat menuButtonH = self.scrollView.frame.size.height-1;
+    CGFloat menuButtonH = self.scrollView.frame.size.height-_breakLineH;
     CGFloat menuButtonX = (index == 0) ? _firstButtonX : (lastMenuButtonMaxX + _spacing);
     CGFloat menuButtonY = 0;
     menuButton.frame = CGRectMake(menuButtonX, menuButtonY, menuButtonW, menuButtonH);
@@ -289,7 +291,7 @@ static NSInteger tagIndex = 2016;
                 menuButton.titleLabel.font = self.buttonFont;
                 
                 CGFloat menuButtonW = (self.scrollView.frame.size.width-2*_firstButtonX-(self.menuTitleArray.count-1)*_spacing) / self.menuTitleArray.count;
-                CGFloat menuButtonH = self.scrollView.frame.size.height-1;
+                CGFloat menuButtonH = self.scrollView.frame.size.height-_breakLineH;
                 CGFloat menuButtonX = _firstButtonX + idx * (menuButtonW+_spacing);
                 CGFloat menuButtonY = 0;
                 menuButton.backgroundColor = [UIColor clearColor];
@@ -302,7 +304,7 @@ static NSInteger tagIndex = 2016;
             CGFloat scrollViewWidth = self.scrollView.frame.size.width;
             
             NSInteger count = self.menuTitleArray.count;
-            // 提前计算button宽
+            // 提前计算button宽,并存入数组
             for (NSString *title in self.menuTitleArray) {
                 CGFloat menuButtonW = [title boundingRectWithSize:CGSizeMake(MAXFLOAT, 0) options:NSStringDrawingUsesLineFragmentOrigin attributes:@{NSFontAttributeName:_buttonFont} context:nil].size.width;
                 
@@ -313,8 +315,9 @@ static NSInteger tagIndex = 2016;
             _spacing = (scrollViewWidth - menuButtonW_Sum) / (count+1);
             
             [self.menuButtonArray enumerateObjectsUsingBlock:^(UIButton * _Nonnull menuButton, NSUInteger idx, BOOL * _Nonnull stop) {
+                menuButton.titleLabel.font = _buttonFont;
                 CGFloat menuButtonW = [menuButtonW_Array[idx] floatValue];
-                CGFloat menuButtonH = self.scrollView.frame.size.height-1;
+                CGFloat menuButtonH = self.scrollView.frame.size.height-_breakLineH;
                 CGFloat menuButtonX = _spacing + lastMenuButtonMaxX;
                 CGFloat menuButtonY = 0;
                 menuButton.frame = CGRectMake(menuButtonX, menuButtonY, menuButtonW, menuButtonH);
@@ -338,9 +341,8 @@ static NSInteger tagIndex = 2016;
     
     self.backgroundView.frame = CGRectMake(0, 0, w, h);
     
-    self.breakline.frame = CGRectMake(0, h - 1, w, 1);
+    self.breakline.frame = CGRectMake(0, h - _breakLineH, w, _breakLineH);
     
-    // 减_breaklineHeight是为了有分割线的效果
     self.scrollView.frame = CGRectMake(0, 0, w, h);
 }
 
@@ -357,7 +359,7 @@ static NSInteger tagIndex = 2016;
 - (void)setspacing:(CGFloat)spacing {
     _spacing = spacing;
     
-    // 外界是否设置了spacing，如果能进来，说明设置了. 因此在内部不要调用该set方法
+    // 外界是否设置了spacing，如果能进来，说明设置了. 因此在内部不要调用该setter方法
     _settedspacing = YES;
     
     // 如果外界没有设置firstButtonX,默认为新的spacing的一半
@@ -376,7 +378,7 @@ static NSInteger tagIndex = 2016;
 - (void)setFirstButtonX:(CGFloat)firstButtonX {
     _firstButtonX = firstButtonX;
     
-    // 外界是否设置了firstButtonX，如果能进来，说明设置了. 因此在内部不要调用该set方法
+    // 外界是否设置了firstButtonX，如果能进来，说明设置了. 因此在内部不要调用该setter方法
     _settedFirstButtonX = YES;
     
     [self resetMenuButtonFrame];
@@ -524,6 +526,12 @@ static NSInteger tagIndex = 2016;
     
     UIButton *menuButton = self.menuButtonArray.firstObject;
     [self setupTrackerFrame:menuButton];
+}
+
+// 选中第几个按钮
+- (void)setIndex:(NSInteger)index {
+    _index = index;
+    [self menuBtnClick:self.scrollView.subviews[_index]];
 }
 
 #pragma mark － 提供给外界的方法
