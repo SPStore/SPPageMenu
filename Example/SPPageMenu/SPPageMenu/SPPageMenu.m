@@ -65,6 +65,7 @@ static NSInteger tagIndex = 2016;
     _openAnimation = NO;
     _showTracker = YES;
     _trackerHeight = 2.0f;
+    _animationSpeed = 0.25;
     _trackerColor = _selectedTitleColor;
     _spacing = 30.0f;
     _firstButtonX = 0.5 * _spacing;
@@ -227,7 +228,7 @@ static NSInteger tagIndex = 2016;
 
 
 - (void)moveTracker:(UIButton *)button {
-    [UIView animateWithDuration:0.25 animations:^{
+    [UIView animateWithDuration:_animationSpeed animations:^{
         CGPoint trackerCenter = self.tracker.center;
         CGRect trackerFrame = self.tracker.frame;
         trackerCenter.x = button.center.x;

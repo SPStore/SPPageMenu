@@ -65,6 +65,7 @@ static NSInteger tagIndex = 2016;
     _openAnimation = NO;
     _showTracker = YES;
     _trackerHeight = 2.0f;
+    _animationSpeed = 0.25;
     _trackerColor = _selectedTitleColor;
     _spacing = 30.0f;
     _firstButtonX = 0.5 * _spacing;
@@ -119,7 +120,7 @@ static NSInteger tagIndex = 2016;
 #pragma mark - private method
 // 添加以及配置menubutton的相关属性
 - (void)configureMenuButtonToScrollView {
-
+    
     // 创建button
     CGFloat lastMenuButtonMaxX = 0.0f;
     for (int i = 0; i < _menuTitleArray.count; i++) {
@@ -146,7 +147,7 @@ static NSInteger tagIndex = 2016;
         // 设置scrollView的容量
         self.scrollView.contentSize = CGSizeMake(lastMenuButtonMaxX + _firstButtonX, 0);
     }
-
+    
     // 创建跟踪器
     [self creatTracker:self.scrollView.subviews.firstObject];
     
@@ -156,13 +157,13 @@ static NSInteger tagIndex = 2016;
 
 // 创建跟踪器
 - (void)creatTracker:(UIButton *)button {
-
+    
     UIView *tracker = [[UIView alloc] init];
     self.tracker = tracker;
     tracker.backgroundColor = _trackerColor;
     // 设置tracker的frame
     [self setupTrackerFrame:button];
- 
+    
     [self.scrollView addSubview:tracker];
     
 }
@@ -191,7 +192,7 @@ static NSInteger tagIndex = 2016;
     
     // 给button添加缩放动画
     if (self.openAnimation) {
-       [self openAnimationWithLastSelectedButton:self.selectedButton currentSelectedButton:button];
+        [self openAnimationWithLastSelectedButton:self.selectedButton currentSelectedButton:button];
     }
     
     // 设置button的字体颜色
@@ -227,7 +228,7 @@ static NSInteger tagIndex = 2016;
 
 
 - (void)moveTracker:(UIButton *)button {
-    [UIView animateWithDuration:0.25 animations:^{
+    [UIView animateWithDuration:_animationSpeed animations:^{
         CGPoint trackerCenter = self.tracker.center;
         CGRect trackerFrame = self.tracker.frame;
         trackerCenter.x = button.center.x;
@@ -325,7 +326,7 @@ static NSInteger tagIndex = 2016;
             }];
         }
         
-    
+        
     }
     
     // 设置scrollView的容量
@@ -335,7 +336,7 @@ static NSInteger tagIndex = 2016;
 #pragma mark - 基本布局
 - (void)layoutSubviews {
     [super layoutSubviews];
-
+    
     CGFloat w = self.frame.size.width;
     CGFloat h = self.frame.size.height;
     
@@ -538,11 +539,11 @@ static NSInteger tagIndex = 2016;
 - (void)selectButtonAtIndex:(NSInteger)index{
     UIButton *selectedBtn = (UIButton *)self.menuButtonArray[index];
     [self menuBtnClick:selectedBtn];
-
+    
 }
 
 - (void)moveTrackerFollowScrollView:(UIScrollView *)scrollView beginOffset:(CGFloat)beginOffset {
-
+    
     // dragging是scrollView的一个属性， 如果为YES，说明用户中正在拖拽scrollView。
     // 如果用户在外面调用了这个方法 那么本方法会在点击菜单按钮的时候和用户拖拽外面的scrollView的时候调用.
     // 如果是用户点击菜单按钮进入的此方法，那dragging必然为NO(没有拖拽)，并且没有在减速，此时直接retun，让跟踪器跟着菜单按钮走。

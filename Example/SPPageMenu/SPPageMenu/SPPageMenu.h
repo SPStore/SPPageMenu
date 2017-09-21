@@ -42,7 +42,8 @@
 @property (nonatomic, strong) UIColor *trackerColor;
 /** 是否开启动画,默认为NO */
 @property (nonatomic, assign, getter=isOpenAnimation) BOOL openAnimation;
-
+/** 跟踪器的动画速率*/
+@property (nonatomic, assign) CGFloat animationSpeed;
 
 /** 选中第几个按钮 默认是选中第一个*/
 @property (nonatomic, assign) NSInteger index;
