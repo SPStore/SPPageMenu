@@ -16,7 +16,7 @@ Pod::Spec.new do |s|
   #
 
   s.name         = "SPPageMenu"
-  s.version      = “1.0.1”
+  s.version      = "1.0.1"
   s.summary      = "分页菜单."
 
   # This description is used to generate tags and improve search results.
@@ -25,7 +25,7 @@ Pod::Spec.new do |s|
   #   * Write the description between the DESC delimiters below.
   #   * Finally, don't worry about the indent, CocoaPods strips it!
   s.description  = <<-DESC
-			这是一个分页菜单
+			    这是一个分页菜单
                    DESC
 
   s.homepage     = "https://github.com/SPStore/SPPageMenu"
@@ -79,8 +79,8 @@ Pod::Spec.new do |s|
   #  Specify the location from where the source should be retrieved.
   #  Supports git, hg, bzr, svn and HTTP.
   #
-"
-  s.source       = { :git => "https://github.com/SPStore/SPPageMenu.git", :tag => "#{s.version}" }
+
+  s.source       = { :git => "https://github.com/SPStore/SPPageMenu.git", :tag => s.version }
 
 
   # ――― Source Code ―――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――― #
