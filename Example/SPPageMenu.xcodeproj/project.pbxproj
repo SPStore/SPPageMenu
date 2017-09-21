@@ -286,6 +286,7 @@
 				TargetAttributes = {
 					7997775A1E0516F500EAA2E4 = {
 						CreatedOnToolsVersion = 8.0;
+						DevelopmentTeam = MP8K63J94Y;
 						ProvisioningStyle = Automatic;
 					};
 					799777731E0516F500EAA2E4 = {
@@ -512,6 +513,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				DEVELOPMENT_TEAM = MP8K63J94Y;
 				INFOPLIST_FILE = SPPageMenu/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = leshengping.SPPageMenu;
@@ -523,6 +525,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				DEVELOPMENT_TEAM = MP8K63J94Y;
 				INFOPLIST_FILE = SPPageMenu/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = leshengping.SPPageMenu;
