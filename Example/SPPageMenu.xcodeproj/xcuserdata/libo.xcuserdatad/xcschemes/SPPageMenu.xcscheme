@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Scheme
-   LastUpgradeVersion = "0810"
+   LastUpgradeVersion = "0820"
    version = "1.3">
    <BuildAction
       parallelizeBuildables = "YES"
@@ -14,7 +14,7 @@
             buildForAnalyzing = "YES">
             <BuildableReference
                BuildableIdentifier = "primary"
-               BlueprintIdentifier = "7997775A1E0516F500EAA2E4"
+               BlueprintIdentifier = "091A68711FA1CAC100DAA561"
                BuildableName = "SPPageMenu.app"
                BlueprintName = "SPPageMenu"
                ReferencedContainer = "container:SPPageMenu.xcodeproj">
@@ -32,7 +32,7 @@
             skipped = "NO">
             <BuildableReference
                BuildableIdentifier = "primary"
-               BlueprintIdentifier = "799777731E0516F500EAA2E4"
+               BlueprintIdentifier = "091A688A1FA1CAC200DAA561"
                BuildableName = "SPPageMenuTests.xctest"
                BlueprintName = "SPPageMenuTests"
                ReferencedContainer = "container:SPPageMenu.xcodeproj">
@@ -42,7 +42,7 @@
             skipped = "NO">
             <BuildableReference
                BuildableIdentifier = "primary"
-               BlueprintIdentifier = "7997777E1E0516F500EAA2E4"
+               BlueprintIdentifier = "091A68951FA1CAC200DAA561"
                BuildableName = "SPPageMenuUITests.xctest"
                BlueprintName = "SPPageMenuUITests"
                ReferencedContainer = "container:SPPageMenu.xcodeproj">
@@ -52,7 +52,7 @@
       <MacroExpansion>
          <BuildableReference
             BuildableIdentifier = "primary"
-            BlueprintIdentifier = "7997775A1E0516F500EAA2E4"
+            BlueprintIdentifier = "091A68711FA1CAC100DAA561"
             BuildableName = "SPPageMenu.app"
             BlueprintName = "SPPageMenu"
             ReferencedContainer = "container:SPPageMenu.xcodeproj">
@@ -75,7 +75,7 @@
          runnableDebuggingMode = "0">
          <BuildableReference
             BuildableIdentifier = "primary"
-            BlueprintIdentifier = "7997775A1E0516F500EAA2E4"
+            BlueprintIdentifier = "091A68711FA1CAC100DAA561"
             BuildableName = "SPPageMenu.app"
             BlueprintName = "SPPageMenu"
             ReferencedContainer = "container:SPPageMenu.xcodeproj">
@@ -94,7 +94,7 @@
          runnableDebuggingMode = "0">
          <BuildableReference
             BuildableIdentifier = "primary"
-            BlueprintIdentifier = "7997775A1E0516F500EAA2E4"
+            BlueprintIdentifier = "091A68711FA1CAC100DAA561"
             BuildableName = "SPPageMenu.app"
             BlueprintName = "SPPageMenu"
             ReferencedContainer = "container:SPPageMenu.xcodeproj">

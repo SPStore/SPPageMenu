@@ -1,5 +1,5 @@
 //
-//  AppDelegate.h
+//  BaseViewController.h
 //  SPPageMenu
 //
 //  Created by 乐升平 on 17/10/26.
@@ -8,10 +8,8 @@
 
 #import <UIKit/UIKit.h>
 
-@interface AppDelegate : UIResponder <UIApplicationDelegate>
+@interface BaseViewController : UIViewController
 
-@property (strong, nonatomic) UIWindow *window;
-
+@property (nonatomic, copy) NSString *text;
 
 @end
-

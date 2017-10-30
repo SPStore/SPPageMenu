@@ -1,5 +1,5 @@
 //
-//  AppDelegate.h
+//  ViewController.h
 //  SPPageMenu
 //
 //  Created by 乐升平 on 17/10/26.
@@ -8,10 +8,10 @@
 
 #import <UIKit/UIKit.h>
 
-@interface AppDelegate : UIResponder <UIApplicationDelegate>
+@interface ViewController : UIViewController
 
-@property (strong, nonatomic) UIWindow *window;
-
+#warning TODO 缩放bug
+#warning 删除全部再添加
 
 @end
 

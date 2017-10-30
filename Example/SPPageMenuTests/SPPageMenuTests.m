@@ -2,8 +2,8 @@
 //  SPPageMenuTests.m
 //  SPPageMenuTests
 //
-//  Created by lanou on 16/12/17.
-//  Copyright © 2016年 leshengping. All rights reserved.
+//  Created by 乐升平 on 17/10/26.
+//  Copyright © 2017年 iDress. All rights reserved.
 //
 
 #import <XCTest/XCTest.h>
