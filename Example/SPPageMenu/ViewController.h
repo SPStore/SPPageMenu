@@ -10,8 +10,5 @@
 
 @interface ViewController : UIViewController
 
-#warning TODO 缩放bug
-#warning 删除全部再添加
-
 @end
 
