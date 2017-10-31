@@ -868,12 +868,16 @@
     self.shadowLine.hidden = !showFuntionButton;
     [self setNeedsLayout];
     [self layoutIfNeeded];
+    // 修正scrollView偏移
+    [self moveItemScrollViewWithSelectedButton:self.selectedButton];
 }
 
 - (void)setItemPadding:(CGFloat)itemPadding {
     _itemPadding = itemPadding;
     [self setNeedsLayout];
     [self layoutIfNeeded];
+    // 修正scrollView偏移
+    [self moveItemScrollViewWithSelectedButton:self.selectedButton];
 }
 
 - (void)setItemTitleFont:(UIFont *)itemTitleFont {
@@ -883,6 +887,8 @@
     }
     [self setNeedsLayout];
     [self layoutIfNeeded];
+    // 修正scrollView偏移
+    [self moveItemScrollViewWithSelectedButton:self.selectedButton];
 }
 
 - (void)setSelectedItemTitleColor:(UIColor *)selectedItemTitleColor {
@@ -925,12 +931,16 @@
     _contentInset = contentInset;
     [self setNeedsLayout];
     [self layoutIfNeeded];
+    // 修正scrollView偏移
+    [self moveItemScrollViewWithSelectedButton:self.selectedButton];
 }
 
 - (void)setPermutationWay:(SPPageMenuPermutationWay)permutationWay {
     _permutationWay = permutationWay;
     [self setNeedsLayout];
     [self layoutIfNeeded];
+    // 修正scrollView偏移
+    [self moveItemScrollViewWithSelectedButton:self.selectedButton];
 }
 
 #pragma mark - getter
@@ -1060,9 +1070,6 @@
     [self resetSetupTrackerFrameWithSelectedButton:self.selectedButton];
     
     self.itemScrollView.contentSize = CGSizeMake(lastButtonMaxX+_itemPadding*0.5, 0);
-    // 修正scrollView偏移
-    [self moveItemScrollViewWithSelectedButton:self.selectedButton];
-    
 }
 
 - (void)resetSetupTrackerFrameWithSelectedButton:(UIButton *)selectedButton {
