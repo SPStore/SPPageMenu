@@ -1,3 +1,16 @@
+## 安装
+版本1.0
+target 'MyApp' do
+  pod 'SPPageMenu', '~> 1.0'
+end
+
+版本2.0
+target 'MyApp' do
+  pod 'SPPageMenu', '~> 2.0'
+end
+
+终端输入命令:pod install 
+
 ## 效果演示图
 ![image](https://github.com/SPStore/SPPageMenu/blob/master/3006981-889f087b55f3e57f.gif)
 ## 所有方法和属性
