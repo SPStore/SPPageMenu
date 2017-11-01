@@ -6,6 +6,7 @@
 + (instancetype)pageMenuWithFrame:(CGRect)frame trackerStyle:(SPPageMenuTrackerStyle)trackerStyle;
 - (instancetype)initWithFrame:(CGRect)frame trackerStyle:(SPPageMenuTrackerStyle)trackerStyle;
 ```
+```
 /**
  *  传递数组(数组元素只能是NSString或UIImage类型)
  *
