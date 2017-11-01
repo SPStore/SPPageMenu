@@ -33,8 +33,6 @@
 ```
 ```
 /** item之间的间距,当permutationWay为‘SPPageMenuPermutationWayNotScrollAdaptContent’时此属性无效 */
-```
-```
 @property (nonatomic, assign) CGFloat itemPadding;
 ```
 ```
