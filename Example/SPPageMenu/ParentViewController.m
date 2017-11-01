@@ -21,7 +21,8 @@
 #define screenW [UIScreen mainScreen].bounds.size.width
 #define screenH [UIScreen mainScreen].bounds.size.height
 #define pageMenuH 40
-#define scrollViewHeight (screenH-64-pageMenuH)
+#define NaviH (screenH == 812 ? 88 : 64) // 812是iPhoneX的高度
+#define scrollViewHeight (screenH-88-pageMenuH)
 
 @interface ParentViewController () <SPPageMenuDeleagte, UIScrollViewDelegate>
 @property (nonatomic, strong) NSArray *dataArr;
@@ -37,7 +38,7 @@
     self.dataArr = @[@"生活",@"影视中心",@"交通",@"电视剧",@"搞笑",@"综艺"];
 
     // trackerStyle:跟踪器的样式
-    SPPageMenu *pageMenu = [SPPageMenu pageMenuWithFrame:CGRectMake(0, 64, screenW, pageMenuH) trackerStyle:SPPageMenuTrackerStyleLine];
+    SPPageMenu *pageMenu = [SPPageMenu pageMenuWithFrame:CGRectMake(0, NaviH, screenW, pageMenuH) trackerStyle:SPPageMenuTrackerStyleLine];
     // 传递数组，默认选中第1个
     [pageMenu setItems:self.dataArr selectedItemIndex:1];
     // 设置代理
@@ -51,7 +52,7 @@
     self.dataArr = @[@"生活",@"影视中心",@"交通",@"电视剧",@"搞笑",@"综艺"];
     
     // trackerStyle:跟踪器的样式
-    SPPageMenu *pageMenu = [SPPageMenu pageMenuWithFrame:CGRectMake(0, 64, screenW, pageMenuH) trackerStyle:SPPageMenuTrackerStyleLineLongerThanItem];
+    SPPageMenu *pageMenu = [SPPageMenu pageMenuWithFrame:CGRectMake(0, NaviH, screenW, pageMenuH) trackerStyle:SPPageMenuTrackerStyleLineLongerThanItem];
     // 传递数组，默认选中第1个
     [pageMenu setItems:self.dataArr selectedItemIndex:1];
     // 设置代理
@@ -65,7 +66,7 @@
     self.dataArr = @[@"生活",@"影视中心",@"交通",@"电视剧",@"搞笑",@"综艺"];
     
     // trackerStyle:跟踪器的样式
-    SPPageMenu *pageMenu = [SPPageMenu pageMenuWithFrame:CGRectMake(0, 64, screenW, pageMenuH) trackerStyle:SPPageMenuTrackerStyleLineAttachment];
+    SPPageMenu *pageMenu = [SPPageMenu pageMenuWithFrame:CGRectMake(0, NaviH, screenW, pageMenuH) trackerStyle:SPPageMenuTrackerStyleLineAttachment];
     // 传递数组，默认选中第1个
     [pageMenu setItems:self.dataArr selectedItemIndex:1];
     // 设置代理
@@ -79,7 +80,7 @@
     self.dataArr = @[@"生活",@"影视中心",@"交通",@"电视剧",@"搞笑",@"综艺"];
     
     // trackerStyle:跟踪器的样式
-    SPPageMenu *pageMenu = [SPPageMenu pageMenuWithFrame:CGRectMake(0, 64, screenW, pageMenuH) trackerStyle:SPPageMenuTrackerStyleTextColorGradients];
+    SPPageMenu *pageMenu = [SPPageMenu pageMenuWithFrame:CGRectMake(0, NaviH, screenW, pageMenuH) trackerStyle:SPPageMenuTrackerStyleTextColorGradients];
     // 传递数组，默认选中第1个
     [pageMenu setItems:self.dataArr selectedItemIndex:1];
     // 设置代理
@@ -93,7 +94,7 @@
     self.dataArr = @[@"生活",@"影视中心",@"交通",@"电视剧",@"搞笑",@"综艺"];
     
     // trackerStyle:跟踪器的样式
-    SPPageMenu *pageMenu = [SPPageMenu pageMenuWithFrame:CGRectMake(0, 64, screenW, pageMenuH) trackerStyle:SPPageMenuTrackerStyleTextColorGradientsAndZoom];
+    SPPageMenu *pageMenu = [SPPageMenu pageMenuWithFrame:CGRectMake(0, NaviH, screenW, pageMenuH) trackerStyle:SPPageMenuTrackerStyleTextColorGradientsAndZoom];
     // 传递数组，默认选中第1个
     [pageMenu setItems:self.dataArr selectedItemIndex:0];
     // 设置代理
@@ -107,7 +108,7 @@
     self.dataArr = @[@"生活",@"影视中心",@"交通",@"电视剧",@"搞笑",@"综艺"];
     
     // trackerStyle:跟踪器的样式
-    SPPageMenu *pageMenu = [SPPageMenu pageMenuWithFrame:CGRectMake(0, 64, screenW, pageMenuH) trackerStyle:SPPageMenuTrackerStyleRoundedRect];
+    SPPageMenu *pageMenu = [SPPageMenu pageMenuWithFrame:CGRectMake(0, NaviH, screenW, pageMenuH) trackerStyle:SPPageMenuTrackerStyleRoundedRect];
     // 传递数组，默认选中第1个
     [pageMenu setItems:self.dataArr selectedItemIndex:1];
     // 设置代理
@@ -122,7 +123,7 @@
     self.dataArr = @[@"生活",@"影视中心",@"交通",@"电视剧",@"搞笑",@"综艺"];
     
     // trackerStyle:跟踪器的样式
-    SPPageMenu *pageMenu = [SPPageMenu pageMenuWithFrame:CGRectMake(0, 64, screenW, pageMenuH) trackerStyle:SPPageMenuTrackerStyleRect];
+    SPPageMenu *pageMenu = [SPPageMenu pageMenuWithFrame:CGRectMake(0, NaviH, screenW, pageMenuH) trackerStyle:SPPageMenuTrackerStyleRect];
     // 传递数组，默认选中第1个
     [pageMenu setItems:self.dataArr selectedItemIndex:1];
     // 设置代理
@@ -136,7 +137,7 @@
     self.dataArr = @[@"生活",@"影视中心",@"交通",@"电视剧",@"搞笑",@"综艺"];
     
     // trackerStyle:跟踪器的样式
-    SPPageMenu *pageMenu = [SPPageMenu pageMenuWithFrame:CGRectMake(0, 64, screenW, pageMenuH) trackerStyle:SPPageMenuTrackerStyleLine];
+    SPPageMenu *pageMenu = [SPPageMenu pageMenuWithFrame:CGRectMake(0, NaviH, screenW, pageMenuH) trackerStyle:SPPageMenuTrackerStyleLine];
     // 传递数组，默认选中第1个
     [pageMenu setItems:self.dataArr selectedItemIndex:1];
     // 可滑动的自适应内容排列
@@ -152,7 +153,7 @@
     self.dataArr = @[@"生活",@"影视中心",@"交通"];
     
     // trackerStyle:跟踪器的样式
-    SPPageMenu *pageMenu = [SPPageMenu pageMenuWithFrame:CGRectMake(0, 64, screenW, pageMenuH) trackerStyle:SPPageMenuTrackerStyleLine];
+    SPPageMenu *pageMenu = [SPPageMenu pageMenuWithFrame:CGRectMake(0, NaviH, screenW, pageMenuH) trackerStyle:SPPageMenuTrackerStyleLine];
     // 传递数组，默认选中第1个
     [pageMenu setItems:self.dataArr selectedItemIndex:1];
     // 不可滑动的等宽排列
@@ -169,7 +170,7 @@
     self.dataArr = @[@"生活",@"影视中心",@"交通"];
     
     // trackerStyle:跟踪器的样式
-    SPPageMenu *pageMenu = [SPPageMenu pageMenuWithFrame:CGRectMake(0, 64, screenW, pageMenuH) trackerStyle:SPPageMenuTrackerStyleLine];
+    SPPageMenu *pageMenu = [SPPageMenu pageMenuWithFrame:CGRectMake(0, NaviH, screenW, pageMenuH) trackerStyle:SPPageMenuTrackerStyleLine];
     // 传递数组，默认选中第1个
     [pageMenu setItems:self.dataArr selectedItemIndex:1];
     // 不可滑动的自适应内容排列
@@ -185,7 +186,7 @@
     self.dataArr = @[@"生活",@"影视中心",@"交通",@"电视剧",@"搞笑",@"综艺"];
     
     // trackerStyle:跟踪器的样式
-    SPPageMenu *pageMenu = [SPPageMenu pageMenuWithFrame:CGRectMake(0, 64, screenW, pageMenuH) trackerStyle:SPPageMenuTrackerStyleLineAttachment];
+    SPPageMenu *pageMenu = [SPPageMenu pageMenuWithFrame:CGRectMake(0, NaviH, screenW, pageMenuH) trackerStyle:SPPageMenuTrackerStyleLineAttachment];
     // 传递数组，默认选中第1个
     [pageMenu setItems:self.dataArr selectedItemIndex:1];
     pageMenu.showFuntionButton = YES;
@@ -200,7 +201,7 @@
     self.dataArr = @[@"生活",@"娱乐",@"交通"];
     
     // trackerStyle:跟踪器的样式
-    SPPageMenu *pageMenu = [SPPageMenu pageMenuWithFrame:CGRectMake(0, 64, screenW, pageMenuH) trackerStyle:SPPageMenuTrackerStyleLineLongerThanItem];
+    SPPageMenu *pageMenu = [SPPageMenu pageMenuWithFrame:CGRectMake(0, NaviH, screenW, pageMenuH) trackerStyle:SPPageMenuTrackerStyleLineLongerThanItem];
     // 传递数组，默认选中第1个
     [pageMenu setItems:self.dataArr selectedItemIndex:1];
     // 同时设置图片和文字，如果只想要文字，image传nil，如果只想要图片，title传nil，imagePosition和ratio传0即可
@@ -219,7 +220,7 @@
 - (void)test13 {
     self.dataArr = @[@"生活",[UIImage imageNamed:@"Expression_1"],@"交通",[UIImage imageNamed:@"Expression_2"],@"搞笑",@"综艺"];
 
-    SPPageMenu *pageMenu = [SPPageMenu pageMenuWithFrame:CGRectMake(0, 64, screenW, pageMenuH) trackerStyle:SPPageMenuTrackerStyleLineLongerThanItem];
+    SPPageMenu *pageMenu = [SPPageMenu pageMenuWithFrame:CGRectMake(0, NaviH, screenW, pageMenuH) trackerStyle:SPPageMenuTrackerStyleLineLongerThanItem];
     // 传递数组，默认选中第1个
     [pageMenu setItems:self.dataArr selectedItemIndex:1];
     pageMenu.showFuntionButton = NO;
@@ -232,7 +233,7 @@
 - (void)test14 {
     self.dataArr = @[@"生活",@"影视中心",@"交通",@"电视剧",@"搞笑",@"综艺"];
     
-    SPPageMenu *pageMenu = [SPPageMenu pageMenuWithFrame:CGRectMake(0, 64, screenW, pageMenuH) trackerStyle:SPPageMenuTrackerStyleRect];
+    SPPageMenu *pageMenu = [SPPageMenu pageMenuWithFrame:CGRectMake(0, NaviH, screenW, pageMenuH) trackerStyle:SPPageMenuTrackerStyleRect];
     // 传递数组，默认选中第1个
     [pageMenu setItems:self.dataArr selectedItemIndex:2];
     // 指定第1个item为图片，第2个是指数组中的下标1
@@ -251,7 +252,7 @@
 - (void)test15 {
     self.dataArr = @[@"生活",@"影视中心",@"交通",@"电视剧",@"搞笑",@"综艺"];
     
-    SPPageMenu *pageMenu = [SPPageMenu pageMenuWithFrame:CGRectMake(0, 64, screenW, pageMenuH) trackerStyle:SPPageMenuTrackerStyleLineLongerThanItem];
+    SPPageMenu *pageMenu = [SPPageMenu pageMenuWithFrame:CGRectMake(0, NaviH, screenW, pageMenuH) trackerStyle:SPPageMenuTrackerStyleLineLongerThanItem];
     // 传递数组，默认选中第1个
     [pageMenu setItems:self.dataArr selectedItemIndex:0];
     pageMenu.closeTrackerFollowingfMode = YES;
@@ -264,7 +265,7 @@
 - (void)test16 {
     self.dataArr = @[@"生活",@"影视中心",@"交通",@"电视剧"];
     
-    SPPageMenu *pageMenu = [SPPageMenu pageMenuWithFrame:CGRectMake(0, 64, screenW, pageMenuH) trackerStyle:SPPageMenuTrackerStyleLineLongerThanItem];
+    SPPageMenu *pageMenu = [SPPageMenu pageMenuWithFrame:CGRectMake(0, NaviH, screenW, pageMenuH) trackerStyle:SPPageMenuTrackerStyleLineLongerThanItem];
     // 传递数组，默认选中第1个
     [pageMenu setItems:self.dataArr selectedItemIndex:2];
     // 以下属性可以打开一一测试，所有属性和方法均不分先后顺序
@@ -377,7 +378,7 @@
         }
     }
     
-    UIScrollView *scrollView = [[UIScrollView alloc] initWithFrame:CGRectMake(0, 64+pageMenuH, screenW, scrollViewHeight)];
+    UIScrollView *scrollView = [[UIScrollView alloc] initWithFrame:CGRectMake(0, NaviH+pageMenuH, screenW, scrollViewHeight)];
     scrollView.delegate = self;
     scrollView.pagingEnabled = YES;
     scrollView.showsHorizontalScrollIndicator = NO;
