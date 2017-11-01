@@ -1,14 +1,17 @@
 ## 安装
 版本1.0
+```
 target 'MyApp' do
   pod 'SPPageMenu', '~> 1.0'
 end
+```
 
 版本2.0
+```
 target 'MyApp' do
   pod 'SPPageMenu', '~> 2.0'
 end
-
+```
 终端输入命令:pod install 
 
 ## 效果演示图
