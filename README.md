@@ -179,5 +179,5 @@ end
 - (void)pageMenu:(SPPageMenu *)pageMenu itemSelectedAtIndex:(NSInteger)index;
 - (void)pageMenu:(SPPageMenu *)pageMenu itemSelectedFromIndex:(NSInteger)fromIndex toIndex:(NSInteger)toIndex;
 ```
-
+###### 使用示例大家可以把demo下载到本地，里面有非常多的示例以及详细的注释
 
