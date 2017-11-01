@@ -15,6 +15,8 @@ end
 终端输入命令:pod install 
 
 ## 部分功能演示图
+（友情提示：如果您的网络较慢，gif图可能会延迟加载，您可以先把宝贵的时间浏览其它信息）
+
 ![image](https://github.com/SPStore/SPPageMenu/blob/master/3006981-889f087b55f3e57f.gif)
 ## 所有方法和属性
 ```
