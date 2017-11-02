@@ -12,6 +12,13 @@ target 'MyApp' do
   pod 'SPPageMenu', '~> 2.0'
 end
 ```
+版本2.0.1(该版本修复了字母写错的问题)
+```
+target 'MyApp' do
+  pod 'SPPageMenu', '~> 2.0.1'
+end
+```
+
 终端输入命令:pod install 
 
 ## 部分功能演示图
