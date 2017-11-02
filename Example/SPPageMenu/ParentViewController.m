@@ -24,7 +24,7 @@
 #define NaviH (screenH == 812 ? 88 : 64) // 812是iPhoneX的高度
 #define scrollViewHeight (screenH-88-pageMenuH)
 
-@interface ParentViewController () <SPPageMenuDeleagte, UIScrollViewDelegate>
+@interface ParentViewController () <SPPageMenuDelegate, UIScrollViewDelegate>
 @property (nonatomic, strong) NSArray *dataArr;
 @property (nonatomic, weak) SPPageMenu *pageMenu;
 @property (nonatomic, weak) UIScrollView *scrollView;
@@ -255,7 +255,7 @@
     SPPageMenu *pageMenu = [SPPageMenu pageMenuWithFrame:CGRectMake(0, NaviH, screenW, pageMenuH) trackerStyle:SPPageMenuTrackerStyleLineLongerThanItem];
     // 传递数组，默认选中第1个
     [pageMenu setItems:self.dataArr selectedItemIndex:0];
-    pageMenu.closeTrackerFollowingfMode = YES;
+    pageMenu.closeTrackerFollowingMode = YES;
     pageMenu.delegate = self;
     [self.view addSubview:pageMenu];
     _pageMenu = pageMenu;
@@ -286,7 +286,7 @@
 - (void)test17 {
     self.dataArr = nil;
     
-    NSString *text = @"本框架的bridgeScrollView属性是一个很重要但又容易忽略的属性，在viewDidLoad中，每种示例都传了一个scrollView，即:“self.pageMenu.bridgeScrollView = self.scrollView”，这一传递，SPPageMenu内部会监听该scrollView的滑动状况，当该scrollView滑动的时候，就可以让跟踪器时刻跟随；如果你忘了设置这个属性，或者觉得不好，也可以在scrollViewDidScrollView中调用接口“- (void)moveTrackerFollowScrollView:(UIScrollView *)scrollView”,这样也能实现跟踪器时刻跟随scrollView；如果不想让跟踪器随时都跟踪，直到scrollView滑动结束才跟踪，在上面2种方式采取了任意一种的情况下，可以设置属性”pageMenu.closeTrackerFollowingfMode = YES“";
+    NSString *text = @"本框架的bridgeScrollView属性是一个很重要但又容易忽略的属性，在viewDidLoad中，每种示例都传了一个scrollView，即:“self.pageMenu.bridgeScrollView = self.scrollView”，这一传递，SPPageMenu内部会监听该scrollView的滑动状况，当该scrollView滑动的时候，就可以让跟踪器时刻跟随；如果你忘了设置这个属性，或者觉得不好，也可以在scrollViewDidScrollView中调用接口“- (void)moveTrackerFollowScrollView:(UIScrollView *)scrollView”,这样也能实现跟踪器时刻跟随scrollView；如果不想让跟踪器随时都跟踪，直到scrollView滑动结束才跟踪，在上面2种方式采取了任意一种的情况下，可以设置属性”pageMenu.closeTrackerFollowingMode = YES“";
     
     UILabel *label = [[UILabel alloc] initWithFrame:CGRectMake(10, 0, screenW-20, screenH)];
     label.numberOfLines = 0;

@@ -36,7 +36,7 @@ typedef NS_ENUM(NSInteger, SPItemImagePosition) {
 
 @class SPPageMenu;
 
-@protocol SPPageMenuDeleagte <NSObject>
+@protocol SPPageMenuDelegate <NSObject>
 
 @optional
 - (void)pageMenu:(SPPageMenu *)pageMenu functionButtonClicked:(UIButton *)functionButton;
@@ -65,7 +65,7 @@ typedef NS_ENUM(NSInteger, SPItemImagePosition) {
 /** 外界的srollView，pageMenu会监听该scrollView的滚动状况，让跟踪器时刻跟随此scrollView滑动 */
 @property (nonatomic, strong) UIScrollView *bridgeScrollView;
 /** 关闭跟踪器的跟随效果,在外界传了scrollView进来或者调用了moveTrackerFollowScrollView的情况下,如果为YES，则当外界滑动scrollView时，跟踪器不会时刻跟随,只有滑动结束才会跟踪; 如果为NO，跟踪器会时刻跟随scrollView */
-@property (nonatomic, assign) BOOL closeTrackerFollowingfMode;
+@property (nonatomic, assign) BOOL closeTrackerFollowingMode;
 
 /** 是否显示功能按钮(功能按钮显示在最右侧),默认为NO */
 @property (nonatomic, assign) BOOL showFuntionButton;
@@ -82,7 +82,7 @@ typedef NS_ENUM(NSInteger, SPItemImagePosition) {
 /** 分割线 */
 @property (nonatomic, readonly) UIImageView *dividingLine;
 /** 代理 */
-@property (nonatomic, weak) id<SPPageMenuDeleagte> delegate;
+@property (nonatomic, weak) id<SPPageMenuDelegate> delegate;
 
 /** 内容的四周内边距(内容不包括分割线) */
 @property (nonatomic, assign) UIEdgeInsets contentInset;

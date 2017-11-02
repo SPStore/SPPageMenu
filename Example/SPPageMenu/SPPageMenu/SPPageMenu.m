@@ -711,7 +711,7 @@
         return;
     }
     // 没有关闭跟踪模式
-    if (!self.closeTrackerFollowingfMode) {
+    if (!self.closeTrackerFollowingMode) {
         [self moveTrackerWithProgress:progress fromIndex:fromIndex toIndex:toIndex currentOffsetX:currentOffSetX beginOffsetX:_beginOffsetX];
     }
 }
@@ -916,7 +916,7 @@
     }
 }
 
-- (void)setDelegate:(id<SPPageMenuDeleagte>)delegate {
+- (void)setDelegate:(id<SPPageMenuDelegate>)delegate {
     if (delegate == _delegate) {return;}
     _delegate = delegate;
     if (self.buttons.count) {

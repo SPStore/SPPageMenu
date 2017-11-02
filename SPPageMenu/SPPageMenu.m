@@ -249,7 +249,7 @@
         NSAssert([object isKindOfClass:[NSString class]] || [object isKindOfClass:[UIImage class]], @"items中的元素只能是NSString或UIImage类型");
         [self addButton:i object:object animated:NO];
     }
-    
+
     [self setNeedsLayout];
     [self layoutIfNeeded];
     
@@ -463,7 +463,7 @@
     
     [self beginMoveTrackerFollowScrollView:scrollView];
 }
-
+ 
 
 #pragma amrk - private
 
@@ -551,7 +551,7 @@
     backgroundView.layer.masksToBounds = YES;
     [self addSubview:backgroundView];
     _backgroundView = backgroundView;
-    
+
     UIScrollView *itemScrollView = [[UIScrollView alloc] init];
     itemScrollView.showsVerticalScrollIndicator = NO;
     itemScrollView.showsHorizontalScrollIndicator = NO;
@@ -591,7 +591,7 @@
     // 更新下item对应的下标,必须在代理之前，否则外界在代理方法中拿到的不是最新的,必须用下划线，用self.会造成死循环
     _selectedItemIndex = toIndex;
     [self delegatePerformMethodWithFromIndex:fromIndex toIndex:toIndex];
-    
+
     [self moveItemScrollViewWithSelectedButton:sender];
     
     if (self.trackerStyle == SPPageMenuTrackerStyleTextColorGradientsAndZoom) {
@@ -652,10 +652,10 @@
 }
 
 - (void)beginMoveTrackerFollowScrollView:(UIScrollView *)scrollView {
-    
+
     // 这个if条件的意思就是没有滑动的意思
     if (!scrollView.dragging && !scrollView.decelerating) {return;}
-    
+
     // 当滑到边界时，继续通过scrollView的bouces效果滑动时，直接return
     if (scrollView.contentOffset.x < 0 || scrollView.contentOffset.x > scrollView.contentSize.width-scrollView.bounds.size.width) {
         return;
@@ -663,7 +663,7 @@
     
     static int i = 0;
     if (i == 0) {
-        // 记录起始偏移量，注意千万不能每次都记录，只需要第一次纪录即可。
+         // 记录起始偏移量，注意千万不能每次都记录，只需要第一次纪录即可。
         // 初始值不能等于scrollView.contentOffset.x,因为第一次进入此方法时，scrollView.contentOffset.x已经有偏移并非刚开始的偏移
         _beginOffsetX = scrollView.bounds.size.width * self.selectedItemIndex;
         i = 1;
@@ -673,7 +673,7 @@
     // 偏移进度
     CGFloat offsetProgress = currentOffSetX / scrollView.bounds.size.width;
     CGFloat progress = offsetProgress - floor(offsetProgress);
-    
+
     NSInteger fromIndex;
     NSInteger toIndex;
     
@@ -690,18 +690,18 @@
         toIndex = currentOffSetX / scrollView.bounds.size.width;
         fromIndex = toIndex + 1;
         progress = 1.0 - progress;
-        
+
     } else {
         progress = 1.0;
         fromIndex = self.selectedItemIndex;
         toIndex = fromIndex;
     }
-    
+
     if (currentOffSetX == scrollView.bounds.size.width * fromIndex) {// 滚动停止了
         progress = 1.0;
         toIndex = fromIndex;
     }
-    
+
     // 如果滚动停止，直接通过点击按钮选中toIndex对应的item
     if (currentOffSetX == scrollView.bounds.size.width*toIndex) { // 这里toIndex==fromIndex
         i = 0;
@@ -711,7 +711,7 @@
         return;
     }
     // 没有关闭跟踪模式
-    if (!self.closeTrackerFollowingfMode) {
+    if (!self.closeTrackerFollowingMode) {
         [self moveTrackerWithProgress:progress fromIndex:fromIndex toIndex:toIndex currentOffsetX:currentOffSetX beginOffsetX:_beginOffsetX];
     }
 }
@@ -829,7 +829,7 @@
 - (void)zoomForTitleWithProgress:(CGFloat)progress fromButton:(UIButton *)fromButton toButton:(UIButton *)toButton {
     fromButton.transform = CGAffineTransformMakeScale((1 - progress) * maxTextScale + 1, (1 - progress) * maxTextScale + 1);
     toButton.transform = CGAffineTransformMakeScale(progress * maxTextScale + 1, progress * maxTextScale + 1);
-    
+
 }
 
 #pragma mark - KVO
@@ -916,7 +916,7 @@
     }
 }
 
-- (void)setDelegate:(id<SPPageMenuDeleagte>)delegate {
+- (void)setDelegate:(id<SPPageMenuDelegate>)delegate {
     if (delegate == _delegate) {return;}
     _delegate = delegate;
     if (self.buttons.count) {
@@ -985,7 +985,7 @@
     CGFloat dividingLineX = 0;
     CGFloat dividingLineY = self.bounds.size.height-dividingLineH;
     self.dividingLine.frame = CGRectMake(dividingLineX, dividingLineY, dividingLineW, dividingLineH);
-    
+
     CGFloat functionButtonH = backgroundViewH-dividingLineH;
     CGFloat functionButtonW = functionButtonH;
     CGFloat functionButtonX = backgroundViewW-functionButtonW;
@@ -1039,7 +1039,7 @@
                 button.frame = CGRectMake(_itemPadding*0.5+lastButtonMaxX, 0, buttonW, itemScrollViewH);
             } else {
                 button.frame = CGRectMake(_itemPadding+lastButtonMaxX, 0, buttonW, itemScrollViewH);
-                
+
             }
         } else if (self.permutationWay == SPPageMenuPermutationWayNotScrollEqualWidths) {
             // 求出外界设置的按钮宽度之和
