@@ -49,16 +49,26 @@
 }
 
 // 示例2:SPPageMenuTrackerStyleLineLongerThanItem,下划线比item略长，长度等于tem宽＋间距
+// 这个例子采用自动布局
 - (void)test2 {
     self.dataArr = @[@"生活",@"影视中心",@"交通",@"电视剧",@"搞笑",@"综艺"];
     
     // trackerStyle:跟踪器的样式
-    SPPageMenu *pageMenu = [SPPageMenu pageMenuWithFrame:CGRectMake(0, NaviH, screenW, pageMenuH) trackerStyle:SPPageMenuTrackerStyleLineLongerThanItem];
+    SPPageMenu *pageMenu = [SPPageMenu pageMenuWithFrame:CGRectZero trackerStyle:SPPageMenuTrackerStyleLineLongerThanItem];
+    pageMenu.translatesAutoresizingMaskIntoConstraints = NO;
     // 传递数组，默认选中第1个
     [pageMenu setItems:self.dataArr selectedItemIndex:1];
     // 设置代理
     pageMenu.delegate = self;
     [self.view addSubview:pageMenu];
+    
+    NSMutableArray *contraints = [NSMutableArray array];
+    [contraints addObject:[NSLayoutConstraint constraintWithItem:pageMenu attribute:NSLayoutAttributeTop relatedBy:NSLayoutRelationEqual toItem:self.view attribute:NSLayoutAttributeTop multiplier:1.0 constant:NaviH]];
+    [contraints addObject:[NSLayoutConstraint constraintWithItem:pageMenu attribute:NSLayoutAttributeHeight relatedBy:NSLayoutRelationEqual toItem:nil attribute:NSLayoutAttributeNotAnAttribute multiplier:1.0 constant:pageMenuH]];
+    [contraints addObject:[NSLayoutConstraint constraintWithItem:pageMenu attribute:NSLayoutAttributeLeft relatedBy:NSLayoutRelationEqual toItem:self.view attribute:NSLayoutAttributeLeft multiplier:1.0 constant:0]];
+    [contraints addObject:[NSLayoutConstraint constraintWithItem:pageMenu attribute:NSLayoutAttributeRight relatedBy:NSLayoutRelationEqual toItem:self.view attribute:NSLayoutAttributeRight multiplier:1.0 constant:0]];
+    [self.view addConstraints:contraints];
+  
     _pageMenu = pageMenu;
 }
 

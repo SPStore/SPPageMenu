@@ -596,11 +596,14 @@
 
 // 点击button让itemScrollView发生偏移
 - (void)moveItemScrollViewWithSelectedButton:(SPItem *)selectedButton {
-    
+    if (CGRectEqualToRect(self.backgroundView.frame, CGRectZero)) {
+        return;
+    }
     // 转换点的坐标位置
     CGPoint centerInPageMenu = [self.backgroundView convertPoint:selectedButton.center toView:self];
     // CGRectGetMidX(self.backgroundView.frame)指的是屏幕水平中心位置，它的值是固定不变的
     CGFloat offSetX = centerInPageMenu.x - CGRectGetMidX(self.backgroundView.frame);
+    
     // itemScrollView的容量宽与自身宽之差(难点)
     CGFloat maxOffsetX = self.itemScrollView.contentSize.width - self.itemScrollView.frame.size.width;
     // 如果选中的button中心x值小于或者等于itemScrollView的中心x值，或者itemScrollView的容量宽度小于itemScrollView本身，此时点击button时不发生任何偏移，置offSetX为0
@@ -611,6 +614,9 @@
     else if (offSetX > maxOffsetX){
         offSetX = maxOffsetX;
     }
+    NSLog(@"centerInPageMenu.x = %f",centerInPageMenu.x);
+    NSLog(@"CGRectGetMidX(self.backgroundView.frame) = %f",CGRectGetMidX(self.backgroundView.frame));
+
     [self.itemScrollView setContentOffset:CGPointMake(offSetX, 0) animated:YES];
     
 }
@@ -1087,6 +1093,10 @@
     [self resetSetupTrackerFrameWithSelectedButton:self.selectedButton];
     
     self.itemScrollView.contentSize = CGSizeMake(lastButtonMaxX+_itemPadding*0.5, 0);
+    
+    if (self.translatesAutoresizingMaskIntoConstraints == NO) {
+        [self moveItemScrollViewWithSelectedButton:self.selectedButton];
+    }
 }
 
 - (void)resetSetupTrackerFrameWithSelectedButton:(UIButton *)selectedButton {
@@ -1155,7 +1165,6 @@
     trackerCenter.x = selectedButton.center.x;
     self.tracker.center = trackerCenter;
 }
-
 
 - (void)dealloc {
     [self.bridgeScrollView removeObserver:self forKeyPath:scrollViewContentOffset];
