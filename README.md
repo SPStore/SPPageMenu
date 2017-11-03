@@ -21,7 +21,7 @@ end
 版本2.5.0
 ```
 target 'MyApp' do
-  pod 'SPPageMenu', '~> 2.0.1'
+  pod 'SPPageMenu', '~> 2.5.0'
 end
 ```
 
