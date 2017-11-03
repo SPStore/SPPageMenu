@@ -194,6 +194,7 @@
 @interface SPPageMenu()
 @property (nonatomic, assign) SPPageMenuTrackerStyle trackerStyle;
 @property (nonatomic, strong) NSArray *items;
+@property (nonatomic, strong) UIImageView *tracker;
 @property (nonatomic, assign) CGFloat trackerHeight;
 @property (nonatomic, weak) UIView *backgroundView;
 @property (nonatomic, strong) UIImageView *dividingLine;
@@ -230,6 +231,7 @@
 - (instancetype)initWithFrame:(CGRect)frame trackerStyle:(SPPageMenuTrackerStyle)trackerStyle {
     if (self = [super init]) {
         self.frame = frame;
+        self.backgroundColor = [UIColor whiteColor];
         self.trackerStyle = trackerStyle;
         [self setupStartColor:_selectedItemTitleColor];
         [self setupEndColor:_unSelectedItemTitleColor];
@@ -254,35 +256,19 @@
     [self layoutIfNeeded];
     
     if (self.buttons.count) {
+        // 默认选中selectedItemIndex对应的按钮
         SPItem *selectedButton = [self.buttons objectAtIndex:selectedItemIndex];
         [self buttonInPageMenuClicked:selectedButton];
         
-        UIImageView *tracker = [[UIImageView alloc] init];
-        tracker.layer.cornerRadius = _trackerHeight * 0.5;
-        tracker.layer.masksToBounds = YES;
-        switch (self.trackerStyle) {
-            case SPPageMenuTrackerStyleLine:
-            case SPPageMenuTrackerStyleLineAttachment:
-            case SPPageMenuTrackerStyleLineLongerThanItem:
-                tracker.backgroundColor = _selectedItemTitleColor;
-                break;
-            case SPPageMenuTrackerStyleRect:
-            case SPPageMenuTrackerStyleRoundedRect:
-                tracker.backgroundColor = [UIColor greenColor];
-                break;
-            case SPPageMenuTrackerStyleTextColorGradientsAndZoom:
-                [selectedButton setTitleColor:_selectedItemTitleColor forState:UIControlStateNormal];
-                selectedButton.transform = CGAffineTransformMakeScale(1+maxTextScale, 1+maxTextScale);
-                break;
-            default:
-                break;
+        if (self.trackerStyle == SPPageMenuTrackerStyleTextZoom) {
+            [selectedButton setTitleColor:_selectedItemTitleColor forState:UIControlStateNormal];
+            selectedButton.transform = CGAffineTransformMakeScale(1+maxTextScale, 1+maxTextScale);
         }
-        [self.itemScrollView insertSubview:tracker atIndex:0];
-        _tracker = tracker;
+        [self.itemScrollView insertSubview:self.tracker atIndex:0];
     }
     
     // 如果是缩放样式，此刻不能去布局，如果这时去布局，第一次缩放的按钮文字会显示不全
-    if (self.trackerStyle != SPPageMenuTrackerStyleTextColorGradientsAndZoom) {
+    if (self.trackerStyle != SPPageMenuTrackerStyleTextZoom) {
         [self setNeedsLayout];
     }
 }
@@ -536,6 +522,7 @@
     _contentInset = UIEdgeInsetsZero;
     _selectedItemIndex = 0;
     _showFuntionButton = NO;
+    _needTextColorGradients = YES;
     
     // 必须先添加分割线，再添加backgroundView;假如先添加backgroundView,那也就意味着backgroundView是SPPageMenu的第一个子控件,而scrollView又是backgroundView的第一个子控件,当外界在由导航控制器管理的控制器中将SPPageMenu添加为第一个子控件时，控制器会不断的往下遍历第一个子控件的第一个子控件，直到找到为scrollView为止,一旦发现某子控件的第一个子控件为scrollView,会将scrollView的内容往下偏移64;这时控制器中必须设置self.automaticallyAdjustsScrollViewInsets = NO;为了避免这样做，这里将分割线作为第一个子控件
     SPPageMenuLine *dividingLine = [[SPPageMenuLine alloc] init];
@@ -594,11 +581,13 @@
 
     [self moveItemScrollViewWithSelectedButton:sender];
     
-    if (self.trackerStyle == SPPageMenuTrackerStyleTextColorGradientsAndZoom) {
+    if (self.trackerStyle == SPPageMenuTrackerStyleTextZoom) {
         self.selectedButton.transform = CGAffineTransformIdentity;
         sender.transform = CGAffineTransformMakeScale(1+maxTextScale, 1+maxTextScale);
     } else {
-        [self moveTrackerWithSelectedButton:sender];
+        if (fromIndex != toIndex) { // 如果相等，说明是第一次进来，或者2次点了同一个，此时不需要动画
+            [self moveTrackerWithSelectedButton:sender];
+        }
     }
     
     self.selectedButton = sender;
@@ -636,7 +625,6 @@
 
 // 执行代理方法
 - (void)delegatePerformMethodWithFromIndex:(NSUInteger)fromIndex toIndex:(NSUInteger)toIndex {
-    
     if (self.delegate && [self.delegate respondsToSelector:@selector(pageMenu:itemSelectedFromIndex:toIndex:)]) {
         [self.delegate pageMenu:self itemSelectedFromIndex:fromIndex toIndex:toIndex];
     } else if (self.delegate && [self.delegate respondsToSelector:@selector(pageMenu:itemSelectedAtIndex:)]) {
@@ -760,19 +748,23 @@
         
         self.tracker.frame = newFrame;
         
-    } else if (self.trackerStyle == SPPageMenuTrackerStyleTextColorGradients) {
-        // 文字颜色渐变
-        [self colorGradientForTitleWithProgress:progress fromButton:fromButton toButton:toButton];
-    } else if (self.trackerStyle == SPPageMenuTrackerStyleTextColorGradientsAndZoom) {
-        // 文字颜色渐变
-        [self colorGradientForTitleWithProgress:progress fromButton:fromButton toButton:toButton];
+    } else if (self.trackerStyle == SPPageMenuTrackerStyleTextZoom) {
         // 缩放文字
         [self zoomForTitleWithProgress:progress fromButton:fromButton toButton:toButton];
+    } else if (self.trackerStyle == SPPageMenuTrackerStyleRoundedRect) {
+        newCenter.x = fromButton.center.x + xDistance * progress;
+        newFrame.size.width = fromButton.frame.size.width + wDistance * progress + (_itemTitleFont.lineHeight+10)*0.5;
+        self.tracker.frame = newFrame;
+        self.tracker.center = newCenter;
     } else {
         newCenter.x = fromButton.center.x + xDistance * progress;
         newFrame.size.width = fromButton.frame.size.width + wDistance * progress + _itemPadding;
         self.tracker.frame = newFrame;
         self.tracker.center = newCenter;
+    }
+    // 文字颜色渐变
+    if (self.needTextColorGradients) {
+        [self colorGradientForTitleWithProgress:progress fromButton:fromButton toButton:toButton];
     }
 }
 
@@ -860,6 +852,20 @@
 
 - (void)setTrackerStyle:(SPPageMenuTrackerStyle)trackerStyle {
     _trackerStyle = trackerStyle;
+    switch (trackerStyle) {
+        case SPPageMenuTrackerStyleLine:
+        case SPPageMenuTrackerStyleLineLongerThanItem:
+        case SPPageMenuTrackerStyleLineAttachment:
+            self.tracker.backgroundColor = _selectedItemTitleColor;
+            break;
+        case SPPageMenuTrackerStyleRoundedRect:
+        case SPPageMenuTrackerStyleRect:
+            self.tracker.backgroundColor = [UIColor redColor];
+            _selectedItemTitleColor = [UIColor whiteColor];
+            break;
+        default:
+            break;
+    }
 }
 
 - (void)setShowFuntionButton:(BOOL)showFuntionButton {
@@ -968,6 +974,17 @@
     }
     return _setupWidths;
 }
+
+- (UIImageView *)tracker {
+    
+    if (!_tracker) {
+        _tracker = [[UIImageView alloc] init];
+        _tracker.layer.cornerRadius = _trackerHeight * 0.5;
+        _tracker.layer.masksToBounds = YES;
+    }
+    return _tracker;
+}
+
 
 #pragma mark - 布局
 
@@ -1121,10 +1138,10 @@
             break;
         case SPPageMenuTrackerStyleRoundedRect:
         {
-            trackerW = selectedButtonWidth+(selectedButtonWidth ? _itemPadding : 0);
-            trackerH = selectedButton.frame.size.height;
+            trackerH = _itemTitleFont.lineHeight+10;
+            trackerW = selectedButtonWidth+trackerH*0.5;
             trackerX = selectedButton.frame.origin.x;
-            trackerY = 0;
+            trackerY = (selectedButton.frame.size.height-trackerH)*0.5;
             self.tracker.frame = CGRectMake(trackerX, trackerY, trackerW, trackerH);
             self.tracker.layer.cornerRadius = MIN(trackerW, trackerH)*0.5;
             self.tracker.layer.masksToBounds = YES;

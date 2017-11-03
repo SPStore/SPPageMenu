@@ -41,6 +41,7 @@
     SPPageMenu *pageMenu = [SPPageMenu pageMenuWithFrame:CGRectMake(0, NaviH, screenW, pageMenuH) trackerStyle:SPPageMenuTrackerStyleLine];
     // 传递数组，默认选中第1个
     [pageMenu setItems:self.dataArr selectedItemIndex:1];
+    pageMenu.needTextColorGradients = NO;
     // 设置代理
     pageMenu.delegate = self;
     [self.view addSubview:pageMenu];
@@ -75,26 +76,12 @@
     _pageMenu = pageMenu;
 }
 
-// 示例4:SPPageMenuTrackerStyleTextColorGradients,文字颜色渐变
+// 示例4:SPPageMenuTrackerStyleTextColorGradientsAndZoom,文字颜色渐变且缩放
 - (void)test4 {
     self.dataArr = @[@"生活",@"影视中心",@"交通",@"电视剧",@"搞笑",@"综艺"];
     
     // trackerStyle:跟踪器的样式
-    SPPageMenu *pageMenu = [SPPageMenu pageMenuWithFrame:CGRectMake(0, NaviH, screenW, pageMenuH) trackerStyle:SPPageMenuTrackerStyleTextColorGradients];
-    // 传递数组，默认选中第1个
-    [pageMenu setItems:self.dataArr selectedItemIndex:1];
-    // 设置代理
-    pageMenu.delegate = self;
-    [self.view addSubview:pageMenu];
-    _pageMenu = pageMenu;
-}
-
-// 示例5:SPPageMenuTrackerStyleTextColorGradientsAndZoom,文字颜色渐变且缩放
-- (void)test5 {
-    self.dataArr = @[@"生活",@"影视中心",@"交通",@"电视剧",@"搞笑",@"综艺"];
-    
-    // trackerStyle:跟踪器的样式
-    SPPageMenu *pageMenu = [SPPageMenu pageMenuWithFrame:CGRectMake(0, NaviH, screenW, pageMenuH) trackerStyle:SPPageMenuTrackerStyleTextColorGradientsAndZoom];
+    SPPageMenu *pageMenu = [SPPageMenu pageMenuWithFrame:CGRectMake(0, NaviH, screenW, pageMenuH) trackerStyle:SPPageMenuTrackerStyleTextZoom];
     // 传递数组，默认选中第1个
     [pageMenu setItems:self.dataArr selectedItemIndex:0];
     // 设置代理
@@ -103,8 +90,8 @@
     _pageMenu = pageMenu;
 }
 
-// 示例6:SPPageMenuTrackerStyleRoundedRect,圆角矩形
-- (void)test6 {
+// 示例5:SPPageMenuTrackerStyleRoundedRect,圆角矩形
+- (void)test5 {
     self.dataArr = @[@"生活",@"影视中心",@"交通",@"电视剧",@"搞笑",@"综艺"];
     
     // trackerStyle:跟踪器的样式
@@ -117,9 +104,9 @@
     _pageMenu = pageMenu;
 }
 
-// 示例7:SPPageMenuTrackerStyleRect,矩形
+// 示例6:SPPageMenuTrackerStyleRect,矩形
 
-- (void)test7 {
+- (void)test6 {
     self.dataArr = @[@"生活",@"影视中心",@"交通",@"电视剧",@"搞笑",@"综艺"];
     
     // trackerStyle:跟踪器的样式
@@ -132,8 +119,8 @@
     _pageMenu = pageMenu;
 }
 
-// 示例8:可滑动的自适应内容排列，pageMenu.permutationWay = SPPageMenuPermutationWayScrollAdaptContent;
-- (void)test8 {
+// 示例7:可滑动的自适应内容排列，pageMenu.permutationWay = SPPageMenuPermutationWayScrollAdaptContent;
+- (void)test7 {
     self.dataArr = @[@"生活",@"影视中心",@"交通",@"电视剧",@"搞笑",@"综艺"];
     
     // trackerStyle:跟踪器的样式
@@ -148,8 +135,8 @@
     _pageMenu = pageMenu;
 }
 
-// 示例9:不可滑动的等宽排列，pageMenu.permutationWay = SPPageMenuPermutationWayNotScrollEqualWidths;
-- (void)test9 {
+// 示例8:不可滑动的等宽排列，pageMenu.permutationWay = SPPageMenuPermutationWayNotScrollEqualWidths;
+- (void)test8 {
     self.dataArr = @[@"生活",@"影视中心",@"交通"];
     
     // trackerStyle:跟踪器的样式
@@ -164,9 +151,9 @@
     _pageMenu = pageMenu;
 }
 
-// 示例10:不可滑动的自适应内容排列，pageMenu.permutationWay = SPPageMenuPermutationWayNotScrollEqualWidths;
+// 示例9:不可滑动的自适应内容排列，pageMenu.permutationWay = SPPageMenuPermutationWayNotScrollEqualWidths;
 // 这种排列方式下,itemPadding属性无效，因为内部自动计算间距
-- (void)test10 {
+- (void)test9 {
     self.dataArr = @[@"生活",@"影视中心",@"交通"];
     
     // trackerStyle:跟踪器的样式
@@ -181,8 +168,8 @@
     _pageMenu = pageMenu;
 }
 
-// 示例11:显示功能按钮
-- (void)test11 {
+// 示例10:显示功能按钮
+- (void)test10 {
     self.dataArr = @[@"生活",@"影视中心",@"交通",@"电视剧",@"搞笑",@"综艺"];
     
     // trackerStyle:跟踪器的样式
@@ -196,8 +183,8 @@
     _pageMenu = pageMenu;
 }
 
-// 示例12:给功能按钮设置图片和文字
-- (void)test12 {
+// 示例11:给功能按钮设置图片和文字
+- (void)test11 {
     self.dataArr = @[@"生活",@"娱乐",@"交通"];
     
     // trackerStyle:跟踪器的样式
@@ -216,8 +203,8 @@
     _pageMenu = pageMenu;
 }
 
-// 示例13:含有图片的item
-- (void)test13 {
+// 示例12:含有图片的item
+- (void)test12 {
     self.dataArr = @[@"生活",[UIImage imageNamed:@"Expression_1"],@"交通",[UIImage imageNamed:@"Expression_2"],@"搞笑",@"综艺"];
 
     SPPageMenu *pageMenu = [SPPageMenu pageMenuWithFrame:CGRectMake(0, NaviH, screenW, pageMenuH) trackerStyle:SPPageMenuTrackerStyleLineLongerThanItem];
@@ -229,8 +216,8 @@
     _pageMenu = pageMenu;
 }
 
-// 示例14:指定item携带图片,或同时携带图片和文字,可以设置图片的位置
-- (void)test14 {
+// 示例13:指定item携带图片,或同时携带图片和文字,可以设置图片的位置
+- (void)test13 {
     self.dataArr = @[@"生活",@"影视中心",@"交通",@"电视剧",@"搞笑",@"综艺"];
     
     SPPageMenu *pageMenu = [SPPageMenu pageMenuWithFrame:CGRectMake(0, NaviH, screenW, pageMenuH) trackerStyle:SPPageMenuTrackerStyleRect];
@@ -248,8 +235,8 @@
     _pageMenu = pageMenu;
 }
 
-// 示例15: 关闭跟踪器的跟踪效果,关闭后，只有scrollView滑动结束时才会跟踪
-- (void)test15 {
+// 示例14: 关闭跟踪器的跟踪效果,关闭后，只有scrollView滑动结束时才会跟踪
+- (void)test14 {
     self.dataArr = @[@"生活",@"影视中心",@"交通",@"电视剧",@"搞笑",@"综艺"];
     
     SPPageMenu *pageMenu = [SPPageMenu pageMenuWithFrame:CGRectMake(0, NaviH, screenW, pageMenuH) trackerStyle:SPPageMenuTrackerStyleLineLongerThanItem];
@@ -261,8 +248,8 @@
     _pageMenu = pageMenu;
 }
 
-// 示例16:简单属性和简单方法
-- (void)test16 {
+// 示例15:简单属性和简单方法
+- (void)test15 {
     self.dataArr = @[@"生活",@"影视中心",@"交通",@"电视剧"];
     
     SPPageMenu *pageMenu = [SPPageMenu pageMenuWithFrame:CGRectMake(0, NaviH, screenW, pageMenuH) trackerStyle:SPPageMenuTrackerStyleLineLongerThanItem];
@@ -283,7 +270,8 @@
     _pageMenu = pageMenu;
 }
 
-- (void)test17 {
+// 示例16:特别属性说明
+- (void)test16 {
     self.dataArr = nil;
     
     NSString *text = @"本框架的bridgeScrollView属性是一个很重要但又容易忽略的属性，在viewDidLoad中，每种示例都传了一个scrollView，即:“self.pageMenu.bridgeScrollView = self.scrollView”，这一传递，SPPageMenu内部会监听该scrollView的滑动状况，当该scrollView滑动的时候，就可以让跟踪器时刻跟随；如果你忘了设置这个属性，或者觉得不好，也可以在scrollViewDidScrollView中调用接口“- (void)moveTrackerFollowScrollView:(UIScrollView *)scrollView”,这样也能实现跟踪器时刻跟随scrollView；如果不想让跟踪器随时都跟踪，直到scrollView滑动结束才跟踪，在上面2种方式采取了任意一种的情况下，可以设置属性”pageMenu.closeTrackerFollowingMode = YES“";
@@ -355,9 +343,6 @@
         case 15:
             [self test16];
             break;
-        case 16:
-            [self test17];
-            break;
         default:
             break;
     }
@@ -424,7 +409,7 @@
     
 }
 
-- (void)pageMenu:(SPPageMenu *)pageMenu functionButtonClicked:(UIButton *)functionItem {
+- (void)pageMenu:(SPPageMenu *)pageMenu functionButtonClicked:(UIButton *)functionButton {
     UIAlertController *alertController = [UIAlertController alertControllerWithTitle:nil message:nil preferredStyle:UIAlertControllerStyleActionSheet];
     UIAlertAction *action1 = [UIAlertAction actionWithTitle:@"插入一个带标题的item" style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
         [self insertItemWithObject:@"十九大" toIndex:0];
