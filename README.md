@@ -12,7 +12,13 @@ target 'MyApp' do
   pod 'SPPageMenu', '~> 2.0'
 end
 ```
-版本2.0.1(该版本修复了字母写错的问题)
+版本2.0.1
+```
+target 'MyApp' do
+  pod 'SPPageMenu', '~> 2.0.1'
+end
+```
+版本2.5.0
 ```
 target 'MyApp' do
   pod 'SPPageMenu', '~> 2.0.1'
