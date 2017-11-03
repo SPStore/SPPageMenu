@@ -7,15 +7,14 @@
 //
 
 #import <UIKit/UIKit.h>
-
+//NS_DEPRECATED(2_0, 2_0, 2_0, 2_0, instead)
 NS_ASSUME_NONNULL_BEGIN
 
 typedef NS_ENUM(NSInteger, SPPageMenuTrackerStyle) {
     SPPageMenuTrackerStyleLine = 0,                  // 下划线,默认与item等宽
     SPPageMenuTrackerStyleLineLongerThanItem,        // 下划线,比item要长(长度为item的宽+间距)
     SPPageMenuTrackerStyleLineAttachment,            // 下划线依恋样式
-    SPPageMenuTrackerStyleTextColorGradients,        // 文字颜色渐变
-    SPPageMenuTrackerStyleTextColorGradientsAndZoom, // 文字颜色渐变且缩放
+    SPPageMenuTrackerStyleTextZoom,                  // 文字缩放
     SPPageMenuTrackerStyleRoundedRect,               // 圆角矩形
     SPPageMenuTrackerStyleRect                       // 矩形
 };
@@ -59,8 +58,12 @@ typedef NS_ENUM(NSInteger, SPItemImagePosition) {
  *  @param selectedItemIndex  选中哪个item
  */
 - (void)setItems:(nullable NSArray *)items selectedItemIndex:(NSUInteger)selectedItemIndex;
+
 /** 选中的item下标 */
 @property (nonatomic) NSUInteger selectedItemIndex;
+
+/** 是否需要文字渐变,默认为YES */
+@property (nonatomic, assign) BOOL needTextColorGradients;
 
 /** 外界的srollView，pageMenu会监听该scrollView的滚动状况，让跟踪器时刻跟随此scrollView滑动 */
 @property (nonatomic, strong) UIScrollView *bridgeScrollView;
@@ -143,7 +146,7 @@ typedef NS_ENUM(NSInteger, SPItemImagePosition) {
  */
 - (void)setFunctionButtonTitleTextAttributes:(nullable NSDictionary *)attributes forState:(UIControlState)state;
 
-/* 1.让跟踪器时刻跟随外界scrollView滑动,实现了让跟踪器的宽度逐渐适应item宽度的功能;如果不想要这个功能
+/* 1.让跟踪器时刻跟随外界scrollView滑动,实现了让跟踪器的宽度逐渐适应item宽度的功能;
    2.这个方法用于scrollViewDidScroll代理方法中，如
  
     - (void)scrollViewDidScroll:(UIScrollView *)scrollView {
@@ -151,7 +154,7 @@ typedef NS_ENUM(NSInteger, SPItemImagePosition) {
     }
  
     3.如果外界对SPPageMenu的属性"bridgeScrollView"赋了值，那么外界就可以不用在scrollViewDidScroll方法中调用这个方法来实现跟踪器时刻跟随外界scrollView的效果,内部会自动处理; 外界对SPPageMenu的属性"bridgeScrollView"赋值是实现此效果的最简便的操作
-    4.如果不想要此效果,可设置closeTrackerFollowingfMode==YES
+    4.如果不想要此效果,可设置closeTrackerFollowingMode==YES
  */
 - (void)moveTrackerFollowScrollView:(UIScrollView *)scrollView;
 
