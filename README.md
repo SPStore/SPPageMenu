@@ -1,27 +1,8 @@
-## 安装(推荐最新版)
-版本1.0
+## 安装
+版本2.5.1
 ```
 target 'MyApp' do
-  pod 'SPPageMenu', '~> 1.0'
-end
-```
-
-版本2.0
-```
-target 'MyApp' do
-  pod 'SPPageMenu', '~> 2.0'
-end
-```
-版本2.0.1
-```
-target 'MyApp' do
-  pod 'SPPageMenu', '~> 2.0.1'
-end
-```
-版本2.5.0
-```
-target 'MyApp' do
-  pod 'SPPageMenu', '~> 2.5.0'
+  pod 'SPPageMenu', '~> 2.5.1'
 end
 ```
 
