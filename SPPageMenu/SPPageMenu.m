@@ -614,8 +614,6 @@
     else if (offSetX > maxOffsetX){
         offSetX = maxOffsetX;
     }
-    NSLog(@"centerInPageMenu.x = %f",centerInPageMenu.x);
-    NSLog(@"CGRectGetMidX(self.backgroundView.frame) = %f",CGRectGetMidX(self.backgroundView.frame));
 
     [self.itemScrollView setContentOffset:CGPointMake(offSetX, 0) animated:YES];
     
