@@ -1,8 +1,8 @@
 ## 安装
-版本2.5.1
+版本2.5.3
 ```
 target 'MyApp' do
-  pod 'SPPageMenu', '~> 2.5.1'
+  pod 'SPPageMenu', '~> 2.5.3'
 end
 ```
 
