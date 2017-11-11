@@ -1,4 +1,6 @@
 # SPPageMenu
+[![Build Status](http://img.shields.io/travis/rs/SPPageMenu/master.svg?style=flat)](https://travis-ci.org/rs/SPPageMenu)
+[![Pod Version](http://img.shields.io/cocoapods/v/SPPageMenu.svg?style=flat)](http://cocoadocs.org/docsets/SPPageMenu/)
 [![Pod Platform](http://img.shields.io/cocoapods/p/SPPageMenu.svg?style=flat)](http://cocoadocs.org/docsets/SPPageMenu/)
 [![Pod License](http://img.shields.io/cocoapods/l/SPPageMenu.svg?style=flat)](https://www.apache.org/licenses/LICENSE-2.0.html)
 ## 安装
