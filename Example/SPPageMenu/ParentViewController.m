@@ -80,6 +80,7 @@
     SPPageMenu *pageMenu = [SPPageMenu pageMenuWithFrame:CGRectMake(0, NaviH, screenW, pageMenuH) trackerStyle:SPPageMenuTrackerStyleLineAttachment];
     // 传递数组，默认选中第1个
     [pageMenu setItems:self.dataArr selectedItemIndex:1];
+    pageMenu.trackerWidth = 50;
     // 设置代理
     pageMenu.delegate = self;
     [self.view addSubview:pageMenu];

@@ -523,7 +523,7 @@
     _selectedItemIndex = 0;
     _showFuntionButton = NO;
     _needTextColorGradients = YES;
-    
+    _trackerWidth = 16;
     // 必须先添加分割线，再添加backgroundView;假如先添加backgroundView,那也就意味着backgroundView是SPPageMenu的第一个子控件,而scrollView又是backgroundView的第一个子控件,当外界在由导航控制器管理的控制器中将SPPageMenu添加为第一个子控件时，控制器会不断的往下遍历第一个子控件的第一个子控件，直到找到为scrollView为止,一旦发现某子控件的第一个子控件为scrollView,会将scrollView的内容往下偏移64;这时控制器中必须设置self.automaticallyAdjustsScrollViewInsets = NO;为了避免这样做，这里将分割线作为第一个子控件
     SPPageMenuLine *dividingLine = [[SPPageMenuLine alloc] init];
     dividingLine.backgroundColor = [UIColor grayColor];
@@ -728,9 +728,9 @@
     } else if (self.trackerStyle == SPPageMenuTrackerStyleLineAttachment){
         // 这种样式的计算比较复杂,有个很关键的技巧，就是参考progress分别为0、0.5、1时的临界值
         // 原先的x值
-        CGFloat originX = fromButton.frame.origin.x+(fromButton.frame.size.width-fromButton.titleLabel.font.pointSize)*0.5;
+        CGFloat originX = fromButton.frame.origin.x+(fromButton.frame.size.width-_trackerWidth)*0.5;
         // 原先的宽度
-        CGFloat originW = fromButton.titleLabel.font.pointSize;
+        CGFloat originW = _trackerWidth;
         if (currentOffsetX - _beginOffsetX >= 0) { // 向左拖拽了
             if (progress < 0.5) {
                 newFrame.origin.x = originX; // x值保持不变
@@ -870,6 +870,14 @@
         default:
             break;
     }
+}
+
+- (void)setTrackerWidth:(CGFloat)trackerWidth{
+    _trackerWidth = trackerWidth;
+    [self setNeedsLayout];
+    [self layoutIfNeeded];
+    // 修正scrollView偏移
+    [self moveItemScrollViewWithSelectedButton:self.selectedButton];
 }
 
 - (void)setShowFuntionButton:(BOOL)showFuntionButton {
@@ -1127,7 +1135,7 @@
             break;
         case SPPageMenuTrackerStyleLineAttachment:
         {
-            trackerW = selectedButtonWidth ? selectedButton.titleLabel.font.pointSize : 0; // 固定宽度为字体大小
+            trackerW = selectedButtonWidth ? _trackerWidth : 0; // 固定宽度为字体大小
             trackerH = _trackerHeight;
             trackerX = selectedButton.frame.origin.x;
             trackerY = self.itemScrollView.bounds.size.height - trackerH;

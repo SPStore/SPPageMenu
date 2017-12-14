@@ -82,6 +82,8 @@ typedef NS_ENUM(NSInteger, SPItemImagePosition) {
 @property (nonatomic, strong) UIColor *unSelectedItemTitleColor;
 /** 跟踪器 */
 @property (nonatomic, readonly) UIImageView *tracker;
+/** 依恋样式跟踪器宽度 */
+@property (nonatomic, assign) CGFloat       trackerWidth;
 /** 分割线 */
 @property (nonatomic, readonly) UIImageView *dividingLine;
 /** 代理 */
