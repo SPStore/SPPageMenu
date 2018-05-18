@@ -11,10 +11,8 @@
 #define tagBaseValue 100
 #define scrollViewContentOffset @"contentOffset"
 
-#define maxTextScale 0.3
-
 @interface SPPageMenuLine : UIImageView
-@property (nonatomic, copy) void(^hideBlock)();
+@property (nonatomic, copy) void(^hideBlock)(void);
 
 @end
 
@@ -216,7 +214,13 @@
 @property (nonatomic, assign) CGFloat endR;
 @property (nonatomic, assign) CGFloat endG;
 @property (nonatomic, assign) CGFloat endB;
+
+// 这个高度，是存储itemScrollView的高度
+@property (nonatomic, assign) CGFloat itemScrollViewH;
 @end
+
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wdeprecated-declarations"
 
 @implementation SPPageMenu
 
@@ -259,17 +263,13 @@
         // 默认选中selectedItemIndex对应的按钮
         SPItem *selectedButton = [self.buttons objectAtIndex:selectedItemIndex];
         [self buttonInPageMenuClicked:selectedButton];
-        
-        if (self.trackerStyle == SPPageMenuTrackerStyleTextZoom) {
-            [selectedButton setTitleColor:_selectedItemTitleColor forState:UIControlStateNormal];
-            selectedButton.transform = CGAffineTransformMakeScale(1+maxTextScale, 1+maxTextScale);
+
+        // SPPageMenuTrackerStyleTextZoom和SPPageMenuTrackerStyleNothing样式跟tracker没有关联
+        if (self.trackerStyle != SPPageMenuTrackerStyleTextZoom && self.trackerStyle != SPPageMenuTrackerStyleNothing) {
+            [self.itemScrollView insertSubview:self.tracker atIndex:0];
+            // 这里千万不能再去调用setNeedsLayout和layoutIfNeeded，因为如果外界在此之前对selectedButton进行了缩放，调用了layoutSubViews后会重新对selectedButton设置frame,先缩放再重设置frame会导致文字显示不全，所以我们直接跳过layoutSubViews调用resetSetupTrackerFrameWithSelectedButton：只设置tracker的frame
+            [self resetSetupTrackerFrameWithSelectedButton:selectedButton];
         }
-        [self.itemScrollView insertSubview:self.tracker atIndex:0];
-    }
-    
-    // 如果是缩放样式，此刻不能去布局，如果这时去布局，第一次缩放的按钮文字会显示不全
-    if (self.trackerStyle != SPPageMenuTrackerStyleTextZoom) {
-        [self setNeedsLayout];
     }
 }
 
@@ -442,6 +442,13 @@
     return 0;
 }
 
+- (void)setTrackerHeight:(CGFloat)trackerHeight cornerRadius:(CGFloat)cornerRadius {
+    _trackerHeight = trackerHeight;
+    self.tracker.layer.cornerRadius = cornerRadius;
+    [self setNeedsLayout];
+    [self layoutIfNeeded];
+}
+
 - (void)moveTrackerFollowScrollView:(UIScrollView *)scrollView {
     
     // 说明外界传进来了一个scrollView,如果外界传进来了，pageMenu会观察该scrollView的contentOffset自动处理跟踪器的跟踪
@@ -489,7 +496,7 @@
         if (index > 0) {
             lastButton = self.buttons[index-1];
         }
-        // 先给给初始的origin，按钮将会从这个origin开始动画
+        // 先给初始的origin，按钮将会从这个origin开始动画
         button.frame = CGRectMake(CGRectGetMaxX(lastButton.frame)+_itemPadding*0.5, 0, 0, 0);
         [UIView animateWithDuration:0.5 animations:^{
             [self setNeedsLayout];
@@ -519,9 +526,11 @@
     _selectedItemTitleColor = [UIColor redColor];
     _unSelectedItemTitleColor = [UIColor blackColor];
     _trackerHeight = 3;
+    _dividingLineHeight = 0.5;
     _contentInset = UIEdgeInsetsZero;
     _selectedItemIndex = 0;
     _showFuntionButton = NO;
+    _selectedItemZoomScale = 1;
     _needTextColorGradients = YES;
     
     // 必须先添加分割线，再添加backgroundView;假如先添加backgroundView,那也就意味着backgroundView是SPPageMenu的第一个子控件,而scrollView又是backgroundView的第一个子控件,当外界在由导航控制器管理的控制器中将SPPageMenu添加为第一个子控件时，控制器会不断的往下遍历第一个子控件的第一个子控件，直到找到为scrollView为止,一旦发现某子控件的第一个子控件为scrollView,会将scrollView的内容往下偏移64;这时控制器中必须设置self.automaticallyAdjustsScrollViewInsets = NO;为了避免这样做，这里将分割线作为第一个子控件
@@ -570,8 +579,30 @@
 
 // 按钮点击方法
 - (void)buttonInPageMenuClicked:(SPItem *)sender {
-    [self.selectedButton setTitleColor:_unSelectedItemTitleColor forState:UIControlStateNormal];
-    [sender setTitleColor:_selectedItemTitleColor forState:UIControlStateNormal];
+    // 如果sender是新的选中的按钮，则上一次的按钮颜色为非选中颜色，当前选中的颜色为选中颜色
+    if (self.selectedButton != sender) {
+        [self.selectedButton setTitleColor:_unSelectedItemTitleColor forState:UIControlStateNormal];
+        [sender setTitleColor:_selectedItemTitleColor forState:UIControlStateNormal];
+    } else { // 如果选中的按钮没有发生变化，比如用户往左边滑scrollView，还没滑动结束又开始往右滑动，此时选中的按钮就没变。如果设置了颜色渐变，而且当未选中的颜色带了不等于1的alpha值，如果用户往一边滑动还未结束又往另一边滑，则未选中的按钮颜色不是很准确。这个else就是去除这种不准确现象
+        // 获取RGB和Alpha
+        CGFloat red = 0.0;
+        CGFloat green = 0.0;
+        CGFloat blue = 0.0;
+        CGFloat alpha = 0.0;
+        [_unSelectedItemTitleColor getRed:&red green:&green blue:&blue alpha:&alpha];
+        // 此时alpha已经获取到了
+        if (alpha < 1) { // 因为相信alpha=1的情况还是值占多数的，如果不做判断，apha=1时也for循环设置未选中按钮的颜色有点浪费.alpha=1时不会产生颜色不准确问题
+            for (SPItem *button in self.buttons) {
+                if (button == sender) {
+                    [button setTitleColor:_selectedItemTitleColor forState:UIControlStateNormal];
+                } else {
+                    [button setTitleColor:_unSelectedItemTitleColor forState:UIControlStateNormal];
+                }
+            }
+        } else {
+            [sender setTitleColor:_selectedItemTitleColor forState:UIControlStateNormal];
+        }
+    }
     
     CGFloat fromIndex = self.selectedButton ? self.selectedButton.tag-tagBaseValue : sender.tag - tagBaseValue;
     CGFloat toIndex = sender.tag - tagBaseValue;
@@ -581,13 +612,18 @@
 
     [self moveItemScrollViewWithSelectedButton:sender];
     
-    if (self.trackerStyle == SPPageMenuTrackerStyleTextZoom) {
-        self.selectedButton.transform = CGAffineTransformIdentity;
-        sender.transform = CGAffineTransformMakeScale(1+maxTextScale, 1+maxTextScale);
-    } else {
-        if (fromIndex != toIndex) { // 如果相等，说明是第一次进来，或者2次点了同一个，此时不需要动画
-            [self moveTrackerWithSelectedButton:sender];
-        }
+    if (self.trackerStyle == SPPageMenuTrackerStyleTextZoom || _selectedItemZoomScale != 1) {
+//        [UIView animateWithDuration:0.25 animations:^{
+            if (self.selectedButton != sender) {
+                self.selectedButton.transform = CGAffineTransformIdentity;
+                sender.transform = CGAffineTransformMakeScale(_selectedItemZoomScale, _selectedItemZoomScale);
+            } else {
+                sender.transform = CGAffineTransformMakeScale(_selectedItemZoomScale, _selectedItemZoomScale);
+            }
+//        }];
+    }
+    if (fromIndex != toIndex) { // 如果相等，说明是第一次进来，或者2次点了同一个，此时不需要动画
+        [self moveTrackerWithSelectedButton:sender];
     }
     
     self.selectedButton = sender;
@@ -620,8 +656,7 @@
 }
 
 // 移动跟踪器
-- (void)moveTrackerWithSelectedButton:(UIButton *)selectedButton {
-    
+- (void)moveTrackerWithSelectedButton:(SPItem *)selectedButton {
     [UIView animateWithDuration:0.25 animations:^{
         [self resetSetupTrackerFrameWithSelectedButton:selectedButton];
     }];
@@ -655,8 +690,8 @@
     
     static int i = 0;
     if (i == 0) {
-         // 记录起始偏移量，注意千万不能每次都记录，只需要第一次纪录即可。
-        // 初始值不能等于scrollView.contentOffset.x,因为第一次进入此方法时，scrollView.contentOffset.x已经有偏移并非刚开始的偏移
+        // 记录起始偏移量，注意千万不能每次都记录，只需要第一次纪录即可。
+        // 初始值不要等于scrollView.contentOffset.x,因为第一次进入此方法时，scrollView.contentOffset.x的值已经有一点点偏移了，不是很准确
         _beginOffsetX = scrollView.bounds.size.width * self.selectedItemIndex;
         i = 1;
     }
@@ -722,15 +757,18 @@
     CGPoint newCenter = self.tracker.center;
     if (self.trackerStyle == SPPageMenuTrackerStyleLine) {
         newCenter.x = fromButton.center.x + xDistance * progress;
-        newFrame.size.width = fromButton.frame.size.width + wDistance * progress;
+        newFrame.size.width = _trackerWidth ? _trackerWidth : (fromButton.frame.size.width + wDistance * progress);
         self.tracker.frame = newFrame;
         self.tracker.center = newCenter;
-    } else if (self.trackerStyle == SPPageMenuTrackerStyleLineAttachment){
+        if (_selectedItemZoomScale != 1) {
+            [self zoomForTitleWithProgress:progress fromButton:fromButton toButton:toButton];
+        }
+    } else if (self.trackerStyle == SPPageMenuTrackerStyleLineAttachment) {
         // 这种样式的计算比较复杂,有个很关键的技巧，就是参考progress分别为0、0.5、1时的临界值
         // 原先的x值
-        CGFloat originX = fromButton.frame.origin.x+(fromButton.frame.size.width-fromButton.titleLabel.font.pointSize)*0.5;
+        CGFloat originX = fromButton.frame.origin.x+(fromButton.frame.size.width-(_trackerWidth ? _trackerWidth : fromButton.titleLabel.font.pointSize))*0.5;
         // 原先的宽度
-        CGFloat originW = fromButton.titleLabel.font.pointSize;
+        CGFloat originW = _trackerWidth ? _trackerWidth : fromButton.titleLabel.font.pointSize;
         if (currentOffsetX - _beginOffsetX >= 0) { // 向左拖拽了
             if (progress < 0.5) {
                 newFrame.origin.x = originX; // x值保持不变
@@ -749,22 +787,32 @@
                 newFrame.size.width = originW - xDistance + xDistance * (progress-0.5) * 2;
             }
         }
-        
         self.tracker.frame = newFrame;
+        if (_selectedItemZoomScale != 1) {
+            [self zoomForTitleWithProgress:progress fromButton:fromButton toButton:toButton];
+        }
         
-    } else if (self.trackerStyle == SPPageMenuTrackerStyleTextZoom) {
+    } else if (self.trackerStyle == SPPageMenuTrackerStyleTextZoom || self.trackerStyle == SPPageMenuTrackerStyleNothing) {
         // 缩放文字
-        [self zoomForTitleWithProgress:progress fromButton:fromButton toButton:toButton];
+        if (_selectedItemZoomScale != 1) {
+            [self zoomForTitleWithProgress:progress fromButton:fromButton toButton:toButton];
+        }
     } else if (self.trackerStyle == SPPageMenuTrackerStyleRoundedRect) {
         newCenter.x = fromButton.center.x + xDistance * progress;
-        newFrame.size.width = fromButton.frame.size.width + wDistance * progress + (_itemTitleFont.lineHeight+10)*0.5;
+        newFrame.size.width = _trackerWidth ? _trackerWidth : (fromButton.frame.size.width + wDistance * progress + (_itemTitleFont.lineHeight+10)*0.5);
         self.tracker.frame = newFrame;
         self.tracker.center = newCenter;
+        if (_selectedItemZoomScale != 1) {
+            [self zoomForTitleWithProgress:progress fromButton:fromButton toButton:toButton];
+        }
     } else {
         newCenter.x = fromButton.center.x + xDistance * progress;
-        newFrame.size.width = fromButton.frame.size.width + wDistance * progress + _itemPadding;
+        newFrame.size.width = _trackerWidth ? _trackerWidth : (fromButton.frame.size.width + wDistance * progress + _itemPadding);
         self.tracker.frame = newFrame;
         self.tracker.center = newCenter;
+        if (_selectedItemZoomScale != 1) {
+            [self zoomForTitleWithProgress:progress fromButton:fromButton toButton:toButton];
+        }
     }
     // 文字颜色渐变
     if (self.needTextColorGradients) {
@@ -823,9 +871,9 @@
 }
 
 - (void)zoomForTitleWithProgress:(CGFloat)progress fromButton:(UIButton *)fromButton toButton:(UIButton *)toButton {
-    fromButton.transform = CGAffineTransformMakeScale((1 - progress) * maxTextScale + 1, (1 - progress) * maxTextScale + 1);
-    toButton.transform = CGAffineTransformMakeScale(progress * maxTextScale + 1, progress * maxTextScale + 1);
-
+    CGFloat diff = _selectedItemZoomScale - 1;
+    fromButton.transform = CGAffineTransformMakeScale((1 - progress) * diff + 1, (1 - progress) * diff + 1);
+    toButton.transform = CGAffineTransformMakeScale(progress * diff + 1, progress * diff + 1);
 }
 
 #pragma mark - KVO
@@ -866,9 +914,42 @@
         case SPPageMenuTrackerStyleRect:
             self.tracker.backgroundColor = [UIColor redColor];
             _selectedItemTitleColor = [UIColor whiteColor];
+            // _trackerHeight是默认有值的，所有样式都会按照事先询问_trackerHeight有没有值，如果有值则采用_trackerHeight，如果矩形或圆角矩形样式下也用_trackerHeight高度太小了，除非外界用户自己设置了_trackerHeight
+            _trackerHeight = 0;
+            break;
+        case SPPageMenuTrackerStyleTextZoom:
+            // 此样式下默认1.3
+            self.selectedItemZoomScale = 1.3;
             break;
         default:
             break;
+    }
+}
+
+- (void)setTrackerWidth:(CGFloat)trackerWidth {
+    _trackerWidth = trackerWidth;
+    CGRect trackerRect = self.tracker.frame;
+    trackerRect.size.width = trackerWidth;
+    self.tracker.frame = trackerRect;
+    CGPoint trackerCenter = self.tracker.center;
+    trackerCenter.x = _selectedButton.center.x;
+    self.tracker.center = trackerCenter;
+}
+
+- (void)setDividingLineHeight:(CGFloat)dividingLineHeight {
+    _dividingLineHeight = dividingLineHeight;
+    [self setNeedsLayout];
+    [self layoutIfNeeded];
+}
+
+- (void)setSelectedItemZoomScale:(CGFloat)selectedItemZoomScale {
+    _selectedItemZoomScale = selectedItemZoomScale;
+    if (selectedItemZoomScale != 1) {
+        _selectedButton.transform = CGAffineTransformMakeScale(_selectedItemZoomScale, _selectedItemZoomScale);
+        self.tracker.transform = CGAffineTransformMakeScale(_selectedItemZoomScale, 1);
+    } else {
+        _selectedButton.transform = CGAffineTransformIdentity;
+        self.tracker.transform = CGAffineTransformIdentity;
     }
 }
 
@@ -1002,7 +1083,7 @@
     self.backgroundView.frame = CGRectMake(backgroundViewX, backgroundViewY, backgroundViewW, backgroundViewH);
     
     CGFloat dividingLineW = self.bounds.size.width;
-    CGFloat dividingLineH = (self.dividingLine.hidden || self.dividingLine.alpha < 0.01) ? 0 : 0.5;
+    CGFloat dividingLineH = (self.dividingLine.hidden || self.dividingLine.alpha < 0.01) ? 0 : _dividingLineHeight;
     CGFloat dividingLineX = 0;
     CGFloat dividingLineY = self.bounds.size.height-dividingLineH;
     self.dividingLine.frame = CGRectMake(dividingLineX, dividingLineY, dividingLineW, dividingLineH);
@@ -1020,6 +1101,9 @@
     CGFloat itemScrollViewH = backgroundViewH-dividingLineH;
     self.itemScrollView.frame = CGRectMake(itemScrollViewX, itemScrollViewY, itemScrollViewW, itemScrollViewH);
     
+    // 存储itemScrollViewH,目的是解决选中按钮缩放后高度变化了的问题，我们要让选中的按钮缩放之后，依然保持原始高度
+    _itemScrollViewH = itemScrollViewH;
+
     __block CGFloat buttonW = 0.0;
     __block CGFloat lastButtonMaxX = 0.0;
     
@@ -1088,16 +1172,28 @@
         lastButtonMaxX = CGRectGetMaxX(button.frame);
     }];
     
+    // 如果selectedButton有缩放，走完上面代码selectedButton的frame会还原，这会导致文字显示不全问题，为了解决这个问题，这里将selectedButton的frame强制缩放
+    if (!CGAffineTransformEqualToTransform(self.selectedButton.transform, CGAffineTransformIdentity)) {
+        CGRect selectedButtonRect = self.selectedButton.frame;
+        selectedButtonRect.origin.y = selectedButtonRect.origin.y-(selectedButtonRect.size.height*_selectedItemZoomScale - selectedButtonRect.size.height)/2;
+        selectedButtonRect.origin.x = selectedButtonRect.origin.x-((selectedButtonRect.size.width*_selectedItemZoomScale - selectedButtonRect.size.width)/2);
+        selectedButtonRect.size = CGSizeMake(selectedButtonRect.size.width * _selectedItemZoomScale, selectedButtonRect.size.height*_selectedItemZoomScale);
+        self.selectedButton.frame = selectedButtonRect;
+    }
+    
     [self resetSetupTrackerFrameWithSelectedButton:self.selectedButton];
     
     self.itemScrollView.contentSize = CGSizeMake(lastButtonMaxX+_itemPadding*0.5, 0);
     
     if (self.translatesAutoresizingMaskIntoConstraints == NO) {
+        
         [self moveItemScrollViewWithSelectedButton:self.selectedButton];
     }
+    
+    
 }
 
-- (void)resetSetupTrackerFrameWithSelectedButton:(UIButton *)selectedButton {
+- (void)resetSetupTrackerFrameWithSelectedButton:(SPItem *)selectedButton {
     
     CGFloat trackerX;
     CGFloat trackerY;
@@ -1109,7 +1205,7 @@
     switch (self.trackerStyle) {
         case SPPageMenuTrackerStyleLine:
         {
-            trackerW = selectedButtonWidth;
+            trackerW = _trackerWidth ? _trackerWidth : selectedButtonWidth;
             trackerH = _trackerHeight;
             trackerX = selectedButton.frame.origin.x;
             trackerY = self.itemScrollView.bounds.size.height - trackerH;
@@ -1118,7 +1214,7 @@
             break;
         case SPPageMenuTrackerStyleLineLongerThanItem:
         {
-            trackerW = selectedButtonWidth+(selectedButtonWidth ? _itemPadding : 0);
+            trackerW = _trackerWidth ? _trackerWidth : (selectedButtonWidth+(selectedButtonWidth ? _itemPadding : 0));
             trackerH = _trackerHeight;
             trackerX = selectedButton.frame.origin.x;
             trackerY = self.itemScrollView.bounds.size.height - trackerH;
@@ -1127,7 +1223,7 @@
             break;
         case SPPageMenuTrackerStyleLineAttachment:
         {
-            trackerW = selectedButtonWidth ? selectedButton.titleLabel.font.pointSize : 0; // 固定宽度为字体大小
+            trackerW = _trackerWidth ? _trackerWidth : (selectedButtonWidth ? selectedButton.titleLabel.font.pointSize : 0); // 没有自定义宽度就固定宽度为字体大小
             trackerH = _trackerHeight;
             trackerX = selectedButton.frame.origin.x;
             trackerY = self.itemScrollView.bounds.size.height - trackerH;
@@ -1136,20 +1232,21 @@
             break;
         case SPPageMenuTrackerStyleRect:
         {
-            trackerW = selectedButtonWidth+(selectedButtonWidth ? _itemPadding : 0);
-            trackerH = selectedButton.frame.size.height;
+            trackerW = _trackerWidth ? _trackerWidth : (selectedButtonWidth+(selectedButtonWidth ? _itemPadding : 0));
+            trackerH = _trackerHeight ? _trackerHeight : (selectedButton.frame.size.height);
             trackerX = selectedButton.frame.origin.x;
-            trackerY = 0;
+            trackerY = (_itemScrollViewH-trackerH)*0.5;
             self.tracker.frame = CGRectMake(trackerX, trackerY, trackerW, trackerH);
             self.tracker.layer.cornerRadius = 0;
+
         }
             break;
         case SPPageMenuTrackerStyleRoundedRect:
         {
-            trackerH = _itemTitleFont.lineHeight+10;
-            trackerW = selectedButtonWidth+trackerH*0.5;
+            trackerH = _trackerHeight ? _trackerHeight : (_itemTitleFont.lineHeight+10);
+            trackerW = _trackerWidth ? _trackerWidth : (selectedButtonWidth+trackerH*0.5);
             trackerX = selectedButton.frame.origin.x;
-            trackerY = (selectedButton.frame.size.height-trackerH)*0.5;
+            trackerY = (_itemScrollViewH-trackerH)*0.5;
             self.tracker.frame = CGRectMake(trackerX, trackerY, trackerW, trackerH);
             self.tracker.layer.cornerRadius = MIN(trackerW, trackerH)*0.5;
             self.tracker.layer.masksToBounds = YES;
@@ -1169,6 +1266,9 @@
 }
 
 @end
+
+#pragma clang diagnostic pop
+
 
 
 

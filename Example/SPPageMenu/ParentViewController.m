@@ -39,7 +39,7 @@
 
     // trackerStyle:跟踪器的样式
     SPPageMenu *pageMenu = [SPPageMenu pageMenuWithFrame:CGRectMake(0, NaviH, screenW, pageMenuH) trackerStyle:SPPageMenuTrackerStyleLine];
-    // 传递数组，默认选中第1个
+    // 传递数组，默认选中第2个
     [pageMenu setItems:self.dataArr selectedItemIndex:1];
     pageMenu.needTextColorGradients = NO;
     // 设置代理
@@ -57,7 +57,7 @@
     SPPageMenu *pageMenu = [SPPageMenu pageMenuWithFrame:CGRectZero trackerStyle:SPPageMenuTrackerStyleLineLongerThanItem];
     pageMenu.translatesAutoresizingMaskIntoConstraints = NO;
     // 传递数组，默认选中第1个
-    [pageMenu setItems:self.dataArr selectedItemIndex:1];
+    [pageMenu setItems:self.dataArr selectedItemIndex:0];
     // 设置代理
     pageMenu.delegate = self;
     [self.view addSubview:pageMenu];
@@ -78,7 +78,7 @@
     
     // trackerStyle:跟踪器的样式
     SPPageMenu *pageMenu = [SPPageMenu pageMenuWithFrame:CGRectMake(0, NaviH, screenW, pageMenuH) trackerStyle:SPPageMenuTrackerStyleLineAttachment];
-    // 传递数组，默认选中第1个
+    // 传递数组，默认选中第2个
     [pageMenu setItems:self.dataArr selectedItemIndex:1];
     // 设置代理
     pageMenu.delegate = self;
@@ -86,14 +86,15 @@
     _pageMenu = pageMenu;
 }
 
-// 示例4:SPPageMenuTrackerStyleTextColorGradientsAndZoom,文字颜色渐变且缩放
+// 示例4:SPPageMenuTrackerStyleTextZoom、SPPageMenuTrackerStyleNothing,文字缩放
 - (void)test4 {
     self.dataArr = @[@"生活",@"影视中心",@"交通",@"电视剧",@"搞笑",@"综艺"];
     
     // trackerStyle:跟踪器的样式
-    SPPageMenu *pageMenu = [SPPageMenu pageMenuWithFrame:CGRectMake(0, NaviH, screenW, pageMenuH) trackerStyle:SPPageMenuTrackerStyleTextZoom];
-    // 传递数组，默认选中第1个
-    [pageMenu setItems:self.dataArr selectedItemIndex:0];
+    SPPageMenu *pageMenu = [SPPageMenu pageMenuWithFrame:CGRectMake(0, NaviH, screenW, pageMenuH) trackerStyle:SPPageMenuTrackerStyleNothing];
+    // 传递数组，默认选中第2个
+    [pageMenu setItems:self.dataArr selectedItemIndex:1];
+    pageMenu.selectedItemZoomScale = 1.3;
     // 设置代理
     pageMenu.delegate = self;
     [self.view addSubview:pageMenu];
@@ -107,7 +108,9 @@
     // trackerStyle:跟踪器的样式
     SPPageMenu *pageMenu = [SPPageMenu pageMenuWithFrame:CGRectMake(0, NaviH, screenW, pageMenuH) trackerStyle:SPPageMenuTrackerStyleRoundedRect];
     // 传递数组，默认选中第1个
-    [pageMenu setItems:self.dataArr selectedItemIndex:1];
+    [pageMenu setItems:self.dataArr selectedItemIndex:0];
+    pageMenu.selectedItemZoomScale = 1.3;
+    pageMenu.tracker.backgroundColor = [UIColor greenColor];
     // 设置代理
     pageMenu.delegate = self;
     [self.view addSubview:pageMenu];
@@ -121,7 +124,7 @@
     
     // trackerStyle:跟踪器的样式
     SPPageMenu *pageMenu = [SPPageMenu pageMenuWithFrame:CGRectMake(0, NaviH, screenW, pageMenuH) trackerStyle:SPPageMenuTrackerStyleRect];
-    // 传递数组，默认选中第1个
+    // 传递数组，默认选中第2个
     [pageMenu setItems:self.dataArr selectedItemIndex:1];
     // 设置代理
     pageMenu.delegate = self;
@@ -135,7 +138,7 @@
     
     // trackerStyle:跟踪器的样式
     SPPageMenu *pageMenu = [SPPageMenu pageMenuWithFrame:CGRectMake(0, NaviH, screenW, pageMenuH) trackerStyle:SPPageMenuTrackerStyleLine];
-    // 传递数组，默认选中第1个
+    // 传递数组，默认选中第2个
     [pageMenu setItems:self.dataArr selectedItemIndex:1];
     // 可滑动的自适应内容排列
     pageMenu.permutationWay = SPPageMenuPermutationWayScrollAdaptContent;
@@ -151,7 +154,7 @@
     
     // trackerStyle:跟踪器的样式
     SPPageMenu *pageMenu = [SPPageMenu pageMenuWithFrame:CGRectMake(0, NaviH, screenW, pageMenuH) trackerStyle:SPPageMenuTrackerStyleLine];
-    // 传递数组，默认选中第1个
+    // 传递数组，默认选中第2个
     [pageMenu setItems:self.dataArr selectedItemIndex:1];
     // 不可滑动的等宽排列
     pageMenu.permutationWay = SPPageMenuPermutationWayNotScrollEqualWidths;
@@ -168,7 +171,7 @@
     
     // trackerStyle:跟踪器的样式
     SPPageMenu *pageMenu = [SPPageMenu pageMenuWithFrame:CGRectMake(0, NaviH, screenW, pageMenuH) trackerStyle:SPPageMenuTrackerStyleLine];
-    // 传递数组，默认选中第1个
+    // 传递数组，默认选中第2个
     [pageMenu setItems:self.dataArr selectedItemIndex:1];
     // 不可滑动的自适应内容排列
     pageMenu.permutationWay = SPPageMenuPermutationWayNotScrollAdaptContent;
@@ -184,7 +187,7 @@
     
     // trackerStyle:跟踪器的样式
     SPPageMenu *pageMenu = [SPPageMenu pageMenuWithFrame:CGRectMake(0, NaviH, screenW, pageMenuH) trackerStyle:SPPageMenuTrackerStyleLineAttachment];
-    // 传递数组，默认选中第1个
+    // 传递数组，默认选中第2个
     [pageMenu setItems:self.dataArr selectedItemIndex:1];
     pageMenu.showFuntionButton = YES;
     // 设置代理
@@ -198,8 +201,8 @@
     self.dataArr = @[@"生活",@"娱乐",@"交通"];
     
     // trackerStyle:跟踪器的样式
-    SPPageMenu *pageMenu = [SPPageMenu pageMenuWithFrame:CGRectMake(0, NaviH, screenW, pageMenuH) trackerStyle:SPPageMenuTrackerStyleLineLongerThanItem];
-    // 传递数组，默认选中第1个
+    SPPageMenu *pageMenu = [SPPageMenu pageMenuWithFrame:CGRectMake(0, NaviH, screenW, pageMenuH) trackerStyle:SPPageMenuTrackerStyleLine];
+    // 传递数组，默认选中第2个
     [pageMenu setItems:self.dataArr selectedItemIndex:1];
     // 同时设置图片和文字，如果只想要文字，image传nil，如果只想要图片，title传nil，imagePosition和ratio传0即可
     [pageMenu setFunctionButtonTitle:@"更多" image:[UIImage imageNamed:@"Expression_1"] imagePosition:SPItemImagePositionTop imageRatio:0.5 forState:UIControlStateNormal];
@@ -218,7 +221,7 @@
     self.dataArr = @[@"生活",[UIImage imageNamed:@"Expression_1"],@"交通",[UIImage imageNamed:@"Expression_2"],@"搞笑",@"综艺"];
 
     SPPageMenu *pageMenu = [SPPageMenu pageMenuWithFrame:CGRectMake(0, NaviH, screenW, pageMenuH) trackerStyle:SPPageMenuTrackerStyleLineLongerThanItem];
-    // 传递数组，默认选中第1个
+    // 传递数组，默认选中第2个
     [pageMenu setItems:self.dataArr selectedItemIndex:1];
     pageMenu.showFuntionButton = NO;
     pageMenu.delegate = self;
@@ -231,7 +234,7 @@
     self.dataArr = @[@"生活",@"影视中心",@"交通",@"电视剧",@"搞笑",@"综艺"];
     
     SPPageMenu *pageMenu = [SPPageMenu pageMenuWithFrame:CGRectMake(0, NaviH, screenW, pageMenuH) trackerStyle:SPPageMenuTrackerStyleRect];
-    // 传递数组，默认选中第1个
+    // 传递数组，默认选中第3个
     [pageMenu setItems:self.dataArr selectedItemIndex:2];
     // 指定第1个item为图片，第2个是指数组中的下标1
     [pageMenu setImage:[UIImage imageNamed:@"Expression_1"] forItemAtIndex:0];
@@ -258,13 +261,13 @@
     _pageMenu = pageMenu;
 }
 
-// 示例15:简单属性和简单方法
+// 示例15:属性和方法的测试
 - (void)test15 {
     self.dataArr = @[@"生活",@"影视中心",@"交通",@"电视剧"];
     
-    SPPageMenu *pageMenu = [SPPageMenu pageMenuWithFrame:CGRectMake(0, NaviH, screenW, pageMenuH) trackerStyle:SPPageMenuTrackerStyleLineLongerThanItem];
+    SPPageMenu *pageMenu = [SPPageMenu pageMenuWithFrame:CGRectMake(0, NaviH, screenW, pageMenuH) trackerStyle:SPPageMenuTrackerStyleLine];
     // 传递数组，默认选中第1个
-    [pageMenu setItems:self.dataArr selectedItemIndex:2];
+    [pageMenu setItems:self.dataArr selectedItemIndex:0];
     // 以下属性可以打开一一测试，所有属性和方法均不分先后顺序
     //pageMenu.itemTitleFont = [UIFont systemFontOfSize:20];
     //pageMenu.selectedItemTitleColor = [UIColor magentaColor];
@@ -274,6 +277,7 @@
     //pageMenu.dividingLine.backgroundColor = [UIColor redColor];
     //pageMenu.contentInset = UIEdgeInsetsMake(0, 50, 0, 50);
     //[pageMenu setWidth:20 forItemAtIndex:2];
+    //pageMenu.selectedItemZoomScale = 1.3; // 缩放
     pageMenu.itemPadding = 80;
     pageMenu.delegate = self;
     [self.view addSubview:pageMenu];
@@ -284,7 +288,7 @@
 - (void)test16 {
     self.dataArr = nil;
     
-    NSString *text = @"本框架的bridgeScrollView属性是一个很重要但又容易忽略的属性，在viewDidLoad中，每种示例都传了一个scrollView，即:“self.pageMenu.bridgeScrollView = self.scrollView”，这一传递，SPPageMenu内部会监听该scrollView的滑动状况，当该scrollView滑动的时候，就可以让跟踪器时刻跟随；如果你忘了设置这个属性，或者觉得不好，也可以在scrollViewDidScrollView中调用接口“- (void)moveTrackerFollowScrollView:(UIScrollView *)scrollView”,这样也能实现跟踪器时刻跟随scrollView；如果不想让跟踪器随时都跟踪，直到scrollView滑动结束才跟踪，在上面2种方式采取了任意一种的情况下，可以设置属性”pageMenu.closeTrackerFollowingMode = YES“";
+    NSString *text = @"本框架的bridgeScrollView属性是一个很重要但又容易忽略的属性，在viewDidLoad中，每种示例都传了一个scrollView，即:“self.pageMenu.bridgeScrollView = self.scrollView”，这一传递，SPPageMenu内部会监听该scrollView的滑动状况，当该scrollView滑动的时候，就可以让跟踪器时刻跟随；如果你忘了设置这个属性，或者觉得不好，也可以在scrollViewDidScroll中调用接口“- (void)moveTrackerFollowScrollView:(UIScrollView *)scrollView”,这样也能实现跟踪器时刻跟随scrollView；如果不想让跟踪器随时都跟踪，直到scrollView滑动结束才跟踪，在上面2种方式采取了任意一种的情况下，可以设置属性”pageMenu.closeTrackerFollowingMode = YES“";
     
     UILabel *label = [[UILabel alloc] initWithFrame:CGRectMake(10, 0, screenW-20, screenH)];
     label.numberOfLines = 0;
@@ -480,7 +484,7 @@
 }
 
 - (void)removeItemAtIndex:(NSInteger)index {
-    
+    // 示例中index给的是1，所以当只剩下一个子控制器时，会走该if语句，无法继续删除
     if (index >= self.myChildViewControllers.count) {
         return;
     }
