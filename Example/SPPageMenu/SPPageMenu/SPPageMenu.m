@@ -1189,8 +1189,6 @@
         
         [self moveItemScrollViewWithSelectedButton:self.selectedButton];
     }
-    
-    
 }
 
 - (void)resetSetupTrackerFrameWithSelectedButton:(SPItem *)selectedButton {
