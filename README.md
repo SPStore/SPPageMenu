@@ -13,7 +13,17 @@ target 'MyApp' do
 end
 ```
 
+版本2.5.5
+```
+target 'MyApp' do
+  pod 'SPPageMenu', '~> 2.5.5'
+end
+```
+
 终端输入命令:pod install 
+
+2.5.5在2.5.3的基础上改动如下：
+
 
 ## 部分功能演示图
 （友情提示：如果您的网络较慢，gif图可能会延迟加载，您可以先把宝贵的时间浏览其它信息）
