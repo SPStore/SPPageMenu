@@ -109,7 +109,6 @@
     SPPageMenu *pageMenu = [SPPageMenu pageMenuWithFrame:CGRectMake(0, NaviH, screenW, pageMenuH) trackerStyle:SPPageMenuTrackerStyleRoundedRect];
     // 传递数组，默认选中第1个
     [pageMenu setItems:self.dataArr selectedItemIndex:0];
-    pageMenu.selectedItemZoomScale = 1.3;
     pageMenu.tracker.backgroundColor = [UIColor greenColor];
     // 设置代理
     pageMenu.delegate = self;
