@@ -16,7 +16,7 @@ Pod::Spec.new do |s|
   #
 
   s.name         = "SPPageMenu"
-  s.version      = "2.5.3"
+  s.version      = "2.5.5"
   s.summary      = "分页菜单."
 
   # This description is used to generate tags and improve search results.
