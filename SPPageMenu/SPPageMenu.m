@@ -1172,17 +1172,20 @@
         lastButtonMaxX = CGRectGetMaxX(button.frame);
     }];
     
-    [self resetSetupTrackerFrameWithSelectedButton:self.selectedButton];
-    
-    self.itemScrollView.contentSize = CGSizeMake(lastButtonMaxX+_itemPadding*0.5, 0);
-    
-    if (self.translatesAutoresizingMaskIntoConstraints == NO) {
-        // 这里需要重新设置选中按钮的frame。这是因为如果外界采用的是自动布局，那么不论在什么地方设置了缩放，都会在缩放之后调用layoutSubViews，也就是先缩放再重设selectedButton的frame,重设实际上就是还原了frame,这会导致selectedButton上的文字或者说内容显示不全，所以我们要在这里将selectedButton强制放大,经测试在这里重新设置selectedButton的transform是无效的
+    // 如果selectedButton有缩放，走完上面代码selectedButton的frame会还原，这会导致文字显示不全问题，为了解决这个问题，这里将selectedButton的frame强制缩放
+    if (!CGAffineTransformEqualToTransform(self.selectedButton.transform, CGAffineTransformIdentity)) {
         CGRect selectedButtonRect = self.selectedButton.frame;
         selectedButtonRect.origin.y = selectedButtonRect.origin.y-(selectedButtonRect.size.height*_selectedItemZoomScale - selectedButtonRect.size.height)/2;
         selectedButtonRect.origin.x = selectedButtonRect.origin.x-((selectedButtonRect.size.width*_selectedItemZoomScale - selectedButtonRect.size.width)/2);
         selectedButtonRect.size = CGSizeMake(selectedButtonRect.size.width * _selectedItemZoomScale, selectedButtonRect.size.height*_selectedItemZoomScale);
         self.selectedButton.frame = selectedButtonRect;
+    }
+    
+    [self resetSetupTrackerFrameWithSelectedButton:self.selectedButton];
+    
+    self.itemScrollView.contentSize = CGSizeMake(lastButtonMaxX+_itemPadding*0.5, 0);
+    
+    if (self.translatesAutoresizingMaskIntoConstraints == NO) {
         
         [self moveItemScrollViewWithSelectedButton:self.selectedButton];
     }
