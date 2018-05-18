@@ -24,10 +24,10 @@ end
 
 #### 说明：2.5.5版本在2.5.3版本的基础上改动如下：
   1.增加可以设置跟踪器宽度的属性，增加可以设置跟踪器高度和圆角半径的方法<br> 
-  2.修复了当未选中按钮颜色的alpha值小于1时，颜色渐变不准确问题\<br> 
+  2.修复了当未选中按钮颜色的alpha值小于1时，颜色渐变不准确问题<br> 
   3.废弃了文字缩放(SPPageMenuTrackerStyleTextZoom)的枚举，该枚举由属性selectedItemZoomScale
-    代替，增加了SPPageMenuTrackerStyleNothing枚举
-  4.可以设置分割线高度
+    代替，增加了SPPageMenuTrackerStyleNothing枚举<br> 
+  4.可以设置分割线高度<br> 
 
 
 ## 部分功能演示图
