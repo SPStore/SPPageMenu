@@ -1113,7 +1113,7 @@
     for (int i= 0 ; i < self.buttons.count; i++) {
         SPItem *button = self.buttons[i];
         
-        CGFloat setupButtonW = [[self.setupWidths objectForKey:[NSString stringWithFormat:@"%zd",i]] floatValue];
+        CGFloat setupButtonW = [[self.setupWidths objectForKey:[NSString stringWithFormat:@"%d",i]] floatValue];
         CGFloat textW = [button.titleLabel.text boundingRectWithSize:CGSizeMake(MAXFLOAT, itemScrollViewH) options:NSStringDrawingUsesLineFragmentOrigin attributes:@{NSFontAttributeName:_itemTitleFont} context:nil].size.width;
         CGFloat imageW = button.currentImage.size.width;
         if (button.currentTitle && !button.currentImage) {
