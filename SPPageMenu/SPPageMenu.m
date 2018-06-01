@@ -198,7 +198,6 @@
 @property (nonatomic, strong) UIImageView *dividingLine;
 @property (nonatomic, weak) UIScrollView *itemScrollView;
 @property (nonatomic, weak) SPItem *functionButton;
-@property (nonatomic, weak) CALayer *shadowLine;
 @property (nonatomic, strong) NSMutableArray *buttons;
 @property (nonatomic, strong) SPItem *selectedButton;
 @property (nonatomic, strong) NSMutableDictionary *setupWidths;

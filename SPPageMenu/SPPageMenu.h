@@ -105,6 +105,9 @@ typedef NS_ENUM(NSInteger, SPItemImagePosition) {
 /** 是否显示功能按钮(功能按钮显示在最右侧),默认为NO */
 @property (nonatomic, assign) BOOL showFuntionButton;
 
+/** 分割FunctionButton的分割线 */
+@property (nonatomic, weak) CALayer *shadowLine;
+
 /** 代理 */
 @property (nonatomic, weak) id<SPPageMenuDelegate> delegate;
 
