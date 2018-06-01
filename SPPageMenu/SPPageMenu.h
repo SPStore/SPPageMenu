@@ -111,6 +111,9 @@ typedef NS_ENUM(NSInteger, SPItemImagePosition) {
 // 设置跟踪器的高度和圆角半径，矩形和圆角矩形样式下半径参数无效。其余样式下：默认的高度为3，圆角半径为高度的一半。之所以高度和半径以一个方法而不是2个属性的形式来设置，是因为不想提供太多的属性，其次跟踪器的高度一般用默认高度就好，自定义高度的情况并不会太多。另外，如果你想用默认高度，但是又不想要圆角半径，你可以设置trackerHeight为3，cornerRadius为0，这是去除默认半径的唯一办法
 - (void)setTrackerHeight:(CGFloat)trackerHeight cornerRadius:(CGFloat)cornerRadius;
 
+// 修改跟踪器样式
+- (void)setTrackerStyle:(SPPageMenuTrackerStyle)trackerStyle;
+
 // 插入item,插入和删除操作时,如果itemIndex超过了了items的个数,则不做任何操作
 - (void)insertItemWithTitle:(nullable NSString *)title atIndex:(NSUInteger)itemIndex animated:(BOOL)animated;
 - (void)insertItemWithImage:(nullable UIImage *)image  atIndex:(NSUInteger)itemIndex animated:(BOOL)animated;
