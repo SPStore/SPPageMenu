@@ -550,6 +550,7 @@
     UIScrollView *itemScrollView = [[UIScrollView alloc] init];
     itemScrollView.showsVerticalScrollIndicator = NO;
     itemScrollView.showsHorizontalScrollIndicator = NO;
+    itemScrollView.scrollsToTop = NO;
     [backgroundView addSubview:itemScrollView];
     _itemScrollView = itemScrollView;
     
