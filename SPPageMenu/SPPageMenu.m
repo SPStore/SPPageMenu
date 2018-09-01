@@ -11,6 +11,16 @@
 #define tagBaseValue 100
 #define scrollViewContentOffset @"contentOffset"
 
+@interface SPScrollView : UIScrollView
+@end
+
+@implementation SPScrollView
+// 重写这个方法的目的是：当手指长按按钮时无法滑动scrollView的问题
+- (BOOL)touchesShouldCancelInContentView:(UIView *)view {
+    return YES;
+}
+@end
+
 @interface SPPageMenuLine : UIImageView
 @property (nonatomic, copy) void(^hideBlock)(void);
 
@@ -199,7 +209,7 @@
 @property (nonatomic, assign) CGFloat trackerHeight;
 @property (nonatomic, weak) UIView *backgroundView;
 @property (nonatomic, strong) UIImageView *dividingLine;
-@property (nonatomic, weak) UIScrollView *itemScrollView;
+@property (nonatomic, weak) SPScrollView *itemScrollView;
 @property (nonatomic, weak) SPItem *functionButton;
 @property (nonatomic, strong) NSMutableArray *buttons;
 @property (nonatomic, strong) SPItem *selectedButton;
@@ -542,7 +552,7 @@
     }
 }
 
-- (void)moveTrackerFollowScrollView:(UIScrollView *)scrollView {
+- (void)moveTrackerFollowScrollView:(SPScrollView *)scrollView {
     
     // 说明外界传进来了一个scrollView,如果外界传进来了，pageMenu会观察该scrollView的contentOffset自动处理跟踪器的跟踪
     if (self.bridgeScrollView == scrollView) { return; }
@@ -663,11 +673,12 @@
     [self addSubview:backgroundView];
     _backgroundView = backgroundView;
     
-    UIScrollView *itemScrollView = [[UIScrollView alloc] init];
+    SPScrollView *itemScrollView = [[SPScrollView alloc] init];
     itemScrollView.showsVerticalScrollIndicator = NO;
     itemScrollView.showsHorizontalScrollIndicator = NO;
     itemScrollView.scrollsToTop = NO; // 目的是不要影响到外界的scrollView置顶功能
     itemScrollView.bouncesZoom = NO;
+    itemScrollView.bounces = YES;
     if (@available(iOS 11.0, *)) {
         itemScrollView.contentInsetAdjustmentBehavior = UIScrollViewContentInsetAdjustmentNever;
     }
@@ -786,7 +797,7 @@
     }
 }
 
-- (void)beginMoveTrackerFollowScrollView:(UIScrollView *)scrollView {
+- (void)beginMoveTrackerFollowScrollView:(SPScrollView *)scrollView {
 
     // 这个if条件的意思就是没有滑动的意思
     if (!scrollView.dragging && !scrollView.decelerating) {return;}
@@ -1032,6 +1043,16 @@
         default:
             break;
     }
+}
+
+- (void)setBounces:(BOOL)bounces {
+    _bounces = bounces;
+    self.itemScrollView.bounces = bounces;
+}
+
+- (void)setAlwaysBounceHorizontal:(BOOL)alwaysBounceHorizontal {
+    _alwaysBounceHorizontal = alwaysBounceHorizontal;
+    self.itemScrollView.alwaysBounceHorizontal = alwaysBounceHorizontal;
 }
 
 - (void)setTrackerWidth:(CGFloat)trackerWidth {

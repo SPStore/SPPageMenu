@@ -78,6 +78,9 @@ typedef NS_ENUM(NSInteger, SPItemImagePosition) {
 
 @property (nonatomic, assign) UIEdgeInsets contentInset; // 内容的四周内边距(内容不包括分割线)，默认UIEdgeInsetsZero
 
+@property(nonatomic) BOOL bounces; // 边界反弹效果，默认YES
+@property(nonatomic) BOOL alwaysBounceHorizontal; // 水平方向上，当内容没有充满scrollView时，滑动scrollView是否有反弹效果，默认YES
+
 // 跟踪器
 @property (nonatomic, readonly) UIImageView *tracker; // 跟踪器,它是一个UIImageView类型，你可以拿到该对象去设置一些自己想要的属性,例如颜色,图片等，但是设置frame无效
 @property (nonatomic, assign)  CGFloat trackerWidth; // 跟踪器的宽度
