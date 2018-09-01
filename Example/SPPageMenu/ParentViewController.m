@@ -20,15 +20,16 @@
 
 #define screenW [UIScreen mainScreen].bounds.size.width
 #define screenH [UIScreen mainScreen].bounds.size.height
-#define pageMenuH 40
+#define pageMenuH 35
 #define NaviH (screenH == 812 ? 88 : 64) // 812是iPhoneX的高度
-#define scrollViewHeight (screenH-88-pageMenuH)
+#define scrollViewHeight (screenH-NaviH-pageMenuH)
 
 @interface ParentViewController () <SPPageMenuDelegate, UIScrollViewDelegate>
 @property (nonatomic, strong) NSArray *dataArr;
 @property (nonatomic, weak) SPPageMenu *pageMenu;
 @property (nonatomic, weak) UIScrollView *scrollView;
 @property (nonatomic, strong) NSMutableArray *myChildViewControllers;
+@property (nonatomic, strong) UISegmentedControl *segment;
 @end
 
 @implementation ParentViewController
@@ -109,16 +110,42 @@
     SPPageMenu *pageMenu = [SPPageMenu pageMenuWithFrame:CGRectMake(0, NaviH, screenW, pageMenuH) trackerStyle:SPPageMenuTrackerStyleRoundedRect];
     // 传递数组，默认选中第1个
     [pageMenu setItems:self.dataArr selectedItemIndex:0];
-    pageMenu.tracker.backgroundColor = [UIColor greenColor];
+    pageMenu.tracker.backgroundColor = [UIColor redColor];
     // 设置代理
     pageMenu.delegate = self;
     [self.view addSubview:pageMenu];
     _pageMenu = pageMenu;
 }
 
-// 示例6:SPPageMenuTrackerStyleRect,矩形
-
+// 示例6:SPPageMenuTrackerStyleRoundedRect,圆角矩形（与pageMenu同时圆角）
 - (void)test6 {
+    self.dataArr = @[@"生活",@"影视中心",@"交通"];
+
+    // trackerStyle:跟踪器的样式
+    SPPageMenu *pageMenu = [SPPageMenu pageMenuWithFrame:CGRectMake(15, NaviH, screenW-30, pageMenuH) trackerStyle:SPPageMenuTrackerStyleRoundedRect];
+    // 设置pageMenu边框
+    pageMenu.layer.borderWidth = 1;
+    pageMenu.layer.borderColor = [UIColor redColor].CGColor;
+    pageMenu.layer.cornerRadius = pageMenuH * 0.5;
+    // 传递数组，默认选中第1个
+    [pageMenu setItems:self.dataArr selectedItemIndex:0];
+    pageMenu.unSelectedItemTitleColor = [UIColor redColor];
+    // 设置跟踪器的颜色
+    pageMenu.tracker.backgroundColor = [UIColor redColor];
+    // 设置跟踪器的高度，与pageMenu同高，这样半径就可以跟pageMenu的圆角半径一致，实际上这里设置的半径是无效的，圆角矩形内部会根据高度自动设置圆角
+    [pageMenu setTrackerHeight:pageMenuH cornerRadius:pageMenuH*0.5];
+    // 排列方式
+    pageMenu.permutationWay = SPPageMenuPermutationWayNotScrollAdaptContent;
+    pageMenu.dividingLine.hidden = YES;
+    // 设置代理
+    pageMenu.delegate = self;
+    [self.view addSubview:pageMenu];
+    _pageMenu = pageMenu;
+}
+
+// 示例7:SPPageMenuTrackerStyleRect,矩形
+
+- (void)test7{
     self.dataArr = @[@"生活",@"影视中心",@"交通",@"电视剧",@"搞笑",@"综艺"];
     
     // trackerStyle:跟踪器的样式
@@ -131,8 +158,8 @@
     _pageMenu = pageMenu;
 }
 
-// 示例7:可滑动的自适应内容排列，pageMenu.permutationWay = SPPageMenuPermutationWayScrollAdaptContent;
-- (void)test7 {
+// 示例8:可滑动的自适应内容排列，关键代码:pageMenu.permutationWay = SPPageMenuPermutationWayScrollAdaptContent;
+- (void)test8 {
     self.dataArr = @[@"生活",@"影视中心",@"交通",@"电视剧",@"搞笑",@"综艺"];
     
     // trackerStyle:跟踪器的样式
@@ -147,9 +174,9 @@
     _pageMenu = pageMenu;
 }
 
-// 示例8:不可滑动的等宽排列，pageMenu.permutationWay = SPPageMenuPermutationWayNotScrollEqualWidths;
-- (void)test8 {
-    self.dataArr = @[@"生活",@"影视中心",@"交通"];
+// 示例9:不可滑动的等宽排列，关键代码:pageMenu.permutationWay = SPPageMenuPermutationWayNotScrollEqualWidths;
+- (void)test9 {
+    self.dataArr = @[@"生活",@"影视中心",@"交通",@"电视剧"];
     
     // trackerStyle:跟踪器的样式
     SPPageMenu *pageMenu = [SPPageMenu pageMenuWithFrame:CGRectMake(0, NaviH, screenW, pageMenuH) trackerStyle:SPPageMenuTrackerStyleLine];
@@ -157,16 +184,17 @@
     [pageMenu setItems:self.dataArr selectedItemIndex:1];
     // 不可滑动的等宽排列
     pageMenu.permutationWay = SPPageMenuPermutationWayNotScrollEqualWidths;
+    pageMenu.itemPadding = 0;
     // 设置代理
     pageMenu.delegate = self;
     [self.view addSubview:pageMenu];
     _pageMenu = pageMenu;
 }
 
-// 示例9:不可滑动的自适应内容排列，pageMenu.permutationWay = SPPageMenuPermutationWayNotScrollEqualWidths;
+// 示例10:不可滑动的自适应内容排列，关键代码:pageMenu.permutationWay = SPPageMenuPermutationWayNotScrollEqualWidths;
 // 这种排列方式下,itemPadding属性无效，因为内部自动计算间距
-- (void)test9 {
-    self.dataArr = @[@"生活",@"影视中心",@"交通"];
+- (void)test10 {
+    self.dataArr = @[@"生活",@"影视中心",@"交通",@"电视剧"];
     
     // trackerStyle:跟踪器的样式
     SPPageMenu *pageMenu = [SPPageMenu pageMenuWithFrame:CGRectMake(0, NaviH, screenW, pageMenuH) trackerStyle:SPPageMenuTrackerStyleLine];
@@ -180,14 +208,14 @@
     _pageMenu = pageMenu;
 }
 
-// 示例10:显示功能按钮
-- (void)test10 {
-    self.dataArr = @[@"生活",@"影视中心",@"交通",@"电视剧",@"搞笑",@"综艺"];
+// 示例11:显示功能按钮
+- (void)test11 {
+    self.dataArr = @[@"生活",@"影视中心",@"交通",@"电视剧",@"军事",@"综艺"];
     
     // trackerStyle:跟踪器的样式
-    SPPageMenu *pageMenu = [SPPageMenu pageMenuWithFrame:CGRectMake(0, NaviH, screenW, pageMenuH) trackerStyle:SPPageMenuTrackerStyleLineAttachment];
+    SPPageMenu *pageMenu = [SPPageMenu pageMenuWithFrame:CGRectMake(0, NaviH, screenW, pageMenuH) trackerStyle:SPPageMenuTrackerStyleNothing];
     // 传递数组，默认选中第2个
-    [pageMenu setItems:self.dataArr selectedItemIndex:1];
+    [pageMenu setItems:self.dataArr selectedItemIndex:0];
     pageMenu.showFuntionButton = YES;
     // 设置代理
     pageMenu.delegate = self;
@@ -195,8 +223,8 @@
     _pageMenu = pageMenu;
 }
 
-// 示例11:给功能按钮设置图片和文字
-- (void)test11 {
+// 示例12:给功能按钮设置图片和文字
+- (void)test12 {
     self.dataArr = @[@"生活",@"娱乐",@"交通"];
     
     // trackerStyle:跟踪器的样式
@@ -204,19 +232,17 @@
     // 传递数组，默认选中第2个
     [pageMenu setItems:self.dataArr selectedItemIndex:1];
     // 同时设置图片和文字，如果只想要文字，image传nil，如果只想要图片，title传nil，imagePosition和ratio传0即可
-    [pageMenu setFunctionButtonTitle:@"更多" image:[UIImage imageNamed:@"Expression_1"] imagePosition:SPItemImagePositionTop imageRatio:0.5 forState:UIControlStateNormal];
+    [pageMenu setFunctionButtonTitle:@"更多" image:[UIImage imageNamed:@"Expression_1"] imagePosition:SPItemImagePositionTop imageRatio:0.5 imageTitleSpace:0 forState:UIControlStateNormal];
     [pageMenu setFunctionButtonTitleTextAttributes:@{NSFontAttributeName:[UIFont systemFontOfSize:13]} forState:UIControlStateNormal];
     pageMenu.showFuntionButton = YES;
-    // 等宽,不可滑动
-    pageMenu.permutationWay = SPPageMenuPermutationWayNotScrollEqualWidths;
     // 设置代理
     pageMenu.delegate = self;
     [self.view addSubview:pageMenu];
     _pageMenu = pageMenu;
 }
 
-// 示例12:含有图片的item
-- (void)test12 {
+// 示例13:含有图片的item
+- (void)test13 {
     self.dataArr = @[@"生活",[UIImage imageNamed:@"Expression_1"],@"交通",[UIImage imageNamed:@"Expression_2"],@"搞笑",@"综艺"];
 
     SPPageMenu *pageMenu = [SPPageMenu pageMenuWithFrame:CGRectMake(0, NaviH, screenW, pageMenuH) trackerStyle:SPPageMenuTrackerStyleLineLongerThanItem];
@@ -228,27 +254,27 @@
     _pageMenu = pageMenu;
 }
 
-// 示例13:指定item携带图片,或同时携带图片和文字,可以设置图片的位置
-- (void)test13 {
+// 示例14:指定item携带图片,或同时携带图片和文字,可以设置图片的位置
+- (void)test14 {
     self.dataArr = @[@"生活",@"影视中心",@"交通",@"电视剧",@"搞笑",@"综艺"];
     
     SPPageMenu *pageMenu = [SPPageMenu pageMenuWithFrame:CGRectMake(0, NaviH, screenW, pageMenuH) trackerStyle:SPPageMenuTrackerStyleRect];
     // 传递数组，默认选中第3个
     [pageMenu setItems:self.dataArr selectedItemIndex:2];
-    // 指定第1个item为图片，第2个是指数组中的下标1
+    // 指定第1个item为图片
     [pageMenu setImage:[UIImage imageNamed:@"Expression_1"] forItemAtIndex:0];
     // 指定第2个item同时含有图片和文字，图片在上
-    [pageMenu setTitle:@"哈哈" image:[UIImage imageNamed:@"Expression_2"] imagePosition:SPItemImagePositionTop imageRatio:0.5 forItemIndex:1];
+    [pageMenu setTitle:@"哈哈" image:[UIImage imageNamed:@"Expression_2"] imagePosition:SPItemImagePositionTop imageRatio:0.5 imageTitleSpace:0 forItemIndex:1];
     // 指定第4个item同时含有图片和文字，图片在右
-    [pageMenu setTitle:@"哈哈" image:[UIImage imageNamed:@"Expression_3"] imagePosition:SPItemImagePositionRight imageRatio:0.3 forItemIndex:3];
+    [pageMenu setTitle:@"哈哈" image:[UIImage imageNamed:@"dog"] imagePosition:SPItemImagePositionRight imageRatio:0.4 imageTitleSpace:0 forItemIndex:3];
     pageMenu.showFuntionButton = NO;
     pageMenu.delegate = self;
     [self.view addSubview:pageMenu];
     _pageMenu = pageMenu;
 }
 
-// 示例14: 关闭跟踪器的跟踪效果,关闭后，只有scrollView滑动结束时才会跟踪
-- (void)test14 {
+// 示例15: 关闭跟踪器的跟踪效果,关闭后，只有scrollView滑动结束时才会跟踪
+- (void)test15 {
     self.dataArr = @[@"生活",@"影视中心",@"交通",@"电视剧",@"搞笑",@"综艺"];
     
     SPPageMenu *pageMenu = [SPPageMenu pageMenuWithFrame:CGRectMake(0, NaviH, screenW, pageMenuH) trackerStyle:SPPageMenuTrackerStyleLineLongerThanItem];
@@ -260,36 +286,13 @@
     _pageMenu = pageMenu;
 }
 
-// 示例15:属性和方法的测试
-- (void)test15 {
-    self.dataArr = @[@"生活",@"影视中心",@"交通",@"电视剧"];
-    
-    SPPageMenu *pageMenu = [SPPageMenu pageMenuWithFrame:CGRectMake(0, NaviH, screenW, pageMenuH) trackerStyle:SPPageMenuTrackerStyleLine];
-    // 传递数组，默认选中第1个
-    [pageMenu setItems:self.dataArr selectedItemIndex:0];
-    // 以下属性可以打开一一测试，所有属性和方法均不分先后顺序
-    //pageMenu.itemTitleFont = [UIFont systemFontOfSize:20];
-    //pageMenu.selectedItemTitleColor = [UIColor magentaColor];
-    //pageMenu.unSelectedItemTitleColor = [UIColor greenColor];
-    //pageMenu.tracker.hidden = YES;
-    //pageMenu.dividingLine.hidden = YES;
-    //pageMenu.dividingLine.backgroundColor = [UIColor redColor];
-    //pageMenu.contentInset = UIEdgeInsetsMake(0, 50, 0, 50);
-    //[pageMenu setWidth:20 forItemAtIndex:2];
-    //pageMenu.selectedItemZoomScale = 1.3; // 缩放
-    pageMenu.itemPadding = 80;
-    pageMenu.delegate = self;
-    [self.view addSubview:pageMenu];
-    _pageMenu = pageMenu;
-}
-
 // 示例16:特别属性说明
 - (void)test16 {
     self.dataArr = nil;
     
-    NSString *text = @"本框架的bridgeScrollView属性是一个很重要但又容易忽略的属性，在viewDidLoad中，每种示例都传了一个scrollView，即:“self.pageMenu.bridgeScrollView = self.scrollView”，这一传递，SPPageMenu内部会监听该scrollView的滑动状况，当该scrollView滑动的时候，就可以让跟踪器时刻跟随；如果你忘了设置这个属性，或者觉得不好，也可以在scrollViewDidScroll中调用接口“- (void)moveTrackerFollowScrollView:(UIScrollView *)scrollView”,这样也能实现跟踪器时刻跟随scrollView；如果不想让跟踪器随时都跟踪，直到scrollView滑动结束才跟踪，在上面2种方式采取了任意一种的情况下，可以设置属性”pageMenu.closeTrackerFollowingMode = YES“";
+    NSString *text = @"本框架的bridgeScrollView属性是一个很重要但又容易忽略的属性，在外界的viewDidLoad中，每种示例都传了一个scrollView，即:“self.pageMenu.bridgeScrollView = self.scrollView”，这一传递，SPPageMenu内部会监听该scrollView的滚动状况，当该scrollView滚动的时候，就可以让跟踪器时刻跟随；如果你忘了或者不想设置这个属性，也可以在外界的scrollView的代理方法scrollViewDidScroll中调用接口“- (void)moveTrackerFollowScrollView:(UIScrollView *)scrollView”,这样也能实现跟踪器时刻跟随scrollView；如果不想让跟踪器时刻跟踪，而直到scrollView滑动结束才跟踪，在上面2种方式采取了任意一种的情况下，可以设置属性”pageMenu.closeTrackerFollowingMode = YES“";
     
-    UILabel *label = [[UILabel alloc] initWithFrame:CGRectMake(10, 0, screenW-20, screenH)];
+    UILabel *label = [[UILabel alloc] initWithFrame:CGRectMake(10, NaviH, screenW-20, screenH-NaviH)];
     label.numberOfLines = 0;
     label.alpha = 0.6;
     label.font = [UIFont systemFontOfSize:15];
@@ -302,6 +305,7 @@
     [self.view addSubview:label];
 }
 
+// ------------------------------------------------------------------------------------------------
 - (void)viewDidLoad {
     [super viewDidLoad];
     
@@ -365,7 +369,7 @@
         if (controllerClassNames.count > i) {
             BaseViewController *baseVc = [[NSClassFromString(controllerClassNames[i]) alloc] init];
             NSString *text = [self.pageMenu titleForItemAtIndex:i];
-            if (text) {
+            if (text.length) {
                 baseVc.text = text;
             } else {
                 baseVc.text = @"图片";
@@ -380,6 +384,7 @@
     scrollView.delegate = self;
     scrollView.pagingEnabled = YES;
     scrollView.showsHorizontalScrollIndicator = NO;
+    scrollView.showsVerticalScrollIndicator = NO;
     [self.view addSubview:scrollView];
     _scrollView = scrollView;
     
@@ -428,10 +433,10 @@
         [self insertItemWithObject:@"十九大" toIndex:0];
     }];
     UIAlertAction *action2 = [UIAlertAction actionWithTitle:@"插入一个带图片的item" style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
-        [self insertItemWithObject:[UIImage imageNamed:@"Expression_1"] toIndex:1];
+        [self insertItemWithObject:[UIImage imageNamed:@"Expression_1"] toIndex:0];
     }];
     UIAlertAction *action3 = [UIAlertAction actionWithTitle:@"删除一个item" style:UIAlertActionStyleDestructive handler:^(UIAlertAction * _Nonnull action) {
-        [self removeItemAtIndex:1];
+        [self removeItemAtIndex:0];
     }];
     UIAlertAction *action4 = [UIAlertAction actionWithTitle:@"删除所有item" style:UIAlertActionStyleDestructive handler:^(UIAlertAction * _Nonnull action) {
         [self removeAllItems];
@@ -451,6 +456,7 @@
 
 // object是插入的对象(NSString或UIImage),insertNumber是插入到第几个
 - (void)insertItemWithObject:(id)object toIndex:(NSInteger)insertNumber {
+    if (insertNumber > self.myChildViewControllers.count) return;
     // 插入之前，先将新控制器之后的控制器view往后偏移
     for (int i = 0; i < self.myChildViewControllers.count; i++) {
         if (i >= insertNumber) {
