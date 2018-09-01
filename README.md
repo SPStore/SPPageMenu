@@ -6,14 +6,27 @@
 [![Carthage compatible](https://img.shields.io/badge/Carthage-compatible-4BC51D.svg?style=flat)](https://github.com/SPStore/SPPageMenu)
 [![codecov](https://codecov.io/gh/SPStore/SPPageMenu/branch/master/graph/badge.svg)](https://codecov.io/gh/SPStore/SPPageMenu)
 ## 安装
-版本3.0
+### 版本3.0
 ```
 target 'MyApp' do
   pod 'SPPageMenu', '~> 3.0'
 end
 ```
+#### 说明：3.0版本在2.5.5版本的基础上改动如下：
+1、新增numberOfItems属性，意思是items的个数
+2、新增bounces属性，滑动scrollView时的边界反弹效果
+3、新增alwaysBounceHorizontal属性，水平方向上，当内容没有充满scrollView时，滑动scrollView是否有反弹效果
+4、新增设置或获取指定按钮的四周内边距的方法
+5、分割线适配屏幕分辨率，并修改了默认颜色
+6、内部scrollView的scrollsToTop属性置为NO,不妨碍外界scrollView的置顶功能
+7、右侧功能按钮的单边阴影效果采用shadowPath
+8、新增示例
+9、细化内部的自定义按钮
+10、修复设置指定item的文字较长时的显示不全的问题
+11、修复插入和删除操作引发的bug
+12、修复长按按钮然后滑动scrollView无法滑动问题
 
-版本2.5.5
+### 版本2.5.5
 ```
 target 'MyApp' do
   pod 'SPPageMenu', '~> 2.5.5'
@@ -27,7 +40,7 @@ end
      代替，增加了SPPageMenuTrackerStyleNothing枚举<br> 
   4、可以设置分割线高度<br> 
 
-版本2.5.3
+### 版本2.5.3
 ```
 target 'MyApp' do
   pod 'SPPageMenu', '~> 2.5.3'
@@ -35,7 +48,6 @@ end
 ```
 
 终端输入命令：pod install 
-
 
 
 
