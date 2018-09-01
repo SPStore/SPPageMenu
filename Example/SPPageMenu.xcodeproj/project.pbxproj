@@ -278,7 +278,7 @@
 				TargetAttributes = {
 					091A68711FA1CAC100DAA561 = {
 						CreatedOnToolsVersion = 8.2.1;
-						DevelopmentTeam = MP8K63J94Y;
+						DevelopmentTeam = N7GTHGMGVY;
 						ProvisioningStyle = Automatic;
 					};
 					091A688A1FA1CAC200DAA561 = {
@@ -520,11 +520,14 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = NO;
-				DEVELOPMENT_TEAM = MP8K63J94Y;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_TEAM = N7GTHGMGVY;
 				INFOPLIST_FILE = SPPageMenu/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = com.idresschina.SPPageMenu;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE_SPECIFIER = "";
 			};
 			name = Debug;
 		};
@@ -533,11 +536,14 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = NO;
-				DEVELOPMENT_TEAM = MP8K63J94Y;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_TEAM = N7GTHGMGVY;
 				INFOPLIST_FILE = SPPageMenu/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = com.idresschina.SPPageMenu;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE_SPECIFIER = "";
 			};
 			name = Release;
 		};
