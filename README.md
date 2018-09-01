@@ -13,18 +13,18 @@ target 'MyApp' do
 end
 ```
 #### 说明：3.0版本在2.5.5版本的基础上改动如下：
-1、新增numberOfItems属性，意思是items的个数
-2、新增bounces属性，滑动scrollView时的边界反弹效果
-3、新增alwaysBounceHorizontal属性，水平方向上，当内容没有充满scrollView时，滑动scrollView是否有反弹效果
-4、新增设置或获取指定按钮的四周内边距的方法
-5、分割线适配屏幕分辨率，并修改了默认颜色
-6、内部scrollView的scrollsToTop属性置为NO,不妨碍外界scrollView的置顶功能
-7、右侧功能按钮的单边阴影效果采用shadowPath
-8、新增示例
-9、细化内部的自定义按钮
-10、修复设置指定item的文字较长时的显示不全的问题
-11、修复插入和删除操作引发的bug
-12、修复长按按钮然后滑动scrollView无法滑动问题
+1、新增numberOfItems属性，意思是items的个数<br>
+2、新增bounces属性，滑动scrollView时的边界反弹效果<br>
+3、新增alwaysBounceHorizontal属性，水平方向上，当内容没有充满scrollView时，滑动scrollView是否有反弹效果<br>
+4、新增设置或获取指定按钮的四周内边距的方法<br>
+5、分割线适配屏幕分辨率，并修改了默认颜色<br>
+6、内部scrollView的scrollsToTop属性置为NO,不妨碍外界scrollView的置顶功能<br>
+7、右侧功能按钮的单边阴影效果采用shadowPath<br>
+8、新增示例<br>
+9、细化内部的自定义按钮<br>
+10、修复设置指定item的文字较长时的显示不全的问题<br>
+11、修复插入和删除操作引发的bug<br>
+12、修复长按按钮然后滑动scrollView无法滑动问题<br>
 
 ### 版本2.5.5
 ```
