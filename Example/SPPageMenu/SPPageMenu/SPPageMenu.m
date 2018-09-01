@@ -797,7 +797,7 @@
     }
 }
 
-- (void)beginMoveTrackerFollowScrollView:(SPScrollView *)scrollView {
+- (void)beginMoveTrackerFollowScrollView:(UIScrollView *)scrollView {
 
     // 这个if条件的意思就是没有滑动的意思
     if (!scrollView.dragging && !scrollView.decelerating) {return;}
