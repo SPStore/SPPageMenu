@@ -1,0 +1,4 @@
+osx_image: xcode8.0
+language: objective-c
+xcode_project: SPPageMenu.xcodeproj
+script: xcodebuild -project SPPageMenu.xcodeproj -scheme "SPPageMenu" -sdk iphonesimulator -destination 'platform=iOS Simulator,name=iPhone 6,OS=latest'
