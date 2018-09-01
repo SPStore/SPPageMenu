@@ -12,7 +12,7 @@ target 'MyApp' do
   pod 'SPPageMenu', '~> 3.0'
 end
 ```
-#### 说明：3.0版本在2.5.5版本的基础上改动如下：
+#### 说明：3.0版本在2.5.5版本的基础上主要改动如下：
 1、新增numberOfItems属性，意思是items的个数<br>
 2、新增bounces属性，滑动scrollView时的边界反弹效果<br>
 3、新增alwaysBounceHorizontal属性，水平方向上，当内容没有充满scrollView时，滑动scrollView是否有反弹效果<br>
@@ -20,11 +20,10 @@ end
 5、分割线适配屏幕分辨率，并修改了默认颜色<br>
 6、内部scrollView的scrollsToTop属性置为NO,不妨碍外界scrollView的置顶功能<br>
 7、右侧功能按钮的单边阴影效果采用shadowPath<br>
-8、新增示例<br>
-9、细化内部的自定义按钮<br>
-10、修复设置指定item的文字较长时的显示不全的问题<br>
-11、修复插入和删除操作引发的bug<br>
-12、修复长按按钮然后滑动scrollView无法滑动问题<br>
+8、细化内部的自定义按钮，比如可以设置文字与图片之间的间距<br>
+9、修复设置指定item的文字较长时的显示不全的问题<br>
+10、修复插入和删除操作引发的bug<br>
+11、修复长按按钮然后滑动scrollView无法滑动问题<br>
 
 ### 版本2.5.5
 ```
@@ -33,7 +32,7 @@ target 'MyApp' do
 end
 ```
 
-#### 说明：2.5.5版本在2.5.3版本的基础上改动如下：
+#### 说明：2.5.5版本在2.5.3版本的基础上主要改动如下：
   1、增加可以设置跟踪器宽度的属性，增加可以设置跟踪器高度和圆角半径的方法<br> 
   2、修复了当未选中按钮颜色的alpha值小于1时，颜色渐变不准确问题<br> 
   3、废弃了文字缩放(SPPageMenuTrackerStyleTextZoom)的枚举，该枚举由属性selectedItemZoomScale
