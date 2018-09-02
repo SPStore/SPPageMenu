@@ -1,2 +1,2 @@
 language: objective-c
-script: true
+script: xcodebuild -workspace SPPageMenu.xcworkspace -scheme SPPageMenu -sdk iphonesimulator ONLY_ACTIVE_ARCH=NO
