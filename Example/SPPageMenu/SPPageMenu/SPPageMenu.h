@@ -16,7 +16,7 @@ typedef NS_ENUM(NSInteger, SPPageMenuTrackerStyle) {
     SPPageMenuTrackerStyleLineAttachment,            // 下划线“依恋”样式，此样式下默认宽度为字体的pointSize，你可以通过trackerWidth自定义宽度
     SPPageMenuTrackerStyleRoundedRect,               // 圆角矩形
     SPPageMenuTrackerStyleRect,                      // 矩形
-    SPPageMenuTrackerStyleTextZoom NS_ENUM_DEPRECATED_IOS(6_0, 6_0, "该枚举值已经被废弃，请用“selectedItemZoomScale”属性代替"), // 缩放(该枚举已经被废弃),用属性代替的目的是让其余样式可与缩放样式配套使用，另外，SPPageMenuTrackerStyle指的都是跟踪器样式，文字缩放和跟踪器实际上是毫无关系的，该枚举名字取的也不太合理，缩放的不单单是文字，而是整个item。如果你同时设置了该枚举和selectedItemZoomScale属性，selectedItemZoomScale优先级高于SPPageMenuTrackerStyleTextZoom
+    SPPageMenuTrackerStyleTextZoom NS_ENUM_DEPRECATED_IOS(6_0, 6_0, "该枚举值已经被废弃，请用“selectedItemZoomScale”属性代替"), // 缩放(该枚举已经被废弃,用属性代替的目的是让其余样式可与缩放样式配套使用。如果你同时设置了该枚举和selectedItemZoomScale属性，selectedItemZoomScale优先级高于SPPageMenuTrackerStyleTextZoom
     SPPageMenuTrackerStyleNothing                    // 什么样式都没有
 };
 
@@ -24,6 +24,12 @@ typedef NS_ENUM(NSInteger, SPPageMenuPermutationWay) {
     SPPageMenuPermutationWayScrollAdaptContent = 0,   // 自适应内容,可以左右滑动
     SPPageMenuPermutationWayNotScrollEqualWidths,     // 等宽排列,不可以滑动,整个内容被控制在pageMenu的范围之内,等宽是根据pageMenu的总宽度对每个item均分
     SPPageMenuPermutationWayNotScrollAdaptContent     // 自适应内容,不可以滑动,整个内容被控制在pageMenu的范围之内,这种排列方式下,自动计算item之间的间距,itemPadding属性无效
+};
+
+typedef NS_ENUM(NSInteger, SPPageMenuTrackerFollowingMode) {
+    SPPageMenuTrackerFollowingModeAlways = 0,   // 外界scrollView拖动时，跟踪器时刻跟随外界scrollView移动
+    SPPageMenuTrackerFollowingModeEnd,     // 外界scrollVie拖动w结束后，跟踪器才开始移动
+    SPPageMenuTrackerFollowingModeHalf     // 外界scrollView拖动距离超过屏幕一半时，跟踪器开始移动
 };
 
 typedef NS_ENUM(NSInteger, SPItemImagePosition) {
@@ -96,8 +102,8 @@ typedef NS_ENUM(NSInteger, SPItemImagePosition) {
 @property (nonatomic) CGFloat selectedItemZoomScale;
 @property (nonatomic, assign) BOOL needTextColorGradients; // 是否需要文字渐变,默认为YES
 
-// 关闭跟踪器的跟随效果,在外界传了scrollView进来或者调用了moveTrackerFollowScrollView的情况下,如果为YES，则当外界滑动scrollView时，跟踪器不会时刻跟随,只有滑动结束才会跟随; 如果为NO，跟踪器会时刻跟随scrollView
-@property (nonatomic, assign) BOOL closeTrackerFollowingMode;
+// 跟踪器的跟踪模式
+@property (nonatomic, assign) SPPageMenuTrackerFollowingMode trackerFollowingMode;
 
 @property (nonatomic, assign) BOOL showFuntionButton; // 是否显示功能按钮(功能按钮显示在最右侧),默认为NO
 
@@ -165,9 +171,13 @@ typedef NS_ENUM(NSInteger, SPItemImagePosition) {
 - (void)moveTrackerFollowScrollView:(UIScrollView *)scrollView;
 
 
+
+
+// 默认NO;关闭跟踪器的跟随效果,在外界传了scrollView进来或者调用了moveTrackerFollowScrollView的情况下,如果为YES，则当外界滑动scrollView时，跟踪器不会时刻跟随,只有滑动结束才会跟随;  3.1版本开始被废弃，但是依然能使用,使用后相当于设置了SPPageMenuTrackerFollowingModeEnd枚举值
+@property (nonatomic, assign) BOOL closeTrackerFollowingMode NS_DEPRECATED_IOS(6_0, 6_0,"用trackerFollowingMode枚举代替");
 // 以下2个方法从3.0版本开始有升级，可以使用但不推荐
-- (void)setTitle:(nullable NSString *)title image:(nullable UIImage *)image imagePosition:(SPItemImagePosition)imagePosition imageRatio:(CGFloat)ratio forItemIndex:(NSUInteger)itemIndex NS_DEPRECATED_IOS(6_0, 6_0, "Use -setTitle:image:imagePosition:imageRatio:imageTitleSpace:forItemIndex:");
-- (void)setFunctionButtonTitle:(nullable NSString *)title image:(nullable UIImage *)image imagePosition:(SPItemImagePosition)imagePosition imageRatio:(CGFloat)ratio forState:(UIControlState)state NS_DEPRECATED_IOS(6_0, 6_0, "Use -setFunctionButtonTitle:image:imagePosition:imageRatio:imageTitleSpace:forState:");
+- (void)setTitle:(nullable NSString *)title image:(nullable UIImage *)image imagePosition:(SPItemImagePosition)imagePosition imageRatio:(CGFloat)ratio forItemIndex:(NSUInteger)itemIndex NS_DEPRECATED_IOS(6_0, 6_0, "用 -setTitle:image:imagePosition:imageRatio:imageTitleSpace:forItemIndex:");
+- (void)setFunctionButtonTitle:(nullable NSString *)title image:(nullable UIImage *)image imagePosition:(SPItemImagePosition)imagePosition imageRatio:(CGFloat)ratio forState:(UIControlState)state NS_DEPRECATED_IOS(6_0, 6_0, "用 -setFunctionButtonTitle:image:imagePosition:imageRatio:imageTitleSpace:forState:");
 @end
 
 NS_ASSUME_NONNULL_END

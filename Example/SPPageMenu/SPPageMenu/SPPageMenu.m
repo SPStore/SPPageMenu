@@ -557,7 +557,7 @@
     // 说明外界传进来了一个scrollView,如果外界传进来了，pageMenu会观察该scrollView的contentOffset自动处理跟踪器的跟踪
     if (self.bridgeScrollView == scrollView) { return; }
     
-    [self beginMoveTrackerFollowScrollView:scrollView];
+    [self prepareMoveTrackerFollowScrollView:scrollView];
 }
  
 
@@ -797,7 +797,7 @@
     }
 }
 
-- (void)beginMoveTrackerFollowScrollView:(UIScrollView *)scrollView {
+- (void)prepareMoveTrackerFollowScrollView:(UIScrollView *)scrollView {
 
     // 这个if条件的意思就是没有滑动的意思
     if (!scrollView.dragging && !scrollView.decelerating) {return;}
@@ -806,14 +806,7 @@
     if (scrollView.contentOffset.x < 0 || scrollView.contentOffset.x > scrollView.contentSize.width-scrollView.bounds.size.width) {
         return;
     }
-    
-    static int i = 0;
-    if (i == 0) {
-        // 记录起始偏移量，注意千万不能每次都记录，只需要第一次纪录即可。
-        // 初始值不要等于scrollView.contentOffset.x,因为第一次进入此方法时，scrollView.contentOffset.x的值已经有一点点偏移了，不是很准确
-        _beginOffsetX = scrollView.bounds.size.width * self.selectedItemIndex;
-        i = 1;
-    }
+
     // 当前偏移量
     CGFloat currentOffSetX = scrollView.contentOffset.x;
     // 偏移进度
@@ -822,6 +815,14 @@
 
     NSInteger fromIndex;
     NSInteger toIndex;
+
+    static int i = 0;
+    if (i == 0) {
+        // 记录起始偏移量，注意千万不能每次都记录，只需要第一次纪录即可。
+        // 初始值不要等于scrollView.contentOffset.x,因为第一次进入此方法时，scrollView.contentOffset.x的值已经有一点点偏移了，不是很准确
+        _beginOffsetX = scrollView.bounds.size.width * self.selectedItemIndex;
+        i = 1;
+    }
     
     // 以下注释的“拖拽”一词很准确，不可说成滑动，例如:当手指向右拖拽，还未拖到一半时就松开手，接下来scrollView则会往回滑动，这个往回，就是向左滑动，这也是_beginOffsetX不可时刻纪录的原因，如果时刻纪录，那么往回(向左)滑动时会被视为“向左拖拽”,然而，这个往回却是由“向右拖拽”而导致的
     if (currentOffSetX - _beginOffsetX > 0) { // 向左拖拽了
@@ -847,7 +848,6 @@
         progress = 1.0;
         toIndex = fromIndex;
     }
-
     // 如果滚动停止，直接通过点击按钮选中toIndex对应的item
     if (currentOffSetX == scrollView.bounds.size.width*toIndex) { // 这里toIndex==fromIndex
         i = 0;
@@ -856,14 +856,46 @@
         // 要return，点击了按钮，跟踪器自然会跟着被点击的按钮走
         return;
     }
-    // 没有关闭跟踪模式
-    if (!self.closeTrackerFollowingMode) {
+
+    if (self.trackerFollowingMode == SPPageMenuTrackerFollowingModeAlways) {
+        // 这个方法才开始移动跟踪器
         [self moveTrackerWithProgress:progress fromIndex:fromIndex toIndex:toIndex currentOffsetX:currentOffSetX beginOffsetX:_beginOffsetX];
+    } else if (self.trackerFollowingMode == SPPageMenuTrackerFollowingModeHalf) {
+        SPItem *fromButton;
+        SPItem *toButton;
+        if (progress > 0.5) {
+            if (toIndex >= 0 && toIndex < self.buttons.count) {
+                toButton = self.buttons[toIndex];
+                fromButton = self.buttons[fromIndex];
+            }
+        } else {
+            if (fromIndex >= 0 && fromIndex < self.buttons.count) {
+                toButton = self.buttons[fromIndex];
+                fromButton = self.buttons[toIndex];
+            }
+        }
+        if (toButton != _selectedButton) { // 这个判断是为了只计算一次
+            [UIView animateWithDuration:0.25 animations:^{
+                [self resetSetupTrackerFrameWithSelectedButton:toButton];
+            } completion:^(BOOL finished) {
+            }];
+            if (self.trackerStyle == SPPageMenuTrackerStyleTextZoom || _selectedItemZoomScale != 1) {
+                fromButton.transform = CGAffineTransformIdentity;
+                toButton.transform = CGAffineTransformMakeScale(_selectedItemZoomScale, _selectedItemZoomScale);
+            }
+            [toButton setTitleColor:_selectedItemTitleColor forState:UIControlStateNormal];
+            [fromButton setTitleColor:_unSelectedItemTitleColor forState:UIControlStateNormal];
+            _selectedButton = toButton;
+        }
+
+    } else { // self.trackerFollowingMode = SPPageMenuTrackerFollowingModeEnd
+        // 什么都不用做
     }
 }
 
+// 这个方法才开始真正滑动跟踪器，上面都是做铺垫
 - (void)moveTrackerWithProgress:(CGFloat)progress fromIndex:(NSInteger)fromIndex toIndex:(NSInteger)toIndex currentOffsetX:(CGFloat)currentOffsetX beginOffsetX:(CGFloat)beginOffsetX {
-    // 下面才开始真正滑动跟踪器，上面都是做铺垫
+
     UIButton *fromButton = self.buttons[fromIndex];
     UIButton *toButton = self.buttons[toIndex];
     
@@ -1001,7 +1033,7 @@
     if (object == self.bridgeScrollView) {
         if ([keyPath isEqualToString:scrollViewContentOffset]) {
             // 当scrolllView滚动时,让跟踪器跟随scrollView滑动
-            [self beginMoveTrackerFollowScrollView:self.bridgeScrollView];
+            [self prepareMoveTrackerFollowScrollView:self.bridgeScrollView];
         }
     } else {
         [super observeValueForKeyPath:keyPath ofObject:object change:change context:context];
@@ -1142,7 +1174,6 @@
         SPItem *button = [self.buttons objectAtIndex:_selectedItemIndex];
         [self delegatePerformMethodWithFromIndex:button.tag-tagBaseValue toIndex:button.tag-tagBaseValue];
         [self moveItemScrollViewWithSelectedButton:button];
-        //[self buttonInPageMenuClicked:button];
     }
 }
 
@@ -1162,6 +1193,14 @@
     [self moveItemScrollViewWithSelectedButton:self.selectedButton];
 }
 
+- (void)setCloseTrackerFollowingMode:(BOOL)closeTrackerFollowingMode {
+    _closeTrackerFollowingMode = closeTrackerFollowingMode;
+    if (closeTrackerFollowingMode) {
+        self.trackerFollowingMode = SPPageMenuTrackerFollowingModeEnd;
+    } else {
+        self.trackerFollowingMode = SPPageMenuTrackerFollowingModeAlways;
+    }
+}
 #pragma mark - getter
 
 - (NSArray *)items {
