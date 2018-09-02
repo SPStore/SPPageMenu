@@ -29,7 +29,6 @@
 @property (nonatomic, weak) SPPageMenu *pageMenu;
 @property (nonatomic, weak) UIScrollView *scrollView;
 @property (nonatomic, strong) NSMutableArray *myChildViewControllers;
-@property (nonatomic, strong) UISegmentedControl *segment;
 @end
 
 @implementation ParentViewController
@@ -45,8 +44,11 @@
     // 设置代理
     pageMenu.delegate = self;
 
+    [pageMenu setBackgroundImage:[UIImage imageNamed:@"dog"] barMetrics:0];
+
     [self.view addSubview:pageMenu];
     _pageMenu = pageMenu;
+    
 }
 
 // 示例2:SPPageMenuTrackerStyleLineLongerThanItem,下划线比item略长，长度等于tem宽＋间距
@@ -88,14 +90,14 @@
     _pageMenu = pageMenu;
 }
 
-// 示例4:SPPageMenuTrackerStyleTextZoom、SPPageMenuTrackerStyleNothing,文字缩放
+// 示例4:SPPageMenuTrackerStyleTextZoom、SPPageMenuTrackerStyleNothing,缩放
 - (void)test4 {
     self.dataArr = @[@"生活",@"影视中心",@"交通",@"电视剧",@"搞笑",@"综艺"];
     
     // trackerStyle:跟踪器的样式
     SPPageMenu *pageMenu = [SPPageMenu pageMenuWithFrame:CGRectMake(0, NaviH, screenW, pageMenuH) trackerStyle:SPPageMenuTrackerStyleNothing];
     // 传递数组，默认选中第2个
-    [pageMenu setItems:self.dataArr selectedItemIndex:1];
+    [pageMenu setItems:self.dataArr selectedItemIndex:-5];
     pageMenu.selectedItemZoomScale = 1.3;
     // 设置代理
     pageMenu.delegate = self;
@@ -269,40 +271,8 @@
     _pageMenu = pageMenu;
 }
 
-// 示例15:含有图片的按钮
+// 示例15:显示功能按钮
 - (void)test15 {
-    self.dataArr = @[@"生活",[UIImage imageNamed:@"Expression_1"],@"交通",[UIImage imageNamed:@"Expression_2"],@"搞笑",@"综艺"];
-
-    SPPageMenu *pageMenu = [SPPageMenu pageMenuWithFrame:CGRectMake(0, NaviH, screenW, pageMenuH) trackerStyle:SPPageMenuTrackerStyleLineLongerThanItem];
-    // 传递数组，默认选中第2个
-    [pageMenu setItems:self.dataArr selectedItemIndex:1];
-    pageMenu.showFuntionButton = NO;
-    pageMenu.delegate = self;
-    [self.view addSubview:pageMenu];
-    _pageMenu = pageMenu;
-}
-
-// 示例16:指定按钮携带图片,或同时携带图片和文字,可以设置图片的位置和图文间距
-- (void)test16 {
-    self.dataArr = @[@"生活",@"影视中心",@"交通",@"电视剧",@"搞笑",@"综艺"];
-
-    SPPageMenu *pageMenu = [SPPageMenu pageMenuWithFrame:CGRectMake(0, NaviH, screenW, pageMenuH) trackerStyle:SPPageMenuTrackerStyleRect];
-    // 传递数组，默认选中第3个
-    [pageMenu setItems:self.dataArr selectedItemIndex:2];
-    // 指定第1个item为图片
-    [pageMenu setImage:[UIImage imageNamed:@"Expression_1"] forItemAtIndex:0];
-    // 指定第2个item同时含有图片和文字，图片在上
-    [pageMenu setTitle:@"哈哈" image:[UIImage imageNamed:@"Expression_2"] imagePosition:SPItemImagePositionTop imageRatio:0.5 imageTitleSpace:0 forItemIndex:1];
-    // 指定第4个item同时含有图片和文字，图片在右
-    [pageMenu setTitle:@"哈哈" image:[UIImage imageNamed:@"dog"] imagePosition:SPItemImagePositionRight imageRatio:0.4 imageTitleSpace:0 forItemIndex:3];
-    pageMenu.showFuntionButton = NO;
-    pageMenu.delegate = self;
-    [self.view addSubview:pageMenu];
-    _pageMenu = pageMenu;
-}
-
-// 示例17:显示功能按钮
-- (void)test17 {
     self.dataArr = @[@"生活",@"影视中心",@"交通",@"电视剧",@"军事",@"综艺"];
     
     // trackerStyle:跟踪器的样式
@@ -316,8 +286,8 @@
     _pageMenu = pageMenu;
 }
 
-// 示例18:给功能按钮设置图片和文字
-- (void)test18 {
+// 示例16:给功能按钮设置图片和文字
+- (void)test16 {
     self.dataArr = @[@"生活",@"娱乐",@"交通"];
     
     // trackerStyle:跟踪器的样式
@@ -329,6 +299,38 @@
     [pageMenu setFunctionButtonTitleTextAttributes:@{NSFontAttributeName:[UIFont systemFontOfSize:13]} forState:UIControlStateNormal];
     pageMenu.showFuntionButton = YES;
     // 设置代理
+    pageMenu.delegate = self;
+    [self.view addSubview:pageMenu];
+    _pageMenu = pageMenu;
+}
+
+// 示例17:含有图片的按钮
+- (void)test17 {
+    self.dataArr = @[@"生活",[UIImage imageNamed:@"Expression_1"],@"交通",[UIImage imageNamed:@"Expression_2"],@"搞笑",@"综艺"];
+
+    SPPageMenu *pageMenu = [SPPageMenu pageMenuWithFrame:CGRectMake(0, NaviH, screenW, pageMenuH) trackerStyle:SPPageMenuTrackerStyleLineLongerThanItem];
+    // 传递数组，默认选中第2个
+    [pageMenu setItems:self.dataArr selectedItemIndex:1];
+    pageMenu.showFuntionButton = NO;
+    pageMenu.delegate = self;
+    [self.view addSubview:pageMenu];
+    _pageMenu = pageMenu;
+}
+
+// 示例18:指定按钮携带图片,或同时携带图片和文字,可以设置图片的位置和图文间距
+- (void)test18 {
+    self.dataArr = @[@"生活",@"影视中心",@"交通",@"电视剧",@"搞笑",@"综艺"];
+
+    SPPageMenu *pageMenu = [SPPageMenu pageMenuWithFrame:CGRectMake(0, NaviH, screenW, pageMenuH) trackerStyle:SPPageMenuTrackerStyleRect];
+    // 传递数组，默认选中第3个
+    [pageMenu setItems:self.dataArr selectedItemIndex:2];
+    // 指定第1个item为图片
+    [pageMenu setImage:[UIImage imageNamed:@"Expression_1"] forItemAtIndex:0];
+    // 指定第2个item同时含有图片和文字，图片在上
+    [pageMenu setTitle:@"哈哈" image:[UIImage imageNamed:@"Expression_2"] imagePosition:SPItemImagePositionTop imageRatio:0.5 imageTitleSpace:0 forItemIndex:1];
+    // 指定第4个item同时含有图片和文字，图片在右
+    [pageMenu setTitle:@"哈哈" image:[UIImage imageNamed:@"dog"] imagePosition:SPItemImagePositionRight imageRatio:0.4 imageTitleSpace:0 forItemIndex:3];
+    pageMenu.showFuntionButton = NO;
     pageMenu.delegate = self;
     [self.view addSubview:pageMenu];
     _pageMenu = pageMenu;
