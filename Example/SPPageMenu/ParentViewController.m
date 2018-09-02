@@ -467,7 +467,6 @@
 }
 
 - (void)pageMenu:(SPPageMenu *)pageMenu itemSelectedFromIndex:(NSInteger)fromIndex toIndex:(NSInteger)toIndex {
-    
     NSLog(@"%zd------->%zd",fromIndex,toIndex);
     // 如果fromIndex与toIndex之差大于等于2,说明跨界面移动了,此时不动画.
     if (labs(toIndex - fromIndex) >= 2) {

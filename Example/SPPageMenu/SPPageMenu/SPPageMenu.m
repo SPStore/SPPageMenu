@@ -731,10 +731,25 @@
 
 // 按钮点击方法
 - (void)buttonInPageMenuClicked:(SPPageMenuItem *)sender {
+    CGFloat fromIndex = self.selectedButton ? self.selectedButton.tag-tagBaseValue : sender.tag - tagBaseValue;
+    CGFloat toIndex = sender.tag - tagBaseValue;
+    // 更新下item对应的下标,必须在代理之前，否则外界在代理方法中拿到的不是最新的,必须用下划线，用self.会造成死循环
+    _selectedItemIndex = toIndex;
     // 如果sender是新的选中的按钮，则上一次的按钮颜色为非选中颜色，当前选中的颜色为选中颜色
     if (self.selectedButton != sender) {
         [self.selectedButton setTitleColor:_unSelectedItemTitleColor forState:UIControlStateNormal];
         [sender setTitleColor:_selectedItemTitleColor forState:UIControlStateNormal];
+        
+        // 让itemScrollView发生偏移
+        [self moveItemScrollViewWithSelectedButton:sender];
+        
+        if (self.trackerStyle == SPPageMenuTrackerStyleTextZoom || _selectedItemZoomScale != 1) {
+            self.selectedButton.transform = CGAffineTransformIdentity;
+            sender.transform = CGAffineTransformMakeScale(_selectedItemZoomScale, _selectedItemZoomScale);
+        }
+        if (fromIndex != toIndex) { // 如果相等，说明是第1次进来或者2次点了同一个，此时不需要动画
+            [self moveTrackerWithSelectedButton:sender];
+        }
     } else { // 如果选中的按钮没有发生变化，比如用户往左边滑scrollView，还没滑动结束又开始往右滑动，此时选中的按钮就没变。如果设置了颜色渐变，而且当未选中的颜色带了不等于1的alpha值，如果用户往一边滑动还未结束又往另一边滑，则未选中的按钮颜色不是很准确。这个else就是去除这种不准确现象
         // 获取RGB和Alpha
         CGFloat red = 0.0;
@@ -755,27 +770,7 @@
             [sender setTitleColor:_selectedItemTitleColor forState:UIControlStateNormal];
         }
     }
-    
-    CGFloat fromIndex = self.selectedButton ? self.selectedButton.tag-tagBaseValue : sender.tag - tagBaseValue;
-    CGFloat toIndex = sender.tag - tagBaseValue;
-    // 更新下item对应的下标,必须在代理之前，否则外界在代理方法中拿到的不是最新的,必须用下划线，用self.会造成死循环
-    _selectedItemIndex = toIndex;
     [self delegatePerformMethodWithFromIndex:fromIndex toIndex:toIndex];
-
-    [self moveItemScrollViewWithSelectedButton:sender];
-    
-    if (self.trackerStyle == SPPageMenuTrackerStyleTextZoom || _selectedItemZoomScale != 1) {
-        if (self.selectedButton != sender) {
-            self.selectedButton.transform = CGAffineTransformIdentity;
-            sender.transform = CGAffineTransformMakeScale(_selectedItemZoomScale, _selectedItemZoomScale);
-        } else {
-            sender.transform = CGAffineTransformMakeScale(_selectedItemZoomScale, _selectedItemZoomScale);
-        }
-    }
-    if (fromIndex != toIndex) { // 如果相等，说明是第一次进来，或者2次点了同一个，此时不需要动画
-        [self moveTrackerWithSelectedButton:sender];
-    }
-    
     self.selectedButton = sender;
 }
 
@@ -904,20 +899,21 @@
                 fromButton = self.buttons[toIndex];
             }
         }
-        if (toButton != _selectedButton) { // 这个判断是为了只计算一次
-            [UIView animateWithDuration:0.25 animations:^{
-                [self resetSetupTrackerFrameWithSelectedButton:toButton];
-            } completion:^(BOOL finished) {
-            }];
-            if (self.trackerStyle == SPPageMenuTrackerStyleTextZoom || _selectedItemZoomScale != 1) {
-                fromButton.transform = CGAffineTransformIdentity;
-                toButton.transform = CGAffineTransformMakeScale(_selectedItemZoomScale, _selectedItemZoomScale);
-            }
-            [toButton setTitleColor:_selectedItemTitleColor forState:UIControlStateNormal];
-            [fromButton setTitleColor:_unSelectedItemTitleColor forState:UIControlStateNormal];
-            [self moveItemScrollViewWithSelectedButton:toButton];
-            _selectedButton = toButton;
-        }
+        [self buttonInPageMenuClicked:toButton];
+//        if (toButton != _selectedButton) { // 这个判断是为了只计算一次
+//            [UIView animateWithDuration:0.25 animations:^{
+//                [self resetSetupTrackerFrameWithSelectedButton:toButton];
+//            } completion:^(BOOL finished) {
+//            }];
+//            if (self.trackerStyle == SPPageMenuTrackerStyleTextZoom || _selectedItemZoomScale != 1) {
+//                fromButton.transform = CGAffineTransformIdentity;
+//                toButton.transform = CGAffineTransformMakeScale(_selectedItemZoomScale, _selectedItemZoomScale);
+//            }
+//            [toButton setTitleColor:_selectedItemTitleColor forState:UIControlStateNormal];
+//            [fromButton setTitleColor:_unSelectedItemTitleColor forState:UIControlStateNormal];
+//            [self moveItemScrollViewWithSelectedButton:toButton];
+//            _selectedButton = toButton;
+//        }
 
     } else { // self.trackerFollowingMode = SPPageMenuTrackerFollowingModeEnd
         // 什么都不用做
