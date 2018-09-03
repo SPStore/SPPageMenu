@@ -6,29 +6,28 @@
 [![Pod License](http://img.shields.io/cocoapods/l/SPPageMenu.svg?style=flat)](https://www.apache.org/licenses/LICENSE-2.0.html)
 [![Carthage compatible](https://img.shields.io/badge/Carthage-compatible-4BC51D.svg?style=flat)](https://github.com/SPStore/SPPageMenu)
 ![codecov](https://img.shields.io/badge/codecov-88%25-orange.svg)
-## 安装
-### 版本3.4.0
+# 安装
+##### 版本3.4.0
 ```
 target 'MyApp' do
   pod 'SPPageMenu', '~> 3.4.0'
 end
 ```
 
-#### 说明：3.4.0版本在3.0版本的基础上主要改动如下：
+##### 说明：3.4.0版本在3.0版本的基础上主要改动如下：
 1、增加trackerFollowingMode属性，跟踪器跟踪模式<br>
 2、增加selectedItemTitleFont和unSelectedItemTitleFont属性，设置选中item的标题字体和非选中item的标题字体<br>
 3、增加设置和获取背景图片的方法<br>
 4、修复跟踪器缩放文字显示不全问题<br>
 5、优化代码<br>
 
-### 版本3.0
+##### 版本3.0
 ```
 target 'MyApp' do
   pod 'SPPageMenu', '~> 3.0'
 end
 ```
-
-#### 说明：3.0版本在2.5.5版本的基础上主要改动如下：
+##### 说明：3.0版本在2.5.5版本的基础上主要改动如下：
 1、新增numberOfItems属性，意思是items的个数<br>
 2、新增bounces属性，滑动scrollView时的边界反弹效果<br>
 3、新增alwaysBounceHorizontal属性，水平方向上，当内容没有充满scrollView时，滑动scrollView是否有反弹效果<br>
@@ -41,21 +40,21 @@ end
 10、修复插入和删除操作引发的bug<br>
 11、修复长按按钮然后滑动scrollView无法滑动问题<br>
 
-### 版本2.5.5
+##### 版本2.5.5
 ```
 target 'MyApp' do
   pod 'SPPageMenu', '~> 2.5.5'
 end
 ```
 
-#### 说明：2.5.5版本在2.5.3版本的基础上主要改动如下：
+##### 说明：2.5.5版本在2.5.3版本的基础上主要改动如下：
   1、增加可以设置跟踪器宽度的属性，增加可以设置跟踪器高度和圆角半径的方法<br> 
   2、修复了当未选中按钮颜色的alpha值小于1时，颜色渐变不准确问题<br> 
   3、废弃了文字缩放(SPPageMenuTrackerStyleTextZoom)的枚举，该枚举由属性selectedItemZoomScale
      代替，增加了SPPageMenuTrackerStyleNothing枚举<br> 
   4、可以设置分割线高度<br> 
 
-### 版本2.5.3
+##### 版本2.5.3
 ```
 target 'MyApp' do
   pod 'SPPageMenu', '~> 2.5.3'
@@ -66,11 +65,11 @@ end
 
 
 
-## 部分功能演示图
+##### 部分功能演示图
 （友情提示：如果您的网络较慢，gif图可能会延迟加载，您可以先把宝贵的时间浏览其它信息）
 
 ![image](https://github.com/SPStore/SPPageMenu/blob/master/3006981-889f087b55f3e57f.gif)
-## 所有方法和属性
+##### 所有方法和属性
 ```
 // 创建pagMenu
 + (instancetype)pageMenuWithFrame:(CGRect)frame trackerStyle:(SPPageMenuTrackerStyle)trackerStyle;
