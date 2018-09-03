@@ -26,9 +26,7 @@
 		095E9C1F1FA6F8CC0097A889 /* SixViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 095E9C121FA6F8CC0097A889 /* SixViewController.m */; };
 		095E9C211FA6F8CC0097A889 /* ThidViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 095E9C171FA6F8CC0097A889 /* ThidViewController.m */; };
 		095E9C291FA6F92D0097A889 /* SPPageMenu.m in Sources */ = {isa = PBXBuildFile; fileRef = 095E9C281FA6F92D0097A889 /* SPPageMenu.m */; };
-		DC317C64213C0C3D000F4159 /* red.jpg in Resources */ = {isa = PBXBuildFile; fileRef = DC317C60213C0C3D000F4159 /* red.jpg */; };
-		DC317C65213C0C3D000F4159 /* mateor.jpg in Resources */ = {isa = PBXBuildFile; fileRef = DC317C61213C0C3D000F4159 /* mateor.jpg */; };
-		DC317C66213C0C3D000F4159 /* yellow.jpg in Resources */ = {isa = PBXBuildFile; fileRef = DC317C62213C0C3D000F4159 /* yellow.jpg */; };
+		6A8808C1213D361D00C3553F /* mateor.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 6A8808BF213D361C00C3553F /* mateor.jpg */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -87,9 +85,7 @@
 		095E9C171FA6F8CC0097A889 /* ThidViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ThidViewController.m; sourceTree = "<group>"; };
 		095E9C271FA6F92D0097A889 /* SPPageMenu.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SPPageMenu.h; sourceTree = "<group>"; };
 		095E9C281FA6F92D0097A889 /* SPPageMenu.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SPPageMenu.m; sourceTree = "<group>"; };
-		DC317C60213C0C3D000F4159 /* red.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = red.jpg; sourceTree = "<group>"; };
-		DC317C61213C0C3D000F4159 /* mateor.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = mateor.jpg; sourceTree = "<group>"; };
-		DC317C62213C0C3D000F4159 /* yellow.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = yellow.jpg; sourceTree = "<group>"; };
+		6A8808BF213D361C00C3553F /* mateor.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = mateor.jpg; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -221,9 +217,7 @@
 		DC317C5E213C0BB9000F4159 /* Images */ = {
 			isa = PBXGroup;
 			children = (
-				DC317C61213C0C3D000F4159 /* mateor.jpg */,
-				DC317C60213C0C3D000F4159 /* red.jpg */,
-				DC317C62213C0C3D000F4159 /* yellow.jpg */,
+				6A8808BF213D361C00C3553F /* mateor.jpg */,
 			);
 			name = Images;
 			path = SPPageMenu/Images;
@@ -340,10 +334,8 @@
 			files = (
 				091A68851FA1CAC100DAA561 /* LaunchScreen.storyboard in Resources */,
 				091A68821FA1CAC100DAA561 /* Assets.xcassets in Resources */,
-				DC317C64213C0C3D000F4159 /* red.jpg in Resources */,
+				6A8808C1213D361D00C3553F /* mateor.jpg in Resources */,
 				091A68801FA1CAC100DAA561 /* Main.storyboard in Resources */,
-				DC317C65213C0C3D000F4159 /* mateor.jpg in Resources */,
-				DC317C66213C0C3D000F4159 /* yellow.jpg in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

@@ -72,10 +72,14 @@ typedef NS_ENUM(NSInteger, SPItemImagePosition) {
 @property(nonatomic,readonly) NSUInteger numberOfItems; // items的总个数
 
 // item之间的间距，默认30；当排列方式permutationWay为‘SPPageMenuPermutationWayNotScrollAdaptContent’时此属性无效，无效是合理的，不可能做到“不可滑动且自适应内容”然后间距又自定义，这2者相互制约；
-@property (nonatomic, assign) CGFloat itemPadding;
-@property (nonnull, nonatomic, strong) UIFont *itemTitleFont; // item的标题字体
-@property (nonatomic, strong) UIColor *selectedItemTitleColor; // 选中的item标题颜色
-@property (nonatomic, strong) UIColor *unSelectedItemTitleColor; // 未选中的item标题颜色
+@property (nonatomic, assign)  CGFloat itemPadding;
+
+@property (nonatomic, strong)          UIColor *selectedItemTitleColor;   // 选中的item标题颜色
+@property (nonatomic, strong)          UIColor *unSelectedItemTitleColor; // 未选中的item标题颜色
+
+@property (nonatomic, strong)          UIFont  *itemTitleFont;  // 设置所有item标题字体，不区分选中的item和未选中的item
+@property (nonnull, nonatomic, strong) UIFont  *selectedItemTitleFont;    // 选中的item字体
+@property (nonnull, nonatomic, strong) UIFont  *unSelectedItemTitleFont;  // 未选中的item字体
 
 // 外界的srollView，pageMenu会监听该scrollView的滚动状况，让跟踪器时刻跟随此scrollView滑动；所谓的滚动状况，是指手指拖拽滚动，非手指拖拽不算
 @property (nonatomic, strong) UIScrollView *bridgeScrollView;
@@ -130,8 +134,9 @@ typedef NS_ENUM(NSInteger, SPItemImagePosition) {
 - (void)setContentEdgeInsets:(UIEdgeInsets)contentEdgeInsets forItemAtIndex:(NSUInteger)itemIndex; // 设置指定item的四周内边距
 - (UIEdgeInsets)contentEdgeInsetsForItemAtIndex:(NSUInteger)itemIndex; // 获取指定item的四周内边距
 
+// 设置背景图片，barMetrics只有为UIBarMetricsDefault时才生效，如果外界传进来的backgroundImage调用过- resizableImageWithCapInsets:且参数capInsets不为UIEdgeInsetsZero，则直接用backgroundImage作为背景图; 否则内部会自动调用- resizableImageWithCapInsets:进行拉伸
 - (void)setBackgroundImage:(nullable UIImage *)backgroundImage barMetrics:(UIBarMetrics)barMetrics;
-- (nullable UIImage *)backgroundImageForBarMetrics:(UIBarMetrics)barMetrics;
+- (nullable UIImage *)backgroundImageForBarMetrics:(UIBarMetrics)barMetrics; // 获取背景图片
 
 /**
  同时为指定item设置标题和图片
@@ -182,12 +187,12 @@ typedef NS_ENUM(NSInteger, SPItemImagePosition) {
 // -------------- 以下方法和属性被废弃 --------------
 
 // 设置指定item的四周内边距,3.0版本的时候不小心多写了一个for,3.1版本已纠正
-- (void)setContentEdgeInsets:(UIEdgeInsets)contentEdgeInsets forForItemAtIndex:(NSUInteger)itemIndex NS_DEPRECATED_IOS(6_0, 6_0, "use -setContentEdgeInsets:forItemAtIndex:");
+- (void)setContentEdgeInsets:(UIEdgeInsets)contentEdgeInsets forForItemAtIndex:(NSUInteger)itemIndex NS_DEPRECATED_IOS(6_0, 6_0, "Use -setContentEdgeInsets:forItemAtIndex:");
 // 默认NO;关闭跟踪器的跟随效果,在外界传了scrollView进来或者调用了moveTrackerFollowScrollView的情况下,如果为YES，则当外界滑动scrollView时，跟踪器不会时刻跟随,只有滑动结束才会跟随;  3.1版本开始被废弃，但是依然能使用,使用后相当于设置了SPPageMenuTrackerFollowingModeEnd枚举值
-@property (nonatomic, assign) BOOL closeTrackerFollowingMode NS_DEPRECATED_IOS(6_0, 6_0,"use trackerFollowingMode instead");
+@property (nonatomic, assign) BOOL closeTrackerFollowingMode NS_DEPRECATED_IOS(6_0, 6_0,"Use trackerFollowingMode instead");
 // 以下2个方法从3.0版本开始有升级，可以使用但不推荐
-- (void)setTitle:(nullable NSString *)title image:(nullable UIImage *)image imagePosition:(SPItemImagePosition)imagePosition imageRatio:(CGFloat)ratio forItemIndex:(NSUInteger)itemIndex NS_DEPRECATED_IOS(6_0, 6_0, "use -setTitle:image:imagePosition:imageRatio:imageTitleSpace:forItemIndex:");
-- (void)setFunctionButtonTitle:(nullable NSString *)title image:(nullable UIImage *)image imagePosition:(SPItemImagePosition)imagePosition imageRatio:(CGFloat)ratio forState:(UIControlState)state NS_DEPRECATED_IOS(6_0, 6_0, "use -setFunctionButtonTitle:image:imagePosition:imageRatio:imageTitleSpace:forState:");
+- (void)setTitle:(nullable NSString *)title image:(nullable UIImage *)image imagePosition:(SPItemImagePosition)imagePosition imageRatio:(CGFloat)ratio forItemIndex:(NSUInteger)itemIndex NS_DEPRECATED_IOS(6_0, 6_0, "Use -setTitle:image:imagePosition:imageRatio:imageTitleSpace:forItemIndex:");
+- (void)setFunctionButtonTitle:(nullable NSString *)title image:(nullable UIImage *)image imagePosition:(SPItemImagePosition)imagePosition imageRatio:(CGFloat)ratio forState:(UIControlState)state NS_DEPRECATED_IOS(6_0, 6_0, "Use -setFunctionButtonTitle:image:imagePosition:imageRatio:imageTitleSpace:forState:");
 @end
 
 NS_ASSUME_NONNULL_END

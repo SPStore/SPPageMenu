@@ -27,7 +27,7 @@
 @interface ParentViewController () <SPPageMenuDelegate, UIScrollViewDelegate>
 @property (nonatomic, strong) NSArray *dataArr;
 @property (nonatomic, weak) SPPageMenu *pageMenu;
-@property (nonatomic, weak) UIScrollView *scrollView;
+@property (nonatomic, strong) UIScrollView *scrollView;
 @property (nonatomic, strong) NSMutableArray *myChildViewControllers;
 @end
 
@@ -40,15 +40,14 @@
     // trackerStyle:跟踪器的样式
     SPPageMenu *pageMenu = [SPPageMenu pageMenuWithFrame:CGRectMake(0, NaviH, screenW, pageMenuH) trackerStyle:SPPageMenuTrackerStyleLine];
     // 传递数组，默认选中第2个
-    [pageMenu setItems:self.dataArr selectedItemIndex:1];
+    [pageMenu setItems:self.dataArr selectedItemIndex:0];
     // 设置代理
     pageMenu.delegate = self;
-
-    [pageMenu setBackgroundImage:[UIImage imageNamed:@"dog"] barMetrics:0];
-
+    // 给pageMenu传递外界的大scrollView，内部监听self.scrollView的滚动，从而实现让跟踪器跟随self.scrollView移动的效果
+    pageMenu.bridgeScrollView = self.scrollView;
     [self.view addSubview:pageMenu];
     _pageMenu = pageMenu;
-    
+
 }
 
 // 示例2:SPPageMenuTrackerStyleLineLongerThanItem,下划线比item略长，长度等于tem宽＋间距
@@ -63,6 +62,8 @@
     [pageMenu setItems:self.dataArr selectedItemIndex:0];
     // 设置代理
     pageMenu.delegate = self;
+    // 给pageMenu传递外界的大scrollView，内部监听self.scrollView的滚动，从而实现让跟踪器跟随self.scrollView移动的效果
+    pageMenu.bridgeScrollView = self.scrollView;
     [self.view addSubview:pageMenu];
     
     NSMutableArray *contraints = [NSMutableArray array];
@@ -85,8 +86,8 @@
     [pageMenu setItems:self.dataArr selectedItemIndex:1];
     // 设置代理
     pageMenu.delegate = self;
-    //pageMenu.closeTrackerFollowingMode = YES;
-    [self.view addSubview:pageMenu];
+    // 给pageMenu传递外界的大scrollView，内部监听self.scrollView的滚动，从而实现让跟踪器跟随self.scrollView移动的效果
+    pageMenu.bridgeScrollView = self.scrollView;    [self.view addSubview:pageMenu];
     _pageMenu = pageMenu;
 }
 
@@ -96,11 +97,16 @@
     
     // trackerStyle:跟踪器的样式
     SPPageMenu *pageMenu = [SPPageMenu pageMenuWithFrame:CGRectMake(0, NaviH, screenW, pageMenuH) trackerStyle:SPPageMenuTrackerStyleNothing];
-    // 传递数组，默认选中第2个
-    [pageMenu setItems:self.dataArr selectedItemIndex:-5];
+    // 传递数组，默认选中第1个
+    [pageMenu setItems:self.dataArr selectedItemIndex:0];
+    // 设置缩放
     pageMenu.selectedItemZoomScale = 1.3;
+    pageMenu.trackerFollowingMode = SPPageMenuTrackerFollowingModeHalf;
     // 设置代理
     pageMenu.delegate = self;
+    // 给pageMenu传递外界的大scrollView，内部监听self.scrollView的滚动，从而实现让跟踪器跟随self.scrollView移动的效果
+    pageMenu.bridgeScrollView = self.scrollView;
+
     [self.view addSubview:pageMenu];
     _pageMenu = pageMenu;
 }
@@ -116,6 +122,8 @@
     pageMenu.tracker.backgroundColor = [UIColor redColor];
     // 设置代理
     pageMenu.delegate = self;
+    // 给pageMenu传递外界的大scrollView，内部监听self.scrollView的滚动，从而实现让跟踪器跟随self.scrollView移动的效果
+    pageMenu.bridgeScrollView = self.scrollView;
     [self.view addSubview:pageMenu];
     _pageMenu = pageMenu;
 }
@@ -143,6 +151,8 @@
 
     // 设置代理
     pageMenu.delegate = self;
+    // 给pageMenu传递外界的大scrollView，内部监听self.scrollView的滚动，从而实现让跟踪器跟随self.scrollView移动的效果
+    pageMenu.bridgeScrollView = self.scrollView;
     [self.view addSubview:pageMenu];
     _pageMenu = pageMenu;
 }
@@ -158,6 +168,8 @@
     [pageMenu setItems:self.dataArr selectedItemIndex:1];
     // 设置代理
     pageMenu.delegate = self;
+    // 给pageMenu传递外界的大scrollView，内部监听self.scrollView的滚动，从而实现让跟踪器跟随self.scrollView移动的效果
+    pageMenu.bridgeScrollView = self.scrollView;
     [self.view addSubview:pageMenu];
     _pageMenu = pageMenu;
 }
@@ -172,6 +184,8 @@
     [pageMenu setItems:self.dataArr selectedItemIndex:1];
     // 设置代理
     pageMenu.delegate = self;
+    // 给pageMenu传递外界的大scrollView，内部监听self.scrollView的滚动，从而实现让跟踪器跟随self.scrollView移动的效果
+    pageMenu.bridgeScrollView = self.scrollView;
     [self.view addSubview:pageMenu];
     _pageMenu = pageMenu;
 }
@@ -188,6 +202,8 @@
     pageMenu.permutationWay = SPPageMenuPermutationWayScrollAdaptContent;
     // 设置代理
     pageMenu.delegate = self;
+    // 给pageMenu传递外界的大scrollView，内部监听self.scrollView的滚动，从而实现让跟踪器跟随self.scrollView移动的效果
+    pageMenu.bridgeScrollView = self.scrollView;
     [self.view addSubview:pageMenu];
     _pageMenu = pageMenu;
 }
@@ -205,6 +221,8 @@
     pageMenu.itemPadding = 0;
     // 设置代理
     pageMenu.delegate = self;
+    // 给pageMenu传递外界的大scrollView，内部监听self.scrollView的滚动，从而实现让跟踪器跟随self.scrollView移动的效果
+    pageMenu.bridgeScrollView = self.scrollView;
     [self.view addSubview:pageMenu];
     _pageMenu = pageMenu;
 }
@@ -222,6 +240,8 @@
     pageMenu.permutationWay = SPPageMenuPermutationWayNotScrollAdaptContent;
     // 设置代理
     pageMenu.delegate = self;
+    // 给pageMenu传递外界的大scrollView，内部监听self.scrollView的滚动，从而实现让跟踪器跟随self.scrollView移动的效果
+    pageMenu.bridgeScrollView = self.scrollView;
     [self.view addSubview:pageMenu];
     _pageMenu = pageMenu;
 }
@@ -237,6 +257,8 @@
     pageMenu.trackerFollowingMode = SPPageMenuTrackerFollowingModeAlways;
     // 设置代理
     pageMenu.delegate = self;
+    // 给pageMenu传递外界的大scrollView，内部监听self.scrollView的滚动，从而实现让跟踪器跟随self.scrollView移动的效果
+    pageMenu.bridgeScrollView = self.scrollView;
     [self.view addSubview:pageMenu];
     _pageMenu = pageMenu;
 }
@@ -252,6 +274,8 @@
     pageMenu.trackerFollowingMode = SPPageMenuTrackerFollowingModeEnd;
     // 设置代理
     pageMenu.delegate = self;
+    // 给pageMenu传递外界的大scrollView，内部监听self.scrollView的滚动，从而实现让跟踪器跟随self.scrollView移动的效果
+    pageMenu.bridgeScrollView = self.scrollView;
     [self.view addSubview:pageMenu];
     _pageMenu = pageMenu;
 }
@@ -267,6 +291,8 @@
     pageMenu.trackerFollowingMode = SPPageMenuTrackerFollowingModeHalf;
     // 设置代理
     pageMenu.delegate = self;
+    // 给pageMenu传递外界的大scrollView，内部监听self.scrollView的滚动，从而实现让跟踪器跟随self.scrollView移动的效果
+    pageMenu.bridgeScrollView = self.scrollView;
     [self.view addSubview:pageMenu];
     _pageMenu = pageMenu;
 }
@@ -282,6 +308,8 @@
     pageMenu.showFuntionButton = YES;
     // 设置代理
     pageMenu.delegate = self;
+    // 给pageMenu传递外界的大scrollView，内部监听self.scrollView的滚动，从而实现让跟踪器跟随self.scrollView移动的效果
+    pageMenu.bridgeScrollView = self.scrollView;
     [self.view addSubview:pageMenu];
     _pageMenu = pageMenu;
 }
@@ -300,6 +328,8 @@
     pageMenu.showFuntionButton = YES;
     // 设置代理
     pageMenu.delegate = self;
+    // 给pageMenu传递外界的大scrollView，内部监听self.scrollView的滚动，从而实现让跟踪器跟随self.scrollView移动的效果
+    pageMenu.bridgeScrollView = self.scrollView;
     [self.view addSubview:pageMenu];
     _pageMenu = pageMenu;
 }
@@ -311,9 +341,11 @@
     SPPageMenu *pageMenu = [SPPageMenu pageMenuWithFrame:CGRectMake(0, NaviH, screenW, pageMenuH) trackerStyle:SPPageMenuTrackerStyleLineLongerThanItem];
     // 传递数组，默认选中第2个
     [pageMenu setItems:self.dataArr selectedItemIndex:1];
-    pageMenu.showFuntionButton = NO;
     pageMenu.delegate = self;
+    // 给pageMenu传递外界的大scrollView，内部监听self.scrollView的滚动，从而实现让跟踪器跟随self.scrollView移动的效果
+    pageMenu.bridgeScrollView = self.scrollView;
     [self.view addSubview:pageMenu];
+
     _pageMenu = pageMenu;
 }
 
@@ -330,14 +362,37 @@
     [pageMenu setTitle:@"哈哈" image:[UIImage imageNamed:@"Expression_2"] imagePosition:SPItemImagePositionTop imageRatio:0.5 imageTitleSpace:0 forItemIndex:1];
     // 指定第4个item同时含有图片和文字，图片在右
     [pageMenu setTitle:@"哈哈" image:[UIImage imageNamed:@"dog"] imagePosition:SPItemImagePositionRight imageRatio:0.4 imageTitleSpace:0 forItemIndex:3];
-    pageMenu.showFuntionButton = NO;
     pageMenu.delegate = self;
+    // 给pageMenu传递外界的大scrollView，内部监听self.scrollView的滚动，从而实现让跟踪器跟随self.scrollView移动的效果
+    pageMenu.bridgeScrollView = self.scrollView;
     [self.view addSubview:pageMenu];
     _pageMenu = pageMenu;
 }
 
-// 示例19:特别属性说明
+// 示例19:设置背景图片
 - (void)test19 {
+    self.dataArr = @[@"生活",@"校园",@"交通",@"军事",@"搞笑",@"综艺"];
+
+    SPPageMenu *pageMenu = [SPPageMenu pageMenuWithFrame:CGRectMake(0, NaviH, screenW, pageMenuH) trackerStyle:SPPageMenuTrackerStyleNothing];
+    // 传递数组，默认选中第2个
+    [pageMenu setItems:self.dataArr selectedItemIndex:1];
+    pageMenu.selectedItemTitleColor = [UIColor whiteColor];
+    pageMenu.unSelectedItemTitleColor = [UIColor whiteColor];
+    pageMenu.selectedItemZoomScale = 1.5;
+    pageMenu.delegate = self;
+    // 给pageMenu传递外界的大scrollView，内部监听self.scrollView的滚动，从而实现让跟踪器跟随self.scrollView移动的效果
+    pageMenu.bridgeScrollView = self.scrollView;
+
+    UIImage *image = [UIImage imageNamed:@"mateor.jpg"];
+    [pageMenu setBackgroundImage:image barMetrics:0];
+
+    [self.view addSubview:pageMenu];
+
+    _pageMenu = pageMenu;
+}
+
+// 示例20:特别属性说明
+- (void)test20 {
     self.dataArr = nil;
     
     NSString *text = @"本框架的bridgeScrollView属性是一个很重要但又容易忽略的属性，在外界的viewDidLoad中，每种示例都传了一个scrollView，即:“self.pageMenu.bridgeScrollView = self.scrollView”，这一传递，SPPageMenu内部会监听该scrollView的滚动状况，当该scrollView滚动的时候，就可以让跟踪器时刻跟随；如果你忘了或者不想设置这个属性，也可以在外界的scrollView的代理方法scrollViewDidScroll中调用接口“- (void)moveTrackerFollowScrollView:(UIScrollView *)scrollView”,这样也能实现跟踪器时刻跟随scrollView；如果不想让跟踪器时刻跟踪，而直到scrollView滑动结束才跟踪，在上面2种方式采取了任意一种的情况下，可以设置属性”pageMenu.closeTrackerFollowingMode = YES“";
@@ -360,7 +415,7 @@
     [super viewDidLoad];
     
     self.view.backgroundColor = [UIColor whiteColor];
-    
+
     switch (_testNumber) {
         case 0:
             [self test1];
@@ -423,6 +478,8 @@
             break;
     }
     
+    [self.view addSubview:self.scrollView];
+
     NSArray *controllerClassNames = [NSArray arrayWithObjects:@"FirstViewController",@"SecondViewController",@"ThidViewController",@"FourViewController",@"FiveViewController",@"SixViewController",@"SevenViewController",@"EightViewController", nil];
     for (int i = 0; i < self.dataArr.count; i++) {
         if (controllerClassNames.count > i) {
@@ -438,25 +495,14 @@
             [self.myChildViewControllers addObject:baseVc];
         }
     }
-    
-    UIScrollView *scrollView = [[UIScrollView alloc] initWithFrame:CGRectMake(0, NaviH+pageMenuH, screenW, scrollViewHeight)];
-    scrollView.delegate = self;
-    scrollView.pagingEnabled = YES;
-    scrollView.showsHorizontalScrollIndicator = NO;
-    scrollView.showsVerticalScrollIndicator = NO;
-    [self.view addSubview:scrollView];
-    _scrollView = scrollView;
-    
-    // 这一行赋值，可实现pageMenu的跟踪器时刻跟随scrollView滑动的效果
-    self.pageMenu.bridgeScrollView = self.scrollView;
-    
+
     // pageMenu.selectedItemIndex就是选中的item下标
     if (self.pageMenu.selectedItemIndex < self.myChildViewControllers.count) {
         BaseViewController *baseVc = self.myChildViewControllers[self.pageMenu.selectedItemIndex];
-        [scrollView addSubview:baseVc.view];
+        [self.scrollView addSubview:baseVc.view];
         baseVc.view.frame = CGRectMake(screenW*self.pageMenu.selectedItemIndex, 0, screenW, scrollViewHeight);
-        scrollView.contentOffset = CGPointMake(screenW*self.pageMenu.selectedItemIndex, 0);
-        scrollView.contentSize = CGSizeMake(self.dataArr.count*screenW, 0);
+        self.scrollView .contentOffset = CGPointMake(screenW*self.pageMenu.selectedItemIndex, 0);
+        self.scrollView .contentSize = CGSizeMake(self.dataArr.count*screenW, 0);
     }
 }
 
@@ -468,21 +514,26 @@
 
 - (void)pageMenu:(SPPageMenu *)pageMenu itemSelectedFromIndex:(NSInteger)fromIndex toIndex:(NSInteger)toIndex {
     NSLog(@"%zd------->%zd",fromIndex,toIndex);
-    // 如果fromIndex与toIndex之差大于等于2,说明跨界面移动了,此时不动画.
-    if (labs(toIndex - fromIndex) >= 2) {
-        [self.scrollView setContentOffset:CGPointMake(screenW * toIndex, 0) animated:NO];
-    } else {
-        [self.scrollView setContentOffset:CGPointMake(screenW * toIndex, 0) animated:YES];
+
+    // 如果该代理方法是由拖拽self.scrollView而触发，说明self.scrollView已经在用户手指的拖拽下而发生偏移，此时不需要再用代码去设置偏移量，否则在跟踪模式为SPPageMenuTrackerFollowingModeHalf的情况下，滑到屏幕一半时会有闪跳现象。闪跳是因为外界设置的scrollView偏移和用户拖拽产生冲突
+    if (!self.scrollView.isDragging) { // 判断用户是否在拖拽scrollView
+        // 如果fromIndex与toIndex之差大于等于2,说明跨界面移动了,此时不动画.
+        if (labs(toIndex - fromIndex) >= 2) {
+            [self.scrollView setContentOffset:CGPointMake(screenW * toIndex, 0) animated:NO];
+        } else {
+            [self.scrollView setContentOffset:CGPointMake(screenW * toIndex, 0) animated:YES];
+        }
     }
+
     if (self.myChildViewControllers.count <= toIndex) {return;}
-    
+
     UIViewController *targetViewController = self.myChildViewControllers[toIndex];
     // 如果已经加载过，就不再加载
     if ([targetViewController isViewLoaded]) return;
-    
+
     targetViewController.view.frame = CGRectMake(screenW * toIndex, 0, screenW, scrollViewHeight);
     [_scrollView addSubview:targetViewController.view];
-    
+
 }
 
 - (void)pageMenu:(SPPageMenu *)pageMenu functionButtonClicked:(UIButton *)functionButton {
@@ -596,12 +647,24 @@
 #pragma mark - scrollViewDelegate
 
 - (void)scrollViewDidScroll:(UIScrollView *)scrollView {
-    
+
     // 这一步是实现跟踪器时刻跟随scrollView滑动的效果,如果对self.pageMenu.scrollView赋了值，这一步可省
     // [self.pageMenu moveTrackerFollowScrollView:scrollView];
 }
 
+
 #pragma mark - getter
+
+- (UIScrollView *)scrollView {
+    if (!_scrollView) {
+        _scrollView = [[UIScrollView alloc] initWithFrame:CGRectMake(0, NaviH+pageMenuH, screenW, scrollViewHeight)];
+        _scrollView.delegate = self;
+        _scrollView.pagingEnabled = YES;
+        _scrollView.showsHorizontalScrollIndicator = NO;
+        _scrollView.showsVerticalScrollIndicator = NO;
+    }
+    return  _scrollView;
+}
 
 - (NSMutableArray *)myChildViewControllers {
     
