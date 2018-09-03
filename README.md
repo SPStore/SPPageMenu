@@ -82,10 +82,10 @@ end
 ```
 ```
 // 排列方式：支持3中排列方式；1、可滑动，按钮宽度根据内容自适应；2、不可滑动，按钮等宽；3、不可滑动，按钮宽度根据内容自适应。3种排列方式都有非常高的使用频率。第1种排列方式：SPPageMene的容量会根据按钮个数而定；第2种和第3种排列方式:SPPageMenu的容量固定为SPPageMenu的宽度
-@property (nonatomic, assign) SPPageMenuPermutationWay permutationWay; // 排列方式
+@property (nonatomic, assign) SPPageMenuPermutationWay permutationWay; 
 ```
 ```
-// 跟踪器跟踪模式；这个属性从3.4版本开始闪亮登场。该属性是个枚举，共3个：1、SPPageMenuTrackerFollowingModeAlways，这个枚举值的意思是让跟踪器时刻跟随外界scrollView(即bridgeScrollView)横向移； 2、SPPageMenuTrackerFollowingModeEnd，这个枚举的意思是当外界scrollView滑动结束时，跟踪器才开始移动； 3、SPPageMenuTrackerFollowingModeHalf，这个枚举的意思是当外界scrollView拖动距离超过屏幕一半时，跟踪器开始移动
+// 跟踪器跟踪模式；这个属性从3.4版本开始闪亮登场。该属性是个枚举，共3个：1、SPPageMenuTrackerFollowingModeAlways，这个枚举值的意思是让跟踪器时刻跟随外界scrollView(即bridgeScrollView)横向移； 2、SPPageMenuTrackerFollowingModeEnd，这个枚举的意思是当外界scrollView滑动结束时，跟踪器才开始移动；相当于3.4版本之前的closeTrackerFollowingMode属性 3、SPPageMenuTrackerFollowingModeHalf，这个枚举的意思是当外界scrollView拖动距离超过屏幕一半时，跟踪器开始移动。
 @property (nonatomic, assign) SPPageMenuTrackerFollowingMode trackerFollowingMode;
 ```
 ```
