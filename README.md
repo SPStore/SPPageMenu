@@ -6,7 +6,13 @@
 [![Pod License](http://img.shields.io/cocoapods/l/SPPageMenu.svg?style=flat)](https://www.apache.org/licenses/LICENSE-2.0.html)
 [![Carthage compatible](https://img.shields.io/badge/Carthage-compatible-4BC51D.svg?style=flat)](https://github.com/SPStore/SPPageMenu)
 ![codecov](https://img.shields.io/badge/codecov-88%25-orange.svg)
-## 安装
+
+# 目录
+* [如何安装](#如何安装)
+* [部分功能演示图](#部分功能演示图)
+* [方法属性讲解](#方法属性讲解) 
+
+## 如何安装
 #### 版本3.4.0
 ```
 target 'MyApp' do
@@ -61,16 +67,11 @@ target 'MyApp' do
   pod 'SPPageMenu', '~> 2.5.3'
 end
 ```
-
-终端输入命令：pod install 
-
-
-
 ## 部分功能演示图
 （友情提示：如果您的网络较慢，gif图可能会延迟加载，您可以先把宝贵的时间浏览其它信息）
 
 ![image](https://github.com/SPStore/SPPageMenu/blob/master/3006981-889f087b55f3e57f.gif)
-## 所有方法和属性
+## 方法属性讲解
 ```
 // 创建pagMenu
 + (instancetype)pageMenuWithFrame:(CGRect)frame trackerStyle:(SPPageMenuTrackerStyle)trackerStyle;
