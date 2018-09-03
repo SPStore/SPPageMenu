@@ -892,14 +892,19 @@
             if (toIndex >= 0 && toIndex < self.buttons.count) {
                 toButton = self.buttons[toIndex];
                 fromButton = self.buttons[fromIndex];
+                
+                // 有待修改
+                self.selectedItemIndex = toIndex;
             }
         } else {
             if (fromIndex >= 0 && fromIndex < self.buttons.count) {
                 toButton = self.buttons[fromIndex];
                 fromButton = self.buttons[toIndex];
+                // 有待修改
+                self.selectedItemIndex = fromIndex;
             }
         }
-        [self buttonInPageMenuClicked:toButton];
+//        [self buttonInPageMenuClicked:toButton];
 //        if (toButton != _selectedButton) { // 这个判断是为了只计算一次
 //            [UIView animateWithDuration:0.25 animations:^{
 //                [self resetSetupTrackerFrameWithSelectedButton:toButton];
