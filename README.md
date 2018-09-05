@@ -128,13 +128,11 @@ SPPageMenu控件高度固定不变，想要设置跟踪器距离按钮之间的�
 
 # 使用者提问
 * **问**：当我设置排列方式为按钮等宽(即SPPageMenuPermutationWayNotScrollEqualWidths),为什么按钮文字显示不全？<br>
-
   **答**：这是因为你的按钮个数较多或者文字较长，你可以通过设置itemPadding属性来调整按钮之间的间距，间距调小，每个按钮的宽度就会增大，
           如果itemPadding设置为0仍然显示不全，那就选择其它排列方式。
           
-* **问**:如何不通过点击按钮或者滑动外界scrollView来实现选中按钮的切换<br>
-
-  **答**:你可以改变selectedItemIndex的值切换选中按钮
+* **问**：如何不通过点击按钮或者滑动外界scrollView来实现选中按钮的切换<br>
+  **答**：你可以改变selectedItemIndex的值切换选中按钮
 
 [回到顶部](##目录)
 
