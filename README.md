@@ -2,212 +2,140 @@
 [![Build Status](http://img.shields.io/travis/SPStore/SPPageMenu.svg?style=flat)](https://travis-ci.org/SPStore/SPPageMenu)
 [![Pod Version](http://img.shields.io/cocoapods/v/SPPageMenu.svg?style=flat)](http://cocoadocs.org/docsets/SPPageMenu/)
 [![Pod Platform](http://img.shields.io/cocoapods/p/SPPageMenu.svg?style=flat)](http://cocoadocs.org/docsets/SPPageMenu/)
+![Language](https://img.shields.io/badge/language-Object--C-ff69b4.svg)
 [![Pod License](http://img.shields.io/cocoapods/l/SPPageMenu.svg?style=flat)](https://www.apache.org/licenses/LICENSE-2.0.html)
 [![Carthage compatible](https://img.shields.io/badge/Carthage-compatible-4BC51D.svg?style=flat)](https://github.com/SPStore/SPPageMenu)
-[![codecov](https://codecov.io/gh/SPStore/SPPageMenu/branch/master/graph/badge.svg)](https://codecov.io/gh/SPStore/SPPageMenu)
-## 安装
-版本2.5.3
+![codecov](https://img.shields.io/badge/codecov-88%25-orange.svg)
+
+# 目录
+* [如何安装](#如何安装)
+* [部分功能演示图](#部分功能演示图)
+* [重难点讲解](#重难点讲解) 
+* [使用者提问](#使用者提问)
+
+## 如何安装
+#### 版本3.4.0
+```
+target 'MyApp' do
+  pod 'SPPageMenu', '~> 3.4.0'
+end
+
+说明：3.4.0版本在3.0版本的基础上主要改动如下：
+1、增加trackerFollowingMode属性，跟踪器跟踪模式
+2、增加selectedItemTitleFont和unSelectedItemTitleFont属性，设置选中item的标题字体和非选中item的标题字体
+3、增加设置和获取背景图片的方法
+4、修复跟踪器缩放文字显示不全问题
+5、优化代码
+```
+
+#### 版本3.0
+```
+target 'MyApp' do
+  pod 'SPPageMenu', '~> 3.0'
+end
+
+说明：3.0版本在2.5.5版本的基础上主要改动如下：
+1、新增numberOfItems属性，意思是items的个数
+2、新增bounces属性，滑动scrollView时的边界反弹效果
+3、新增alwaysBounceHorizontal属性，水平方向上，当内容没有充满scrollView时，滑动scrollView是否有反弹效果
+4、新增设置或获取指定按钮的四周内边距的方法
+5、分割线适配屏幕分辨率，并修改了默认颜色
+6、内部scrollView的scrollsToTop属性置为NO,不妨碍外界scrollView的置顶功能
+7、右侧功能按钮的单边阴影效果采用shadowPath
+8、细化内部的自定义按钮，比如可以设置文字与图片之间的间距
+9、修复设置指定item的文字较长时的显示不全的问题
+10、修复插入和删除操作引发的bug
+11、修复长按按钮然后滑动scrollView无法滑动问题
+```
+
+#### 版本2.5.5
+```
+target 'MyApp' do
+  pod 'SPPageMenu', '~> 2.5.5'
+end
+
+说明：2.5.5版本在2.5.3版本的基础上主要改动如下：
+1、增加可以设置跟踪器宽度的属性，增加可以设置跟踪器高度和圆角半径的方法
+2、修复了当未选中按钮颜色的alpha值小于1时，颜色渐变不准确问题
+3、废弃了文字缩放(SPPageMenuTrackerStyleTextZoom)的枚举，该枚举由属性selectedItemZoomScale
+   代替，增加了SPPageMenuTrackerStyleNothing枚举
+4、可以设置分割线高度
+```
+
+##### 版本2.5.3
 ```
 target 'MyApp' do
   pod 'SPPageMenu', '~> 2.5.3'
 end
 ```
-
-版本2.5.5
-```
-target 'MyApp' do
-  pod 'SPPageMenu', '~> 2.5.5'
-end
-```
-
-终端输入命令：pod install 
-
-#### 说明：2.5.5版本在2.5.3版本的基础上改动如下：
-  1、增加可以设置跟踪器宽度的属性，增加可以设置跟踪器高度和圆角半径的方法<br> 
-  2、修复了当未选中按钮颜色的alpha值小于1时，颜色渐变不准确问题<br> 
-  3、废弃了文字缩放(SPPageMenuTrackerStyleTextZoom)的枚举，该枚举由属性selectedItemZoomScale
-     代替，增加了SPPageMenuTrackerStyleNothing枚举<br> 
-  4、可以设置分割线高度<br> 
-
-
 ## 部分功能演示图
 （友情提示：如果您的网络较慢，gif图可能会延迟加载，您可以先把宝贵的时间浏览其它信息）
 
 ![image](https://github.com/SPStore/SPPageMenu/blob/master/3006981-889f087b55f3e57f.gif)
-## 所有方法和属性
+## 重难点讲解
 ```
-// 创建pagMenu
-+ (instancetype)pageMenuWithFrame:(CGRect)frame trackerStyle:(SPPageMenuTrackerStyle)trackerStyle;
-- (instancetype)initWithFrame:(CGRect)frame trackerStyle:(SPPageMenuTrackerStyle)trackerStyle;
-```
-```
-/**
- *  传递数组(数组元素只能是NSString或UIImage类型)
- *
- *  @param items    数组
- *  @param selectedItemIndex  选中哪个item
- */
-- (void)setItems:(nullable NSArray *)items selectedItemIndex:(NSUInteger)selectedItemIndex;
+// 该属性是选中的按钮下标，大家可以通过这个属性判断选择了第几个按钮，如果改变其值，可以用于切换选中的按钮
+
+@property (nonatomic) NSInteger selectedItemIndex; 
 ```
 ```
-/** 选中的item下标 */
-@property (nonatomic) NSUInteger selectedItemIndex;
-```
-```
-/** 外界的srollView，pageMenu会监听该scrollView的滚动状况，让跟踪器时刻跟随此scrollView滑动 */
+// 这个scrollView是外界传进来的scrollView，通常的案例都是在pageMenu的下方有若干个子控制器在切换，子控制器的切换由滑动
+scrollView实现，使用者只需要把该scrollView传给bridgeScrollView，SPPageMenu框架内部会监听该scrollView的横向滚动，实
+现了让跟踪器时刻跟随该scrollView滚动的效果。暂时不支持监听垂直方向的滚动，如果你的scrollVeiw要垂直滚动实现切换按钮，你
+不妨可以尝试在-scrollViewDidScroll：代理方法中设置selectedItemIndex的值
+
 @property (nonatomic, strong) UIScrollView *bridgeScrollView;
 ```
 ```
-/** 关闭跟踪器的跟随效果,在外界传了scrollView进来或者调用了moveTrackerFollowScrollView的情况下,如果为YES，则当外界滑动scrollView时，跟踪器不会时刻跟随,只有滑动结束才会跟踪; 如果为NO，跟踪器会时刻跟随scrollView */
-@property (nonatomic, assign) BOOL closeTrackerFollowingfMode;
+// 排列方式：支持3中排列方式；1、可滑动，按钮宽度根据内容自适应；2、不可滑动，按钮等宽；3、不可滑动，按钮宽度根据内容自
+适应。3种排列方式都有非常高的使用频率。第1种排列方式：SPPageMene的容量会根据按钮个数而定；第2种和第3种排列方式:SPPageMenu
+的容量固定为SPPageMenu的宽度
+
+@property (nonatomic, assign) SPPageMenuPermutationWay permutationWay; 
 ```
 ```
-/** 是否显示功能按钮(功能按钮显示在最右侧),默认为NO */
-@property (nonatomic, assign) BOOL showFuntionButton;
+// 跟踪器跟踪模式；这个属性从3.4版本开始闪亮登场。该属性是个枚举，共3个：1、SPPageMenuTrackerFollowingModeAlways，这个
+枚举值的意思是让跟踪器时刻跟随外界scrollView(即bridgeScrollView)横向移； 2、SPPageMenuTrackerFollowingModeEnd，这个
+枚举的意思是当外界scrollView滑动结束时，跟踪器才开始移动；相当于3.4版本之前的closeTrackerFollowingMode属性 3、
+SPPageMenuTrackerFollowingModeHalf，这个枚举的意思是当外界scrollView拖动距离超过屏幕一半时，跟踪器开始移动。
+
+@property (nonatomic, assign) SPPageMenuTrackerFollowingMode trackerFollowingMode;
 ```
 ```
-/** item之间的间距,当permutationWay为‘SPPageMenuPermutationWayNotScrollAdaptContent’时此属性无效 */
-@property (nonatomic, assign) CGFloat itemPadding;
+// 内容的四周内边距(内容不包括分割线)，默认UIEdgeInsetsZero;这个属性是个惊喜，往往能做到一些你意想不到的事情。假如你的
+SPPageMenu控件高度固定不变，想要设置跟踪器距离按钮之间的垂直间距变小，就可以设置该属性的top和bottom值，让SPPageMenu的
+内容在垂直方向上内缩
+
+@property (nonatomic, assign) UIEdgeInsets contentInset; 
 ```
 ```
-/** item的标题字体 */
-@property (nonnull, nonatomic, strong) UIFont *itemTitleFont;
-```
-```
-/** 选中的item标题颜色 */
-@property (nonatomic, strong) UIColor *selectedItemTitleColor;
-```
-```
-/** 未选中的item标题颜色 */
-@property (nonatomic, strong) UIColor *unSelectedItemTitleColor;
-```
-```
-/** 跟踪器的宽度 */
-@property (nonatomic, assign)  CGFloat trackerWidth;
-```
-```
-/** 跟踪器 */
-@property (nonatomic, readonly) UIImageView *tracker;
-```
-```
-/** 分割线的高度，默认高度为0.5 */
-@property (nonatomic) CGFloat dividingLineHeight;
-```
-```
-/** 分割线 */
-@property (nonatomic, readonly) UIImageView *dividingLine;
-```
-```
-/** 代理 */
-@property (nonatomic, weak) id<SPPageMenuDeleagte> delegate;
-```
-```
-/** 内容的四周内边距(内容不包括分割线) */
-@property (nonatomic, assign) UIEdgeInsets contentInset;
-```
-```
-/** 排列方式 */
-@property (nonatomic, assign) SPPageMenuPermutationWay permutationWay;
-```
-```
-// 设置跟踪器的高度和圆角半径，矩形和圆角矩形样式下半径参数无效。其余样式下：默认的高度为3，圆角半径为高度的一半。之所以高度和半径以一个方法而不是2个属性的形式来设置，是因为不想提供太多的属性，其次跟踪器的高度一般用默认高度就好，自定义高度的情况并不会太多。另外，如果你想用默认高度，但是又不想要圆角半径，你可以设置trackerHeight为3，cornerRadius为0，这是去除默认半径的唯一办法
-- (void)setTrackerHeight:(CGFloat)trackerHeight cornerRadius:(CGFloat)cornerRadius;
-```
-```
-// 插入item,插入和删除操作时,如果itemIndex超过了了items的个数,则不做任何操作
-- (void)insertItemWithTitle:(nullable NSString *)title atIndex:(NSUInteger)itemIndex animated:(BOOL)animated;
-```
-```
-- (void)insertItemWithImage:(nullable UIImage *)image  atIndex:(NSUInteger)itemIndex animated:(BOOL)animated;
-```
-```
-// 如果移除的正是当前选中的item(当前选中的item下标不为0),删除之后,选中的item会切换为上一个item
-- (void)removeItemAtIndex:(NSUInteger)itemIndex animated:(BOOL)animated;
-```
-```
-- (void)removeAllItems;
-```
-```
-// 设置指定item的标题,设置后，如果原先的item为image，则image会被title替换
-- (void)setTitle:(nullable NSString *)title forItemAtIndex:(NSUInteger)itemIndex;
-```
-```
-// 获取指定item的标题
-- (nullable NSString *)titleForItemAtIndex:(NSUInteger)itemIndex;
-```
-```
-// 设置指定item的图片,设置后，如果原先的item为title，则title会被图片替换
-- (void)setImage:(nullable UIImage *)image forItemAtIndex:(NSUInteger)itemIndex;
-```
-```
-// 获取指定item的图片
-- (nullable UIImage *)imageForItemAtIndex:(NSUInteger)itemIndex;
-```
-```
-// 设置指定item的enabled状态
-- (void)setEnabled:(BOOL)enaled forItemAtIndex:(NSUInteger)itemIndex;
-```
-```
-// 获取指定item的enabled状态
-- (BOOL)enabledForItemAtIndex:(NSUInteger)itemIndex;
-```
-```
-// 设置指定item的宽度(如果width为0,则item将自动计算)
-- (void)setWidth:(CGFloat)width forItemAtIndex:(NSUInteger)itemIndex;
-```
-```
-// 获取指定item的宽度
-- (CGFloat)widthForItemAtIndex:(NSUInteger)itemIndex;
-```
-```
-/**
- *  同时为指定item设置标题和图片
- *
- *  @param title    标题
- *  @param image    图片
- *  @param imagePosition    图片的位置，分上、左、下、右
- *  @param ratio            图片所占item的比例,默认0.5,如果给0,同样会自动默认为0.5
- *  @param itemIndex        item的下标
- */
-- (void)setTitle:(nullable NSString *)title image:(nullable UIImage *)image imagePosition:(SPItemImagePosition)imagePosition imageRatio:(CGFloat)ratio forItemIndex:(NSUInteger)itemIndex;
-```
-```
-/**
- *  同时为functionButton设置标题和图片
- *
- *  @param title    标题
- *  @param image    图片
- *  @param imagePosition    图片的位置，分上、左、下、右
- *  @param ratio            图片所占item的比例,默认0.5,如果给0,同样会自动默认为0.5
- *  @param state            控件状态
- */
-- (void)setFunctionButtonTitle:(nullable NSString *)title image:(nullable UIImage *)image imagePosition:(SPItemImagePosition)imagePosition imageRatio:(CGFloat)ratio forState:(UIControlState)state;
-```
-```
-/* 为functionButton配置相关属性，如设置字体、文字颜色等
-   在此,attributes中,只有NSFontAttributeName、NSForegroundColorAttributeName、NSBackgroundColorAttributeName有效
- */
-- (void)setFunctionButtonTitleTextAttributes:(nullable NSDictionary *)attributes forState:(UIControlState)state;
-```
-```
-/* 1.让跟踪器时刻跟随外界scrollView滑动,实现了让跟踪器的宽度逐渐适应item宽度的功能;如果不想要这个功能
-   2.这个方法用于scrollViewDidScroll代理方法中，如
- 
-    - (void)scrollViewDidScroll:(UIScrollView *)scrollView {
-        [self.pageMenu moveTrackerFollowScrollView:scrollView];
-    }
- 
-    3.如果外界对SPPageMenu的属性"bridgeScrollView"赋了值，那么外界就可以不用在scrollViewDidScroll方法中调用这个方法来实现跟踪器时刻跟随外界scrollView的效果,内部会自动处理; 外界对SPPageMenu的属性"bridgeScrollView"赋值是实现此效果的最简便的操作
-    4.如果不想要此效果,可设置closeTrackerFollowingfMode==YES
- */
+// 该方法的效果和属性bridgeScrollView功能一致，如果外界想通过该方法实现跟踪器时刻跟随scrollView移动，可以在代理方法
+-scrollViewDidScroll:中调用该方法，如果方法和属性同时实现，属性优先级更高
+
 - (void)moveTrackerFollowScrollView:(UIScrollView *)scrollView;
 ```
 ```
-// 代理方法
-- (void)pageMenu:(SPPageMenu *)pageMenu functionButtonClicked:(UIButton *)functionButton;
-// 若以下2个代理方法同时实现了，那么只会走第2个代理方法
+// 代理方法：若以下2个代理方法同时实现了，只会走第2个代理方法（第2个代理方法包含了第1个代理方法的功能）
+// 代理方法何时触发？代理方法有2种方式会触发，第一种是点击了SPPageMenu的按钮，这种方式无论点击的按钮是否同一个都会触发；
+第二种是由滑动外界scrollView而触发，当跟踪模式为SPPageMenuTrackerFollowingModeAlways和SPPageMenuTrackerFollowingModeEnd
+时，滑动scrollView结束的时候触发地代理方法，当跟踪器的跟踪模式为SPPageMenuTrackerFollowingModeHalf时，滑动scrollView
+超过一半时就会触发代理方法
+
 - (void)pageMenu:(SPPageMenu *)pageMenu itemSelectedAtIndex:(NSInteger)index;
 - (void)pageMenu:(SPPageMenu *)pageMenu itemSelectedFromIndex:(NSInteger)fromIndex toIndex:(NSInteger)toIndex;
 ```
-### 使用示例大家可以把demo下载到本地，里面有非常多的示例以及详细的注释
+### 想了解更多使用细节，大家可以把demo下载到本地，里面有非常多的示例以及详细的注释
+
+# 使用者提问
+* **问**：当我设置排列方式为按钮等宽(即SPPageMenuPermutationWayNotScrollEqualWidths)，为什么按钮文字显示不全？<br>
+  **答**：这是因为你的按钮个数较多或者文字较长，你可以通过设置itemPadding属性来调整按钮之间的间距，间距调小，每个按钮的宽度就会增大，
+          如果itemPadding设置为0仍然显示不全，那就请选择其它排列方式。
+          
+* **问**：如何不通过点击按钮或者滑动外界scrollView来实现选中按钮的切换 ?<br>
+  **答**：你可以改变selectedItemIndex的值切换选中按钮
+  
+* **问**：如何在不改变pageMenu高度的情况下，让跟踪器和按钮之间的垂直间距变小 ？ <br>
+  **答**：你可以通过设置contentInset的top和bottom值，让pageMenu的内容在垂直方向上往中间挤压
+
+[回到顶部](#目录)
 
