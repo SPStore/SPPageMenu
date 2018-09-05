@@ -11,6 +11,7 @@
 * [如何安装](#如何安装)
 * [部分功能演示图](#部分功能演示图)
 * [重难点讲解](#重难点讲解) 
+* [使用者提问]（#使用者提问）
 
 ## 如何安装
 #### 版本3.4.0
@@ -124,5 +125,12 @@ SPPageMenu控件高度固定不变，想要设置跟踪器距离按钮之间的�
 - (void)pageMenu:(SPPageMenu *)pageMenu itemSelectedFromIndex:(NSInteger)fromIndex toIndex:(NSInteger)toIndex;
 ```
 ### 想了解更多使用细节，大家可以把demo下载到本地，里面有非常多的示例以及详细的注释
+
+## 使用者提问
+* **问**：当我设置排列方式为按钮等宽(即SPPageMenuPermutationWayNotScrollEqualWidths),为什么按钮文字显示不全？<br>
+
+  **答**：这是因为你的按钮个数较多或者文字较长，你可以通过设置itemPadding属性来调整按钮之间的间距，间距调小，每个按钮的宽度就会增大，
+          如果itemPadding设置为0仍然显示不全，那就选择其它排列方式。
+
 [回到顶部](##目录)
 
