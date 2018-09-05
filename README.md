@@ -23,7 +23,7 @@ end
 1、增加trackerFollowingMode属性，跟踪器跟踪模式
 2、增加selectedItemTitleFont和unSelectedItemTitleFont属性，设置选中item的标题字体和非选中item的标题字体
 3、增加设置和获取背景图片的方法
-4、修复跟踪器缩放文字显示不全问
+4、修复跟踪器缩放文字显示不全问题
 5、优化代码
 ```
 
@@ -55,7 +55,7 @@ end
 
 说明：2.5.5版本在2.5.3版本的基础上主要改动如下：
 1、增加可以设置跟踪器宽度的属性，增加可以设置跟踪器高度和圆角半径的方法
-2、修复了当未选中按钮颜色的alpha值小于1时，颜色渐变不准确问
+2、修复了当未选中按钮颜色的alpha值小于1时，颜色渐变不准确问题
 3、废弃了文字缩放(SPPageMenuTrackerStyleTextZoom)的枚举，该枚举由属性selectedItemZoomScale
    代替，增加了SPPageMenuTrackerStyleNothing枚举
 4、可以设置分割线高度
@@ -72,12 +72,13 @@ end
 
 ![image](https://github.com/SPStore/SPPageMenu/blob/master/3006981-889f087b55f3e57f.gif)
 ## 重难点讲解
-```
 // 该属性是选中的按钮下标，大家可以通过这个属性判断选择了第几个按钮，如果改变其值，可以用于切换选中的按钮
+```
 @property (nonatomic) NSInteger selectedItemIndex; 
 ```
 ```
-// 这个scrollView是外界传进来的scrollView，通常的案例都是在pageMenu的下方有若干个子控制器在切换，子控制器的切换由滑动scrollView实现，使用者只需要把该scrollView传给bridgeScrollView，SPPageMenu框架内部会监听该scrollView的横向滚动，实现了让跟踪器时刻跟随该scrollView滚动的效果。暂时不支持监听垂直方向的滚动，如果你的scrollVeiw要垂直滚动实现切换按钮，你不妨可以尝试在-scrollViewDidScroll：代理方法中设置selectedItemIndex的值
+// 这个scrollView是外界传进来的scrollView，通常的案例都是在pageMenu的下方有若干个子控制器在切换，子控制器的切换由滑动scrollView实现，使用者只需要把
+该scrollView传给bridgeScrollView，SPPageMenu框架内部会监听该scrollView的横向滚动，实现了让跟踪器时刻跟随该scrollView滚动的效果。暂时不支持监听垂直方向的滚动，如果你的scrollVeiw要垂直滚动实现切换按钮，你不妨可以尝试在-scrollViewDidScroll：代理方法中设置selectedItemIndex的值
 @property (nonatomic, strong) UIScrollView *bridgeScrollView;
 ```
 ```
