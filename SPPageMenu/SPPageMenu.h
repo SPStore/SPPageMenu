@@ -115,8 +115,6 @@ typedef NS_ENUM(NSInteger, SPItemImagePosition) {
 @property (nonatomic) CGFloat selectedItemZoomScale;
 @property (nonatomic, assign) BOOL needTextColorGradients; // 是否需要文字渐变,默认为YES
 
-@property (nonatomic, weak) id<SPPageMenuDelegate> delegate;
-
 // 修改跟踪器样式
 - (void)setTrackerStyle:(SPPageMenuTrackerStyle)trackerStyle;
 
