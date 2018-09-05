@@ -95,7 +95,8 @@ scrollView实现，使用者只需要把该scrollView传给bridgeScrollView，SP
 ```
 // 跟踪器跟踪模式；这个属性从3.4版本开始闪亮登场。该属性是个枚举，共3个：1、SPPageMenuTrackerFollowingModeAlways，这个
 枚举值的意思是让跟踪器时刻跟随外界scrollView(即bridgeScrollView)横向移； 2、SPPageMenuTrackerFollowingModeEnd，这个
-枚举的意思是当外界scrollView滑动结束时，跟踪器才开始移动；相当于3.4版本之前的closeTrackerFollowingMode属性 3、SPPageMenuTrackerFollowingModeHalf，这个枚举的意思是当外界scrollView拖动距离超过屏幕一半时，跟踪器开始移动。
+枚举的意思是当外界scrollView滑动结束时，跟踪器才开始移动；相当于3.4版本之前的closeTrackerFollowingMode属性 3、
+SPPageMenuTrackerFollowingModeHalf，这个枚举的意思是当外界scrollView拖动距离超过屏幕一半时，跟踪器开始移动。
 
 @property (nonatomic, assign) SPPageMenuTrackerFollowingMode trackerFollowingMode;
 ```
