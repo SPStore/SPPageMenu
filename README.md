@@ -137,5 +137,5 @@ SPPageMenu控件高度固定不变，想要设置跟踪器距离按钮之间的�
 * **问**：如何在不改变pageMenu高度的情况下，让跟踪器和按钮之间的垂直间距变小 ？ <br>
   **答**：你可以通过设置contentInset的top和bottom值，让pageMenu的内容在垂直方向上往中间挤压
 
-[回到顶部](#目录)
+[回到顶部](#SPPageMenu)
 
