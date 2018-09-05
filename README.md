@@ -77,8 +77,10 @@ end
 @property (nonatomic) NSInteger selectedItemIndex; 
 ```
 ```
-// 这个scrollView是外界传进来的scrollView，通常的案例都是在pageMenu的下方有若干个子控制器在切换，子控制器的切换由滑动scrollView实现，使用者只需要把
-该scrollView传给bridgeScrollView，SPPageMenu框架内部会监听该scrollView的横向滚动，实现了让跟踪器时刻跟随该scrollView滚动的效果。暂时不支持监听垂直方向的滚动，如果你的scrollVeiw要垂直滚动实现切换按钮，你不妨可以尝试在-scrollViewDidScroll：代理方法中设置selectedItemIndex的值
+// 这个scrollView是外界传进来的scrollView，通常的案例都是在pageMenu的下方有若干个子控制器在切换，子控制器的切换由滑动scrollView实现，
+使用者只需要把该scrollView传给bridgeScrollView，SPPageMenu框架内部会监听该scrollView的横向滚动，实现了让跟踪器时刻跟随该scrollView
+滚动的效果。暂时不支持监听垂直方向的滚动，如果你的scrollVeiw要垂直滚动实现切换按钮，你不妨可以尝试在-scrollViewDidScroll：代理方法中设
+置selectedItemIndex的值
 @property (nonatomic, strong) UIScrollView *bridgeScrollView;
 ```
 ```
