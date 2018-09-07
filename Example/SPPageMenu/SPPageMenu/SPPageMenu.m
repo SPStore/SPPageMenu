@@ -677,7 +677,8 @@
     _contentInset = UIEdgeInsetsZero;
     _selectedItemIndex = 0;
     _showFuntionButton = NO;
-    _funtionButtonshadowOpacity = 0.5;
+    _funtionButtonShadowOpacity = 0.5;
+    _funtionButtonShadowColor = [UIColor blackColor];
     _selectedItemZoomScale = 1;
     _needTextColorGradients = YES;
     
@@ -721,10 +722,10 @@
     [functionButton setTitle:@"＋" forState:UIControlStateNormal];
     [functionButton setTitleColor:[UIColor blackColor] forState:UIControlStateNormal];
     [functionButton addTarget:self action:@selector(functionButtonClicked:) forControlEvents:UIControlEventTouchUpInside];
-    functionButton.layer.shadowColor = [UIColor blackColor].CGColor;
+    functionButton.layer.shadowColor = _funtionButtonShadowColor.CGColor;
     functionButton.layer.shadowOffset = CGSizeMake(0, 0);
     functionButton.layer.shadowRadius = 2;
-    functionButton.layer.shadowOpacity = _funtionButtonshadowOpacity; // 默认是0,为0的话不会显示阴影
+    functionButton.layer.shadowOpacity = _funtionButtonShadowOpacity; // 默认是0,为0的话不会显示阴影
     functionButton.hidden = !_showFuntionButton;
     [backgroundView addSubview:functionButton];
     _functionButton = functionButton;
@@ -1158,9 +1159,9 @@
     [self moveItemScrollViewWithSelectedButton:self.selectedButton];
 }
 
-- (void)setFuntionButtonshadowOpacity:(CGFloat)funtionButtonshadowOpacity {
-    _funtionButtonshadowOpacity = funtionButtonshadowOpacity;
-    self.functionButton.layer.shadowOpacity = funtionButtonshadowOpacity;
+- (void)setFuntionButtonShadowOpacity:(CGFloat)funtionButtonShadowOpacity {
+    _funtionButtonShadowOpacity = funtionButtonShadowOpacity;
+    self.functionButton.layer.shadowOpacity = funtionButtonShadowOpacity;
 }
 
 - (void)setItemPadding:(CGFloat)itemPadding {
@@ -1331,7 +1332,7 @@
     CGFloat functionButtonY = 0;
     self.functionButton.frame = CGRectMake(functionButtonX, functionButtonY, functionButtonW, functionButtonH);
     // 通过shadowPath设置功能按钮的单边阴影
-    if (self.funtionButtonshadowOpacity > 0) {
+    if (self.funtionButtonShadowOpacity > 0) {
         self.functionButton.layer.shadowPath = [UIBezierPath bezierPathWithRect:CGRectMake(0, 2.5, 2, functionButtonH-5)].CGPath;
     }
 
