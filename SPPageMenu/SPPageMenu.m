@@ -261,9 +261,9 @@
     NSAssert(selectedItemIndex <= items.count-1, @"selectedItemIndex 大于了 %ld",items.count-1);
     _items = items.copy;
     _selectedItemIndex = selectedItemIndex;
-    
+
     self.insert = NO;
-    
+
     for (int i = 0; i < items.count; i++) {
         id object = items[i];
         NSAssert([object isKindOfClass:[NSString class]] || [object isKindOfClass:[UIImage class]], @"items中的元素只能是NSString或UIImage类型");
@@ -272,7 +272,7 @@
 
     [self setNeedsLayout];
     [self layoutIfNeeded];
-    
+
     if (self.buttons.count) {
         // 默认选中selectedItemIndex对应的按钮
         SPPageMenuItem *selectedButton = [self.buttons objectAtIndex:selectedItemIndex];
@@ -346,7 +346,7 @@
     } else {
         [self setNeedsLayout];
     }
-    
+
 }
 
 - (void)removeAllItems {
@@ -354,19 +354,19 @@
     [objects removeAllObjects];
     self.items = objects.copy;
     self.items = nil;
-    
+
     for (int i = 0; i < self.buttons.count; i++) {
         SPPageMenuItem *button = self.buttons[i];
         [button removeFromSuperview];
     }
-    
+
     [self.buttons removeAllObjects];
-    
+
     [self.tracker removeFromSuperview];
-    
+
     self.selectedButton = nil;
     self.selectedItemIndex = 0;
-    
+
     [self setNeedsLayout];
 }
 
@@ -500,7 +500,7 @@
         button.imagePosition = imagePosition;
         button.imageRatio = ratio;
         button.imageTitleSpace = imageTitleSpace;
-        
+
         // 文字和图片只能替换其一，因为items数组里不能同时装文字和图片。当文字和图片同时设置时，items里只更新文字
         if (title == nil || title.length == 0 || [title isKindOfClass:[NSNull class]]) {
             NSMutableArray *items = self.items.mutableCopy;
@@ -515,7 +515,7 @@
             [items replaceObjectAtIndex:itemIndex withObject:image];
             self.items = items.copy;
         }
-        
+
         [self setNeedsLayout];
         [self layoutIfNeeded];
     }
@@ -537,7 +537,7 @@
         [button setImage:image forState:UIControlStateNormal];
         button.imagePosition = imagePosition;
         button.imageRatio = ratio;
-        
+
         // 文字和图片只能替换其一，因为items数组里不能同时装文字和图片。当文字和图片同时设置时，items里只更新文字
         if (title == nil || title.length == 0 || [title isKindOfClass:[NSNull class]]) {
             NSMutableArray *items = self.items.mutableCopy;
@@ -552,7 +552,7 @@
             [items replaceObjectAtIndex:itemIndex withObject:image];
             self.items = items.copy;
         }
-        
+
         [self setNeedsLayout];
         [self layoutIfNeeded];
     }
@@ -577,18 +577,18 @@
 }
 
 - (void)moveTrackerFollowScrollView:(UIScrollView *)scrollView {
-    
+
     // 说明外界传进来了一个scrollView,如果外界传进来了，pageMenu会观察该scrollView的contentOffset自动处理跟踪器的跟踪
     if (self.bridgeScrollView == scrollView) { return; }
-    
+
     [self prepareMoveTrackerFollowScrollView:scrollView];
 }
- 
+
 
 #pragma mark - private
 
 - (void)addButton:(NSInteger)index object:(id)object animated:(BOOL)animated {
-    
+
     // 如果是插入，需要改变已有button的tag值
     for (SPPageMenuItem *button in self.buttons) {
         if (button.tag-tagBaseValue >= index) {
@@ -623,9 +623,9 @@
         [self.itemScrollView insertSubview:button atIndex:index];
     }
     [self.buttons insertObject:button atIndex:index];
-    
+
     // setNeedsLayout会标记为需要刷新,layoutIfNeeded只有在有标记的情况下才会立即调用layoutSubViews,当然标记为刷新并非只有调用setNeedsLayout,如frame改变，addSubView等都会标记为刷新
-    
+
     if (self.insert && animated) { // 是插入的新按钮,且需要动画
         // 取出上一个按钮
         SPPageMenuItem *lastButton;
@@ -665,7 +665,7 @@
 }
 
 - (void)initialize {
-    
+
     _itemPadding = 30;
     _selectedItemTitleColor = [UIColor redColor];
     _unSelectedItemTitleColor = [UIColor blackColor];
@@ -677,10 +677,11 @@
     _contentInset = UIEdgeInsetsZero;
     _selectedItemIndex = 0;
     _showFuntionButton = NO;
-    _funtionButtonshadowOpacity = 0.5;
+    _funtionButtonShadowOpacity = 0.5;
+    _funtionButtonShadowColor = [UIColor blackColor];
     _selectedItemZoomScale = 1;
     _needTextColorGradients = YES;
-    
+
     [self setupSubViews];
 }
 
@@ -694,16 +695,16 @@
     };
     [self addSubview:dividingLine];
     _dividingLine = dividingLine;
-    
+
     UIView *backgroundView = [[UIView alloc] init];
     backgroundView.layer.masksToBounds = YES;
     [self addSubview:backgroundView];
     _backgroundView = backgroundView;
-    
+
     UIImageView *backgroundImageView = [[UIImageView alloc] init];
     [backgroundView addSubview:backgroundImageView];
     _backgroundImageView = backgroundImageView;
-    
+
     SPPageMenuScrollView *itemScrollView = [[SPPageMenuScrollView alloc] init];
     itemScrollView.showsVerticalScrollIndicator = NO;
     itemScrollView.showsHorizontalScrollIndicator = NO;
@@ -715,16 +716,16 @@
     }
     [backgroundView addSubview:itemScrollView];
     _itemScrollView = itemScrollView;
-    
+
     SPPageMenuItem *functionButton = [SPPageMenuItem buttonWithType:UIButtonTypeCustom];
     functionButton.backgroundColor = [UIColor whiteColor];
     [functionButton setTitle:@"＋" forState:UIControlStateNormal];
     [functionButton setTitleColor:[UIColor blackColor] forState:UIControlStateNormal];
     [functionButton addTarget:self action:@selector(functionButtonClicked:) forControlEvents:UIControlEventTouchUpInside];
-    functionButton.layer.shadowColor = [UIColor blackColor].CGColor;
+    functionButton.layer.shadowColor = _funtionButtonShadowColor.CGColor;
     functionButton.layer.shadowOffset = CGSizeMake(0, 0);
     functionButton.layer.shadowRadius = 2;
-    functionButton.layer.shadowOpacity = _funtionButtonshadowOpacity; // 默认是0,为0的话不会显示阴影
+    functionButton.layer.shadowOpacity = _funtionButtonShadowOpacity; // 默认是0,为0的话不会显示阴影
     functionButton.hidden = !_showFuntionButton;
     [backgroundView addSubview:functionButton];
     _functionButton = functionButton;
@@ -742,10 +743,10 @@
         [sender setTitleColor:_selectedItemTitleColor forState:UIControlStateNormal];
         self.selectedButton.titleLabel.font = _unSelectedItemTitleFont;
         sender.titleLabel.font = _selectedItemTitleFont;
-        
+
         // 让itemScrollView发生偏移
         [self moveItemScrollViewWithSelectedButton:sender];
-        
+
         if (self.trackerStyle == SPPageMenuTrackerStyleTextZoom || _selectedItemZoomScale != 1) {
 
             if (labs(toIndex-fromIndex) >= 2) { // 该条件意思是当外界滑动scrollView连续的滑动了超过2页
@@ -800,7 +801,7 @@
     CGPoint centerInPageMenu = [self.backgroundView convertPoint:selectedButton.center toView:self];
     // CGRectGetMidX(self.backgroundView.frame)指的是屏幕水平中心位置，它的值是固定不变的
     CGFloat offSetX = centerInPageMenu.x - CGRectGetMidX(self.backgroundView.frame);
-    
+
     // itemScrollView的容量宽与自身宽之差(难点)
     CGFloat maxOffsetX = self.itemScrollView.contentSize.width - self.itemScrollView.frame.size.width;
     // 如果选中的button中心x值小于或者等于itemScrollView的中心x值，或者itemScrollView的容量宽度小于itemScrollView本身，此时点击button时不发生任何偏移，置offSetX为0
@@ -813,7 +814,7 @@
     }
 
     [self.itemScrollView setContentOffset:CGPointMake(offSetX, 0) animated:YES];
-    
+
 }
 
 // 移动跟踪器
@@ -933,12 +934,12 @@
 
     UIButton *fromButton = self.buttons[fromIndex];
     UIButton *toButton = self.buttons[toIndex];
-    
+
     // 2个按钮之间的距离
     CGFloat xDistance = toButton.center.x - fromButton.center.x;
     // 2个按钮宽度的差值
     CGFloat wDistance = toButton.frame.size.width - fromButton.frame.size.width;
-    
+
     CGRect newFrame = self.tracker.frame;
     CGPoint newCenter = self.tracker.center;
     if (self.trackerStyle == SPPageMenuTrackerStyleLine) {
@@ -977,7 +978,7 @@
         if (_selectedItemZoomScale != 1) {
             [self zoomForTitleWithProgress:progress fromButton:fromButton toButton:toButton];
         }
-        
+
     } else if (self.trackerStyle == SPPageMenuTrackerStyleTextZoom || self.trackerStyle == SPPageMenuTrackerStyleNothing) {
         // 缩放文字
         if (_selectedItemZoomScale != 1) {
@@ -1012,13 +1013,13 @@
     CGFloat fromProgress = progress;
     // 获取 originalProgress
     CGFloat toProgress = 1 - fromProgress;
-    
+
     CGFloat r = self.endR - self.startR;
     CGFloat g = self.endG - self.startG;
     CGFloat b = self.endB - self.startB;
     UIColor *fromColor = [UIColor colorWithRed:self.startR +  r * fromProgress  green:self.startG +  g * fromProgress  blue:self.startB +  b * fromProgress alpha:1];
     UIColor *toColor = [UIColor colorWithRed:self.startR + r * toProgress green:self.startG + g * toProgress blue:self.startB + b * toProgress alpha:1];
-    
+
     // 设置文字颜色渐变
     [fromButton setTitleColor:fromColor forState:UIControlStateNormal];
     [toButton setTitleColor:toColor forState:UIControlStateNormal];
@@ -1081,7 +1082,7 @@
 - (void)setBridgeScrollView:(UIScrollView *)bridgeScrollView {
     _bridgeScrollView = bridgeScrollView;
     if (bridgeScrollView) {
-        
+
         [bridgeScrollView addObserver:self forKeyPath:scrollViewContentOffset options:NSKeyValueObservingOptionNew context:nil];
     } else {
         NSLog(@"你传了一个空的scrollView");
@@ -1158,9 +1159,9 @@
     [self moveItemScrollViewWithSelectedButton:self.selectedButton];
 }
 
-- (void)setFuntionButtonshadowOpacity:(CGFloat)funtionButtonshadowOpacity {
-    _funtionButtonshadowOpacity = funtionButtonshadowOpacity;
-    self.functionButton.layer.shadowOpacity = funtionButtonshadowOpacity;
+- (void)setFuntionButtonShadowOpacity:(CGFloat)funtionButtonShadowOpacity {
+    _funtionButtonShadowOpacity = funtionButtonShadowOpacity;
+    self.functionButton.layer.shadowOpacity = funtionButtonShadowOpacity;
 }
 
 - (void)setItemPadding:(CGFloat)itemPadding {
@@ -1277,16 +1278,16 @@
 }
 
 - (NSMutableArray *)buttons {
-    
+
     if (!_buttons) {
         _buttons = [NSMutableArray array];
-        
+
     }
     return _buttons;
 }
 
 - (NSMutableDictionary *)setupWidths {
-    
+
     if (!_setupWidths) {
         _setupWidths = [NSMutableDictionary dictionary];
     }
@@ -1294,7 +1295,7 @@
 }
 
 - (UIImageView *)tracker {
-    
+
     if (!_tracker) {
         _tracker = [[UIImageView alloc] init];
         _tracker.layer.cornerRadius = _trackerHeight * 0.5;
@@ -1311,14 +1312,14 @@
 
 - (void)layoutSubviews {
     [super layoutSubviews];
-    
+
     CGFloat backgroundViewX = self.bounds.origin.x+_contentInset.left;
     CGFloat backgroundViewY = self.bounds.origin.y+_contentInset.top;
     CGFloat backgroundViewW = self.bounds.size.width-(_contentInset.left+_contentInset.right);
     CGFloat backgroundViewH = self.bounds.size.height-(_contentInset.top+_contentInset.bottom);
     self.backgroundView.frame = CGRectMake(backgroundViewX, backgroundViewY, backgroundViewW, backgroundViewH);
     self.backgroundImageView.frame = self.backgroundView.bounds;
-    
+
     CGFloat dividingLineW = self.bounds.size.width;
     CGFloat dividingLineH = (self.dividingLine.hidden || self.dividingLine.alpha < 0.01) ? 0 : _dividingLineHeight;
     CGFloat dividingLineX = 0;
@@ -1331,7 +1332,7 @@
     CGFloat functionButtonY = 0;
     self.functionButton.frame = CGRectMake(functionButtonX, functionButtonY, functionButtonW, functionButtonH);
     // 通过shadowPath设置功能按钮的单边阴影
-    if (self.funtionButtonshadowOpacity > 0) {
+    if (self.funtionButtonShadowOpacity > 0) {
         self.functionButton.layer.shadowPath = [UIBezierPath bezierPathWithRect:CGRectMake(0, 2.5, 2, functionButtonH-5)].CGPath;
     }
 
@@ -1340,13 +1341,13 @@
     CGFloat itemScrollViewW = self.showFuntionButton ? backgroundViewW-functionButtonW : backgroundViewW;
     CGFloat itemScrollViewH = backgroundViewH-dividingLineH;
     self.itemScrollView.frame = CGRectMake(itemScrollViewX, itemScrollViewY, itemScrollViewW, itemScrollViewH);
-    
+
     // 存储itemScrollViewH,目的是解决选中按钮缩放后高度变化了的问题，我们要让选中的按钮缩放之后，依然保持原始高度
     _itemScrollViewH = itemScrollViewH;
 
     __block CGFloat buttonW = 0.0;
     __block CGFloat lastButtonMaxX = 0.0;
-    
+
     CGFloat contentW = 0.0; // 内容宽
     CGFloat contentW_sum = 0.0; // 所有文字宽度之和
     NSMutableArray *buttonWidths = [NSMutableArray array];
@@ -1390,7 +1391,7 @@
         }
     }
     CGFloat diff = itemScrollViewW - contentW_sum;
-    
+
     [self.buttons enumerateObjectsUsingBlock:^(SPPageMenuItem *button, NSUInteger idx, BOOL * _Nonnull stop) {
         CGFloat setupButtonW = [[self.setupWidths objectForKey:[NSString stringWithFormat:@"%lu",(unsigned long)idx]] floatValue];
         if (self.permutationWay == SPPageMenuPermutationWayScrollAdaptContent) {
@@ -1414,7 +1415,7 @@
             } else {
                 button.frame = CGRectMake(self->_itemPadding+lastButtonMaxX, 0, buttonW, itemScrollViewH);
             }
-            
+
         } else {
             self->_itemPadding = diff/self.buttons.count;
             buttonW = [buttonWidths[idx] floatValue];
@@ -1426,7 +1427,7 @@
         }
         lastButtonMaxX = CGRectGetMaxX(button.frame);
     }];
-    
+
     // 如果selectedButton有缩放，走完上面代码selectedButton的frame会还原，这会导致文字显示不全问题，为了解决这个问题，这里将selectedButton的frame强制缩放
     if (!CGAffineTransformEqualToTransform(self.selectedButton.transform, CGAffineTransformIdentity)) {
         CGRect selectedButtonRect = self.selectedButton.frame;
@@ -1437,24 +1438,24 @@
     }
 
     [self resetSetupTrackerFrameWithSelectedButton:self.selectedButton];
-    
+
     self.itemScrollView.contentSize = CGSizeMake(lastButtonMaxX+_itemPadding*0.5, 0);
-    
+
     if (self.translatesAutoresizingMaskIntoConstraints == NO) {
-        
+
         [self moveItemScrollViewWithSelectedButton:self.selectedButton];
     }
 }
 
 - (void)resetSetupTrackerFrameWithSelectedButton:(SPPageMenuItem *)selectedButton {
-    
+
     CGFloat trackerX;
     CGFloat trackerY;
     CGFloat trackerW;
     CGFloat trackerH;
-    
+
     CGFloat selectedButtonWidth = selectedButton.frame.size.width;
-    
+
     switch (self.trackerStyle) {
         case SPPageMenuTrackerStyleLine:
         {
@@ -1508,7 +1509,7 @@
         default:
             break;
     }
-    
+
     CGPoint trackerCenter = self.tracker.center;
     trackerCenter.x = selectedButton.center.x;
     self.tracker.center = trackerCenter;

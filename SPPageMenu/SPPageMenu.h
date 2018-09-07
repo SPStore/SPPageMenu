@@ -101,9 +101,6 @@ typedef NS_ENUM(NSInteger, SPItemImagePosition) {
 // 跟踪器的跟踪模式
 @property (nonatomic, assign) SPPageMenuTrackerFollowingMode trackerFollowingMode;
 
-/** 分割FunctionButton的分割线 */
-@property (nonatomic, weak) CALayer *shadowLine;
-
 /** 代理 */
 @property (nonatomic, weak) id<SPPageMenuDelegate> delegate;
 
@@ -158,7 +155,8 @@ typedef NS_ENUM(NSInteger, SPItemImagePosition) {
 
 
 @property (nonatomic, assign) BOOL showFuntionButton; // 是否显示功能按钮(功能按钮显示在最右侧),默认为NO
-@property (nonatomic, assign) CGFloat funtionButtonshadowOpacity; // 功能按钮左侧的阴影透明度,如果设置小于等于0，则没有阴影
+@property (nonatomic, assign) CGFloat funtionButtonShadowOpacity; // 功能按钮左侧的阴影透明度,如果设置小于等于0，则没有阴影
+@property (nonatomic, strong) UIColor *funtionButtonShadowColor; // 功能按钮左侧的阴影颜色,默认为黑色
 
 /**
  *  同时为functionButton设置标题和图片
