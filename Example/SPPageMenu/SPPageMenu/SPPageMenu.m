@@ -676,9 +676,9 @@
     _dividingLineHeight = 1 / [UIScreen mainScreen].scale; // 适配屏幕分辨率
     _contentInset = UIEdgeInsetsZero;
     _selectedItemIndex = 0;
-    _showFuntionButton = NO;
-    _funtionButtonShadowOpacity = 0.5;
-    _funtionButtonShadowColor = [UIColor blackColor];
+    _showFunctionButton = NO;
+    _functionButtonShadowOpacity = 0.5;
+    _functionButtonShadowColor = [UIColor blackColor];
     _selectedItemZoomScale = 1;
     _needTextColorGradients = YES;
     
@@ -722,11 +722,11 @@
     [functionButton setTitle:@"＋" forState:UIControlStateNormal];
     [functionButton setTitleColor:[UIColor blackColor] forState:UIControlStateNormal];
     [functionButton addTarget:self action:@selector(functionButtonClicked:) forControlEvents:UIControlEventTouchUpInside];
-    functionButton.layer.shadowColor = _funtionButtonShadowColor.CGColor;
+    functionButton.layer.shadowColor = _functionButtonShadowColor.CGColor;
     functionButton.layer.shadowOffset = CGSizeMake(0, 0);
     functionButton.layer.shadowRadius = 2;
-    functionButton.layer.shadowOpacity = _funtionButtonShadowOpacity; // 默认是0,为0的话不会显示阴影
-    functionButton.hidden = !_showFuntionButton;
+    functionButton.layer.shadowOpacity = _functionButtonShadowOpacity; // 默认是0,为0的话不会显示阴影
+    functionButton.hidden = !_showFunctionButton;
     [backgroundView addSubview:functionButton];
     _functionButton = functionButton;
 }
@@ -1150,18 +1150,18 @@
     }
 }
 
-- (void)setShowFuntionButton:(BOOL)showFuntionButton {
-    _showFuntionButton = showFuntionButton;
-    self.functionButton.hidden = !showFuntionButton;
+- (void)setShowFunctionButton:(BOOL)showFunctionButton {
+    _showFunctionButton = showFunctionButton;
+    self.functionButton.hidden = !showFunctionButton;
     [self setNeedsLayout];
     [self layoutIfNeeded];
     // 修正scrollView偏移
     [self moveItemScrollViewWithSelectedButton:self.selectedButton];
 }
 
-- (void)setFuntionButtonShadowOpacity:(CGFloat)funtionButtonShadowOpacity {
-    _funtionButtonShadowOpacity = funtionButtonShadowOpacity;
-    self.functionButton.layer.shadowOpacity = funtionButtonShadowOpacity;
+- (void)setFunctionButtonShadowOpacity:(CGFloat)functionButtonShadowOpacity {
+    _functionButtonShadowOpacity = functionButtonShadowOpacity;
+    self.functionButton.layer.shadowOpacity = functionButtonShadowOpacity;
 }
 
 - (void)setItemPadding:(CGFloat)itemPadding {
@@ -1332,13 +1332,13 @@
     CGFloat functionButtonY = 0;
     self.functionButton.frame = CGRectMake(functionButtonX, functionButtonY, functionButtonW, functionButtonH);
     // 通过shadowPath设置功能按钮的单边阴影
-    if (self.funtionButtonShadowOpacity > 0) {
+    if (self.functionButtonShadowOpacity > 0) {
         self.functionButton.layer.shadowPath = [UIBezierPath bezierPathWithRect:CGRectMake(0, 2.5, 2, functionButtonH-5)].CGPath;
     }
 
     CGFloat itemScrollViewX = 0;
     CGFloat itemScrollViewY = 0;
-    CGFloat itemScrollViewW = self.showFuntionButton ? backgroundViewW-functionButtonW : backgroundViewW;
+    CGFloat itemScrollViewW = self.showFunctionButton ? backgroundViewW-functionButtonW : backgroundViewW;
     CGFloat itemScrollViewH = backgroundViewH-dividingLineH;
     self.itemScrollView.frame = CGRectMake(itemScrollViewX, itemScrollViewY, itemScrollViewW, itemScrollViewH);
     
