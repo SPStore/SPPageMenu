@@ -186,9 +186,9 @@ typedef NS_ENUM(NSInteger, SPItemImagePosition) {
 
 // -------------- 以下方法和属性被废弃 --------------
 
-// 设置指定item的四周内边距,3.0版本的时候不小心多写了一个for,3.1版本已纠正
+// 设置指定item的四周内边距,3.0版本的时候不小心多写了一个for,3.4.0版本已纠正
 - (void)setContentEdgeInsets:(UIEdgeInsets)contentEdgeInsets forForItemAtIndex:(NSUInteger)itemIndex NS_DEPRECATED_IOS(6_0, 6_0, "Use -setContentEdgeInsets:forItemAtIndex:");
-// 默认NO;关闭跟踪器的跟随效果,在外界传了scrollView进来或者调用了moveTrackerFollowScrollView的情况下,如果为YES，则当外界滑动scrollView时，跟踪器不会时刻跟随,只有滑动结束才会跟随;  3.1版本开始被废弃，但是依然能使用,使用后相当于设置了SPPageMenuTrackerFollowingModeEnd枚举值
+// 默认NO;关闭跟踪器的跟随效果,在外界传了scrollView进来或者调用了moveTrackerFollowScrollView的情况下,如果为YES，则当外界滑动scrollView时，跟踪器不会时刻跟随,只有滑动结束才会跟随;  3.4.0版本开始被废弃，但是依然能使用,使用后相当于设置了SPPageMenuTrackerFollowingModeEnd枚举值
 @property (nonatomic, assign) BOOL closeTrackerFollowingMode NS_DEPRECATED_IOS(6_0, 6_0,"Use trackerFollowingMode instead");
 // 以下2个方法从3.0版本开始有升级，可以使用但不推荐
 - (void)setTitle:(nullable NSString *)title image:(nullable UIImage *)image imagePosition:(SPItemImagePosition)imagePosition imageRatio:(CGFloat)ratio forItemIndex:(NSUInteger)itemIndex NS_DEPRECATED_IOS(6_0, 6_0, "Use -setTitle:image:imagePosition:imageRatio:imageTitleSpace:forItemIndex:");
