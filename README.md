@@ -14,6 +14,15 @@
 * [使用者提问](#使用者提问)
 
 ## 如何安装
+#### 版本3.4.1
+```
+target 'MyApp' do
+  pod 'SPPageMenu', '~> 3.4.1'
+end
+
+3.4.1版本在3.4.0版本的基础上修复了多次调用setItems:selectedItemIndex:方法引发的问题
+```
+
 #### 版本3.4.0
 ```
 target 'MyApp' do
