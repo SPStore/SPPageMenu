@@ -339,7 +339,6 @@
 // 示例17:含有图片的按钮
 - (void)test17 {
     self.dataArr = @[@"生活",[UIImage imageNamed:@"Expression_1"],@"交通",[UIImage imageNamed:@"Expression_2"],@"搞笑",@"综艺"];
-
     SPPageMenu *pageMenu = [SPPageMenu pageMenuWithFrame:CGRectMake(0, NaviH, screenW, pageMenuH) trackerStyle:SPPageMenuTrackerStyleLineLongerThanItem];
     // 传递数组，默认选中第2个
     [pageMenu setItems:self.dataArr selectedItemIndex:1];
@@ -405,16 +404,18 @@
     // 给pageMenu传递外界的大scrollView，内部监听self.scrollView的滚动，从而实现让跟踪器跟随self.scrollView移动的效果
     pageMenu.bridgeScrollView = self.scrollView;
 
-    IT it0 = [pageMenu buttonForItemAtIndex:0];
-    JSBadgeView *badgeView0 = [[JSBadgeView alloc] initWithParentView:it0.titleLabel alignment:JSBadgeViewAlignmentTopRight];
+    // 这里通过KVC的形式取出按钮数组，在通过下标获取指定的按钮。本框架没有特别提供返回指定按钮的方法，因为按钮是不能返回的，一旦返回，该按钮的属性就可以被外界轻松地任意修改，这是一个框架该考虑的安全问题。如果专门提供一个设置角标的方法，那么角标的样式又可以自定义，角标并非本框架的核心功能，所以没必要因为它将框架搞得3过于臃肿。
+    NSArray *buttons = [pageMenu valueForKey:@"_buttons"];
+    UIButton *button0 = [buttons objectAtIndex:0];
+    JSBadgeView *badgeView0 = [[JSBadgeView alloc] initWithParentView:button0.titleLabel alignment:JSBadgeViewAlignmentTopRight];
     badgeView0.badgePositionAdjustment = CGPointMake(10, 0);
     badgeView0.badgeBackgroundColor = [UIColor redColor];
     badgeView0.badgeOverlayColor = [UIColor clearColor];
     badgeView0.badgeStrokeColor = [UIColor redColor];
     badgeView0.badgeText = @"3";
 
-    IT it1 = [pageMenu buttonForItemAtIndex:2];
-    JSBadgeView *badgeView2 = [[JSBadgeView alloc] initWithParentView:it1.titleLabel alignment:JSBadgeViewAlignmentTopRight];
+    UIButton *button1 = [buttons objectAtIndex:2];
+    JSBadgeView *badgeView2 = [[JSBadgeView alloc] initWithParentView:button1.titleLabel alignment:JSBadgeViewAlignmentTopRight];
     badgeView2.badgePositionAdjustment = CGPointMake(10, 0);
     badgeView2.badgeBackgroundColor = [UIColor whiteColor];
     badgeView2.badgeOverlayColor = [UIColor clearColor];

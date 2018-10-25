@@ -59,7 +59,6 @@
 
 @implementation SPPageMenuItem
 
-
 - (instancetype)initWithImageRatio:(CGFloat)ratio {
     if (self = [super init]) {
         _imageRatio = ratio;
@@ -491,17 +490,6 @@
 
 - (UIImage *)backgroundImageForBarMetrics:(UIBarMetrics)barMetrics {
     return self.backgroundImageView.image;
-}
-
-- (IT)buttonForItemAtIndex:(NSUInteger)itemIndex {
-    if (self.buttons.count) {
-        UIButton *button = [self.buttons objectAtIndex:itemIndex];
-        struct IT it = {button.titleLabel,button.imageView};
-        return it;
-    } else {
-        struct IT it;
-        return it;
-    }
 }
 
 - (void)setTrackerHeight:(CGFloat)trackerHeight cornerRadius:(CGFloat)cornerRadius {

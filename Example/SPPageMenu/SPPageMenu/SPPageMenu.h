@@ -40,12 +40,6 @@ typedef NS_ENUM(NSInteger, SPItemImagePosition) {
     SPItemImagePositionBottom     // 图片在下面
 };
 
-// 这里定义了一个结构体
-typedef struct IT {
-     UILabel * const titleLabel;
-     UIImageView * const imageView;
-} IT;
-
 @class SPPageMenu;
 
 @protocol SPPageMenuDelegate <NSObject>
@@ -143,9 +137,6 @@ typedef struct IT {
 // 设置背景图片，barMetrics只有为UIBarMetricsDefault时才生效，如果外界传进来的backgroundImage调用过- resizableImageWithCapInsets:且参数capInsets不为UIEdgeInsetsZero，则直接用backgroundImage作为背景图; 否则内部会自动调用- resizableImageWithCapInsets:进行拉伸
 - (void)setBackgroundImage:(nullable UIImage *)backgroundImage barMetrics:(UIBarMetrics)barMetrics;
 - (nullable UIImage *)backgroundImageForBarMetrics:(UIBarMetrics)barMetrics; // 获取背景图片
-
-// 返回了一个结构体，这个结构体中的成员变量为指定按钮上的titleLabel和imageView，之所以不直接返回指定的按钮，是为了防止外界能够轻易修改这个按钮的属性，比如设置文字、图片、frmae等。当然，硬要强制改还是可以的，但是这里只建议使用，不建议修改
-- (IT)buttonForItemAtIndex:(NSUInteger)itemIndex;
 
 /**
  同时为指定item设置标题和图片
