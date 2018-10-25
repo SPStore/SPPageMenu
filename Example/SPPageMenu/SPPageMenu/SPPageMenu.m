@@ -54,6 +54,7 @@
 @property (nonatomic, assign) SPItemImagePosition imagePosition;
 // 图片与标题之间的间距
 @property (nonatomic, assign) CGFloat imageTitleSpace;
+
 @end
 
 @implementation SPPageMenuItem
@@ -490,6 +491,17 @@
 
 - (UIImage *)backgroundImageForBarMetrics:(UIBarMetrics)barMetrics {
     return self.backgroundImageView.image;
+}
+
+- (IT)buttonForItemAtIndex:(NSUInteger)itemIndex {
+    if (self.buttons.count) {
+        UIButton *button = [self.buttons objectAtIndex:itemIndex];
+        struct IT it = {button.titleLabel,button.imageView};
+        return it;
+    } else {
+        struct IT it;
+        return it;
+    }
 }
 
 - (void)setTrackerHeight:(CGFloat)trackerHeight cornerRadius:(CGFloat)cornerRadius {
