@@ -54,10 +54,10 @@
 @property (nonatomic, assign) SPItemImagePosition imagePosition;
 // 图片与标题之间的间距
 @property (nonatomic, assign) CGFloat imageTitleSpace;
+
 @end
 
 @implementation SPPageMenuItem
-
 
 - (instancetype)initWithImageRatio:(CGFloat)ratio {
     if (self = [super init]) {
@@ -263,6 +263,13 @@
     _selectedItemIndex = selectedItemIndex;
     
     self.insert = NO;
+
+    if (self.buttons.count) {
+        for (SPPageMenuItem *button in self.buttons) {
+            [button removeFromSuperview];
+        }
+    }
+    [self.buttons removeAllObjects];
     
     for (int i = 0; i < items.count; i++) {
         id object = items[i];

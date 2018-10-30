@@ -18,9 +18,11 @@
 #import "SevenViewController.h"
 #import "EightViewController.h"
 
+#import "JSBadgeView.h"
+
 #define screenW [UIScreen mainScreen].bounds.size.width
 #define screenH [UIScreen mainScreen].bounds.size.height
-#define pageMenuH 35
+#define pageMenuH 40
 #define NaviH (screenH == 812 ? 88 : 64) // 812是iPhoneX的高度
 #define scrollViewHeight (screenH-NaviH-pageMenuH)
 
@@ -337,7 +339,6 @@
 // 示例17:含有图片的按钮
 - (void)test17 {
     self.dataArr = @[@"生活",[UIImage imageNamed:@"Expression_1"],@"交通",[UIImage imageNamed:@"Expression_2"],@"搞笑",@"综艺"];
-
     SPPageMenu *pageMenu = [SPPageMenu pageMenuWithFrame:CGRectMake(0, NaviH, screenW, pageMenuH) trackerStyle:SPPageMenuTrackerStyleLineLongerThanItem];
     // 传递数组，默认选中第2个
     [pageMenu setItems:self.dataArr selectedItemIndex:1];
@@ -391,8 +392,45 @@
     _pageMenu = pageMenu;
 }
 
-// 示例20:特别属性说明
+// 示例20:给指定按钮加角标
 - (void)test20 {
+    self.dataArr = @[@"生活",@"军事",@"水木年华",@"综艺"];
+
+    SPPageMenu *pageMenu = [SPPageMenu pageMenuWithFrame:CGRectMake(0, NaviH, screenW, pageMenuH) trackerStyle:SPPageMenuTrackerStyleNothing];
+    // 传递数组，默认选中第2个
+    [pageMenu setItems:self.dataArr selectedItemIndex:1];
+    pageMenu.delegate = self;
+    pageMenu.permutationWay = SPPageMenuPermutationWayNotScrollAdaptContent;
+    // 给pageMenu传递外界的大scrollView，内部监听self.scrollView的滚动，从而实现让跟踪器跟随self.scrollView移动的效果
+    pageMenu.bridgeScrollView = self.scrollView;
+
+    // 这里通过KVC的形式取出按钮数组，在通过下标获取指定的按钮。本框架没有特别提供返回指定按钮的方法，因为按钮是不能返回的，一旦返回，该按钮的属性就可以被外界轻松地任意修改，这是一个框架该考虑的安全问题。如果专门提供一个设置角标的方法，那么角标的样式又可以自定义，角标并非本框架的核心功能，所以没必要因为它将框架搞得3过于臃肿。
+    NSArray *buttons = [pageMenu valueForKey:@"_buttons"];
+    UIButton *button0 = [buttons objectAtIndex:0];
+    JSBadgeView *badgeView0 = [[JSBadgeView alloc] initWithParentView:button0.titleLabel alignment:JSBadgeViewAlignmentTopRight];
+    badgeView0.badgePositionAdjustment = CGPointMake(10, 0);
+    badgeView0.badgeBackgroundColor = [UIColor redColor];
+    badgeView0.badgeOverlayColor = [UIColor clearColor];
+    badgeView0.badgeStrokeColor = [UIColor redColor];
+    badgeView0.badgeText = @"3";
+
+    UIButton *button1 = [buttons objectAtIndex:2];
+    JSBadgeView *badgeView2 = [[JSBadgeView alloc] initWithParentView:button1.titleLabel alignment:JSBadgeViewAlignmentTopRight];
+    badgeView2.badgePositionAdjustment = CGPointMake(10, 0);
+    badgeView2.badgeBackgroundColor = [UIColor whiteColor];
+    badgeView2.badgeOverlayColor = [UIColor clearColor];
+    badgeView2.badgeStrokeColor = [UIColor redColor];
+    badgeView2.badgeTextColor = [UIColor redColor];
+    badgeView2.badgeMinWidth = 1.0 / [UIScreen mainScreen].scale;
+    badgeView2.badgeText = @"99";
+
+    [self.view addSubview:pageMenu];
+
+    _pageMenu = pageMenu;
+}
+
+// 示例21:特别属性说明
+- (void)test21 {
     self.dataArr = nil;
     
     NSString *text = @"本框架的bridgeScrollView属性是一个很重要但又容易忽略的属性，在外界的viewDidLoad中，每种示例都传了一个scrollView，即:“self.pageMenu.bridgeScrollView = self.scrollView”，这一传递，SPPageMenu内部会监听该scrollView的滚动状况，当该scrollView滚动的时候，就可以让跟踪器时刻跟随；如果你忘了或者不想设置这个属性，也可以在外界的scrollView的代理方法scrollViewDidScroll中调用接口“- (void)moveTrackerFollowScrollView:(UIScrollView *)scrollView”,这样也能实现跟踪器时刻跟随scrollView；如果不想让跟踪器时刻跟踪，而直到scrollView滑动结束才跟踪，在上面2种方式采取了任意一种的情况下，可以设置属性”pageMenu.closeTrackerFollowingMode = YES“";
@@ -473,6 +511,12 @@
             break;
         case 18:
             [self test19];
+            break;
+        case 19:
+            [self test20];
+            break;
+        case 20:
+            [self test21];
             break;
         default:
             break;

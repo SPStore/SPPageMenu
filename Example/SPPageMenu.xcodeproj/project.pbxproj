@@ -27,6 +27,7 @@
 		095E9C211FA6F8CC0097A889 /* ThidViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 095E9C171FA6F8CC0097A889 /* ThidViewController.m */; };
 		095E9C291FA6F92D0097A889 /* SPPageMenu.m in Sources */ = {isa = PBXBuildFile; fileRef = 095E9C281FA6F92D0097A889 /* SPPageMenu.m */; };
 		6A8808C1213D361D00C3553F /* mateor.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 6A8808BF213D361C00C3553F /* mateor.jpg */; };
+		6A9270122179BCF400831045 /* JSBadgeView.m in Sources */ = {isa = PBXBuildFile; fileRef = 6A9270102179BCF400831045 /* JSBadgeView.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -86,6 +87,8 @@
 		095E9C271FA6F92D0097A889 /* SPPageMenu.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SPPageMenu.h; sourceTree = "<group>"; };
 		095E9C281FA6F92D0097A889 /* SPPageMenu.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SPPageMenu.m; sourceTree = "<group>"; };
 		6A8808BF213D361C00C3553F /* mateor.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = mateor.jpg; sourceTree = "<group>"; };
+		6A9270102179BCF400831045 /* JSBadgeView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = JSBadgeView.m; sourceTree = "<group>"; };
+		6A9270112179BCF400831045 /* JSBadgeView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JSBadgeView.h; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -143,6 +146,7 @@
 				091229F81FA5F13000AEE295 /* ParentViewController.m */,
 				095E9C021FA6F8CC0097A889 /* ChildViewControllers */,
 				DC317C5E213C0BB9000F4159 /* Images */,
+				6A92700F2179BCF400831045 /* JSBadgeView */,
 				091A687E1FA1CAC100DAA561 /* Main.storyboard */,
 				091A68811FA1CAC100DAA561 /* Assets.xcassets */,
 				091A68831FA1CAC100DAA561 /* LaunchScreen.storyboard */,
@@ -212,6 +216,15 @@
 				095E9C281FA6F92D0097A889 /* SPPageMenu.m */,
 			);
 			path = SPPageMenu;
+			sourceTree = "<group>";
+		};
+		6A92700F2179BCF400831045 /* JSBadgeView */ = {
+			isa = PBXGroup;
+			children = (
+				6A9270112179BCF400831045 /* JSBadgeView.h */,
+				6A9270102179BCF400831045 /* JSBadgeView.m */,
+			);
+			path = JSBadgeView;
 			sourceTree = "<group>";
 		};
 		DC317C5E213C0BB9000F4159 /* Images */ = {
@@ -363,6 +376,7 @@
 				095E9C1D1FA6F8CC0097A889 /* SecondViewController.m in Sources */,
 				095E9C1B1FA6F8CC0097A889 /* FiveViewController.m in Sources */,
 				095E9C191FA6F8CC0097A889 /* EightViewController.m in Sources */,
+				6A9270122179BCF400831045 /* JSBadgeView.m in Sources */,
 				095E9C181FA6F8CC0097A889 /* BaseViewController.m in Sources */,
 				095E9C291FA6F92D0097A889 /* SPPageMenu.m in Sources */,
 				091229F91FA5F13000AEE295 /* ParentViewController.m in Sources */,

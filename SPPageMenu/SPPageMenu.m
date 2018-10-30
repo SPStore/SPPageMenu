@@ -264,6 +264,13 @@
 
     self.insert = NO;
 
+    if (self.buttons.count) {
+        for (SPPageMenuItem *button in self.buttons) {
+            [button removeFromSuperview];
+        }
+    }
+    [self.buttons removeAllObjects];
+    
     for (int i = 0; i < items.count; i++) {
         id object = items[i];
         NSAssert([object isKindOfClass:[NSString class]] || [object isKindOfClass:[UIImage class]], @"items中的元素只能是NSString或UIImage类型");
