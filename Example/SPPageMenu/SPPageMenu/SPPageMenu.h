@@ -101,6 +101,8 @@ typedef NS_ENUM(NSInteger, SPItemImagePosition) {
 // 跟踪器的跟踪模式
 @property (nonatomic, assign) SPPageMenuTrackerFollowingMode trackerFollowingMode;
 
+/** 代理 */
+@property (nonatomic, weak) id<SPPageMenuDelegate> delegate;
 
 // 分割线
 @property (nonatomic, readonly) UIImageView *dividingLine; // 分割线,你可以拿到该对象设置一些自己想要的属性，如颜色、图片等，如果想要隐藏分割线，拿到该对象直接设置hidden为YES或设置alpha<0.01即可(eg：pageMenu.dividingLine.hidden = YES)
@@ -110,7 +112,8 @@ typedef NS_ENUM(NSInteger, SPItemImagePosition) {
 @property (nonatomic) CGFloat selectedItemZoomScale;
 @property (nonatomic, assign) BOOL needTextColorGradients; // 是否需要文字渐变,默认为YES
 
-@property (nonatomic, weak) id<SPPageMenuDelegate> delegate;
+// 修改跟踪器样式
+- (void)setTrackerStyle:(SPPageMenuTrackerStyle)trackerStyle;
 
 // 插入item,插入和删除操作时,如果itemIndex超过了了items的个数,则不做任何操作
 - (void)insertItemWithTitle:(nullable NSString *)title atIndex:(NSUInteger)itemIndex animated:(BOOL)animated;
@@ -151,8 +154,9 @@ typedef NS_ENUM(NSInteger, SPItemImagePosition) {
 - (void)setTitle:(nullable NSString *)title image:(nullable UIImage *)image imagePosition:(SPItemImagePosition)imagePosition imageRatio:(CGFloat)ratio imageTitleSpace:(CGFloat)imageTitleSpace forItemIndex:(NSUInteger)itemIndex;
 
 
-@property (nonatomic, assign) BOOL showFuntionButton; // 是否显示功能按钮(功能按钮显示在最右侧),默认为NO
-@property (nonatomic, assign) CGFloat funtionButtonshadowOpacity; // 功能按钮左侧的阴影透明度,如果设置小于等于0，则没有阴影
+@property (nonatomic, assign) BOOL showFunctionButton; // 是否显示功能按钮(功能按钮显示在最右侧),默认为NO
+@property (nonatomic, assign) CGFloat functionButtonShadowOpacity; // 功能按钮左侧的阴影透明度,如果设置小于等于0，则没有阴影
+@property (nonatomic, strong) UIColor *functionButtonShadowColor; // 功能按钮左侧的阴影颜色,默认为黑色
 
 /**
  *  同时为functionButton设置标题和图片
