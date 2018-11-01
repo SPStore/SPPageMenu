@@ -14,6 +14,15 @@
 * [使用者提问](#使用者提问)
 
 ## 如何安装
+#### 版本3.4.2
+```
+target 'MyApp' do
+  pod 'SPPageMenu', '~> 3.4.2'
+end
+
+3.4.2版本在3.4.1版本的基础上,trackStyle属性支持storyBoard/xib,方便在storyBoard/xib中创建时可以直接设置
+```
+
 #### 版本3.4.1
 ```
 target 'MyApp' do
