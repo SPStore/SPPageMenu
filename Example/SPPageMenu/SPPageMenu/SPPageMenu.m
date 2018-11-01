@@ -680,7 +680,7 @@
     _unSelectedItemTitleFont = [UIFont systemFontOfSize:16];
     _itemTitleFont = [UIFont systemFontOfSize:16];
     _trackerHeight = 3;
-    _dividingLineHeight = 1 / [UIScreen mainScreen].scale; // 适配屏幕分辨率
+    _dividingLineHeight = 1.0 / [UIScreen mainScreen].scale; // 适配屏幕分辨率
     _contentInset = UIEdgeInsetsZero;
     _selectedItemIndex = 0;
     _showFuntionButton = NO;

@@ -54,10 +54,10 @@
 @property (nonatomic, assign) SPItemImagePosition imagePosition;
 // 图片与标题之间的间距
 @property (nonatomic, assign) CGFloat imageTitleSpace;
+
 @end
 
 @implementation SPPageMenuItem
-
 
 - (instancetype)initWithImageRatio:(CGFloat)ratio {
     if (self = [super init]) {

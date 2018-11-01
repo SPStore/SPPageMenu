@@ -72,7 +72,7 @@ typedef NS_ENUM(NSInteger, SPItemImagePosition) {
 @property(nonatomic,readonly) NSUInteger numberOfItems; // items的总个数
 
 #if TARGET_INTERFACE_BUILDER
-@property (nonatomic, readonly) IBInspectable NSInteger trackerStyle; // 该属性支持storyBoard,方便storyBoard创建时可直接设置
+@property (nonatomic, readonly) IBInspectable NSInteger trackerStyle; // 该枚举属性支持storyBoard/xib,方便在storyBoard/xib中创建时直接设置
 #else
 @property (nonatomic, readonly) SPPageMenuTrackerStyle trackerStyle;
 #endif
