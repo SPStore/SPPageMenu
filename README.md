@@ -100,12 +100,12 @@ end
 // 这个scrollView是外界传进来的scrollView，通常的案例都是在pageMenu的下方有若干个子控制器在切换，子控制器的切换由滑动
 scrollView实现，使用者只需要把该scrollView传给bridgeScrollView，SPPageMenu框架内部会监听该scrollView的横向滚动，实
 现了让跟踪器时刻跟随该scrollView滚动的效果。暂时不支持监听垂直方向的滚动，如果你的scrollVeiw要垂直滚动实现切换按钮，你
-不妨可以尝试在-scrollViewDidScroll：代理方法中设置selectedItemIndex的值
+不妨可以尝试自己在在-scrollViewDidScroll：代理方法中设置selectedItemIndex的值
 
 @property (nonatomic, strong) UIScrollView *bridgeScrollView;
 ```
 ```
-// 排列方式：支持3中排列方式；1、可滑动，按钮宽度根据内容自适应；2、不可滑动，按钮等宽；3、不可滑动，按钮宽度根据内容自
+// 排列方式：支持3种排列方式；1、可滑动，按钮宽度根据内容自适应；2、不可滑动，按钮等宽；3、不可滑动，按钮宽度根据内容自
 适应。3种排列方式都有非常高的使用频率。第1种排列方式：SPPageMene的容量会根据按钮个数而定；第2种和第3种排列方式:SPPageMenu
 的容量固定为SPPageMenu的宽度
 
