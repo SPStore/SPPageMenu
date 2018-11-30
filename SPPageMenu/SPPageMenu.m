@@ -45,7 +45,7 @@
 
 @end
 
-@interface SPPageMenuItem : UIButton
+@interface SPPageMenuButton : UIButton
 
 - (instancetype)initWithImageRatio:(CGFloat)ratio;
 // 图片的高度所占按钮的高度比例,注意要浮点数，如果传分数比如三分之二，要写2.0/3.0，不能写2/3
@@ -57,7 +57,7 @@
 
 @end
 
-@implementation SPPageMenuItem
+@implementation SPPageMenuButton
 
 - (instancetype)initWithImageRatio:(CGFloat)ratio {
     if (self = [super init]) {
@@ -88,6 +88,7 @@
 - (void)initialize {
     _imageRatio = 0.5;
     _imagePosition = SPItemImagePositionDefault;
+    _imageTitleSpace = 0.0;
 
     self.imageView.contentMode = UIViewContentModeScaleAspectFit;
     self.titleLabel.textAlignment = NSTextAlignmentCenter;
@@ -117,7 +118,7 @@
             break;
         case SPItemImagePositionRight: {
             _imageRatio = _imageRatio == 0.0 ? 0.5 : _imageRatio;
-            CGFloat imageW =  (contentRect.size.width-_imageTitleSpace) * _imageRatio;
+            CGFloat imageW = contentRect.size.width-self.titleLabel.intrinsicContentSize.width;
             CGFloat imageH = contentRect.size.height;
             CGFloat imageX = contentRect.size.width - imageW;
             return CGRectMake(imageX+self.contentEdgeInsets.left, self.contentEdgeInsets.top, imageW, imageH);
@@ -149,21 +150,28 @@
             CGFloat titleW = contentRect.size.width - titleX;
             CGFloat titleH = contentRect.size.height;
             return CGRectMake(titleX+self.contentEdgeInsets.left, self.contentEdgeInsets.top, titleW, titleH);
+            
+//            CGFloat titleW = self.titleLabel.intrinsicContentSize.width;
+//            CGFloat titleH = self.titleLabel.intrinsicContentSize.height;
+//            CGFloat titleX = contentRect.size.width-titleW
         }
             break;
         case SPItemImagePositionTop: {
             _imageRatio = _imageRatio == 0.0 ? 2.0/3.0 : _imageRatio;
-            CGFloat titleY = (contentRect.size.height-_imageTitleSpace) * _imageRatio + _imageTitleSpace;
+            CGFloat titleX = self.contentEdgeInsets.left;
+            CGFloat titleY = (contentRect.size.height-_imageTitleSpace) * _imageRatio + _imageTitleSpace + self.contentEdgeInsets.top;
             CGFloat titleW = contentRect.size.width;
             CGFloat titleH = contentRect.size.height - titleY;
-            return CGRectMake(self.contentEdgeInsets.left, titleY+self.contentEdgeInsets.top, titleW, titleH);
+            return CGRectMake(titleX, titleY, titleW, titleH);
         }
             break;
         case SPItemImagePositionRight: {
             _imageRatio = _imageRatio == 0.0 ? 0.5 : _imageRatio;
-            CGFloat titleW = (contentRect.size.width - _imageTitleSpace) * (1-_imageRatio);
-            CGFloat titleH = contentRect.size.height;
-            return CGRectMake(self.contentEdgeInsets.left, self.contentEdgeInsets.top, titleW, titleH);
+            CGFloat titleW = self.titleLabel.intrinsicContentSize.width;
+            CGFloat titleH = self.titleLabel.intrinsicContentSize.height;
+            CGFloat titleX = self.contentEdgeInsets.left;
+            CGFloat titleY = (contentRect.size.height-titleH-self.contentEdgeInsets.top-self.contentEdgeInsets.bottom)*0.5;
+            return CGRectMake(titleX, titleY, titleW, titleH);
         }
             break;
         case SPItemImagePositionBottom: {
@@ -211,9 +219,9 @@
 @property (nonatomic, weak) UIImageView *backgroundImageView;
 @property (nonatomic, strong) UIImageView *dividingLine;
 @property (nonatomic, weak) SPPageMenuScrollView *itemScrollView;
-@property (nonatomic, weak) SPPageMenuItem *functionButton;
+@property (nonatomic, weak) SPPageMenuButton *functionButton;
 @property (nonatomic, strong) NSMutableArray *buttons;
-@property (nonatomic, strong) SPPageMenuItem *selectedButton;
+@property (nonatomic, strong) SPPageMenuButton *selectedButton;
 @property (nonatomic, strong) NSMutableDictionary *setupWidths;
 @property (nonatomic, assign) BOOL insert;
 // 起始偏移量,为了判断滑动方向
@@ -265,7 +273,7 @@
     self.insert = NO;
 
     if (self.buttons.count) {
-        for (SPPageMenuItem *button in self.buttons) {
+        for (SPPageMenuButton *button in self.buttons) {
             [button removeFromSuperview];
         }
     }
@@ -282,7 +290,7 @@
     
     if (self.buttons.count) {
         // 默认选中selectedItemIndex对应的按钮
-        SPPageMenuItem *selectedButton = [self.buttons objectAtIndex:selectedItemIndex];
+        SPPageMenuButton *selectedButton = [self.buttons objectAtIndex:selectedItemIndex];
         [self buttonInPageMenuClicked:selectedButton];
 
         // SPPageMenuTrackerStyleTextZoom和SPPageMenuTrackerStyleNothing样式跟tracker没有关联
@@ -321,7 +329,7 @@
 - (void)removeItemAtIndex:(NSUInteger)itemIndex animated:(BOOL)animated {
     NSAssert(itemIndex <= self.items.count, @"itemIndex超过了items的总个数“%ld”",self.items.count);
     // 被删除的按钮之后的按钮需要修改tag值
-    for (SPPageMenuItem *button in self.buttons) {
+    for (SPPageMenuButton *button in self.buttons) {
         if (button.tag-tagBaseValue > itemIndex) {
             button.tag = button.tag - 1;
         }
@@ -333,7 +341,7 @@
         self.items = objects.copy;
     }
     if (itemIndex < self.buttons.count) {
-        SPPageMenuItem *button = [self.buttons objectAtIndex:itemIndex];
+        SPPageMenuButton *button = [self.buttons objectAtIndex:itemIndex];
         if (button == self.selectedButton) { // 如果删除的正是选中的item，删除之后，选中的按钮切换为上一个item
             self.selectedItemIndex = itemIndex > 0 ? itemIndex-1 : itemIndex;
         }
@@ -363,7 +371,7 @@
     self.items = nil;
     
     for (int i = 0; i < self.buttons.count; i++) {
-        SPPageMenuItem *button = self.buttons[i];
+        SPPageMenuButton *button = self.buttons[i];
         [button removeFromSuperview];
     }
     
@@ -379,7 +387,7 @@
 
 - (void)setTitle:(NSString *)title forItemAtIndex:(NSUInteger)itemIndex {
     if (itemIndex < self.buttons.count) {
-        SPPageMenuItem *button = [self.buttons objectAtIndex:itemIndex];
+        SPPageMenuButton *button = [self.buttons objectAtIndex:itemIndex];
         [button setImage:nil forState:UIControlStateNormal];
         [button setTitle:title forState:UIControlStateNormal];
 
@@ -392,15 +400,15 @@
 
 - (nullable NSString *)titleForItemAtIndex:(NSUInteger)itemIndex {
     if (itemIndex < self.buttons.count) {
-        SPPageMenuItem *item = [self.buttons objectAtIndex:itemIndex];
-        return item.currentTitle;
+        SPPageMenuButton *button = [self.buttons objectAtIndex:itemIndex];
+        return button.currentTitle;
     }
     return nil;
 }
 
 - (void)setImage:(UIImage *)image forItemAtIndex:(NSUInteger)itemIndex {
     if (itemIndex < self.buttons.count) {
-        SPPageMenuItem *button = [self.buttons objectAtIndex:itemIndex];
+        SPPageMenuButton *button = [self.buttons objectAtIndex:itemIndex];
         [button setTitle:nil forState:UIControlStateNormal];
         [button setImage:image forState:UIControlStateNormal];
 
@@ -413,8 +421,8 @@
 
 - (nullable UIImage *)imageForItemAtIndex:(NSUInteger)itemIndex {
     if (itemIndex < self.buttons.count) {
-        SPPageMenuItem *item = [self.buttons objectAtIndex:itemIndex];
-        return item.currentImage;
+        SPPageMenuButton *button = [self.buttons objectAtIndex:itemIndex];
+        return button.currentImage;
     }
     return nil;
 }
@@ -422,14 +430,14 @@
 
 - (void)setEnabled:(BOOL)enaled forItemAtIndex:(NSUInteger)itemIndex {
     if (itemIndex < self.buttons.count) {
-        SPPageMenuItem *button = [self.buttons objectAtIndex:itemIndex];
+        SPPageMenuButton *button = [self.buttons objectAtIndex:itemIndex];
         [button setEnabled:enaled];
     }
 }
 
 - (BOOL)enabledForItemAtIndex:(NSUInteger)itemIndex {
     if (self.buttons.count) {
-        SPPageMenuItem *button = [self.buttons objectAtIndex:itemIndex];
+        SPPageMenuButton *button = [self.buttons objectAtIndex:itemIndex];
         return button.enabled;
     }
     return YES;
@@ -447,7 +455,7 @@
         return setupWidth;
     } else {
         if (itemIndex < self.buttons.count) {
-            SPPageMenuItem *button = [self.buttons objectAtIndex:itemIndex];
+            SPPageMenuButton *button = [self.buttons objectAtIndex:itemIndex];
             return button.bounds.size.width;
         }
     }
@@ -456,21 +464,21 @@
 
 - (void)setContentEdgeInsets:(UIEdgeInsets)contentInset forForItemAtIndex:(NSUInteger)itemIndex {
     if (itemIndex < self.buttons.count) {
-        SPPageMenuItem *button = [self.buttons objectAtIndex:itemIndex];
+        SPPageMenuButton *button = [self.buttons objectAtIndex:itemIndex];
         button.contentEdgeInsets = contentInset;
     }
 }
 
 - (void)setContentEdgeInsets:(UIEdgeInsets)contentInset forItemAtIndex:(NSUInteger)itemIndex {
     if (itemIndex < self.buttons.count) {
-        SPPageMenuItem *button = [self.buttons objectAtIndex:itemIndex];
+        SPPageMenuButton *button = [self.buttons objectAtIndex:itemIndex];
         button.contentEdgeInsets = contentInset;
     }
 }
 
 - (UIEdgeInsets)contentEdgeInsetsForItemAtIndex:(NSUInteger)itemIndex {
     if (itemIndex < self.buttons.count) {
-        SPPageMenuItem *button = [self.buttons objectAtIndex:itemIndex];
+        SPPageMenuButton *button = [self.buttons objectAtIndex:itemIndex];
         return button.contentEdgeInsets;
     }
     return UIEdgeInsetsZero;
@@ -499,9 +507,28 @@
     [self layoutIfNeeded];
 }
 
+- (void)setItem:(SPPageMenuButtonItem *)item forItemIndex:(NSUInteger)itemIndex {
+    if (itemIndex < self.buttons.count) {
+        SPPageMenuButton *button = [self.buttons objectAtIndex:itemIndex];
+        [button setTitle:item.title forState:UIControlStateNormal];
+        [button setImage:item.image forState:UIControlStateNormal];
+        button.imagePosition = item.imagePosition;
+        button.imageRatio = item.imageRatio;
+        button.imageTitleSpace = item.imageTitleSpace;
+        
+        if (item != nil) {
+            NSMutableArray *items = self.items.mutableCopy;
+            [items replaceObjectAtIndex:itemIndex withObject:item];
+            self.items = items.copy;
+        }
+        [self setNeedsLayout];
+        [self layoutIfNeeded];
+    }
+}
+
 - (void)setTitle:(nullable NSString *)title image:(nullable UIImage *)image imagePosition:(SPItemImagePosition)imagePosition imageRatio:(CGFloat)ratio imageTitleSpace:(CGFloat)imageTitleSpace forItemIndex:(NSUInteger)itemIndex {
     if (itemIndex < self.buttons.count) {
-        SPPageMenuItem *button = [self.buttons objectAtIndex:itemIndex];
+        SPPageMenuButton *button = [self.buttons objectAtIndex:itemIndex];
         [button setTitle:title forState:UIControlStateNormal];
         [button setImage:image forState:UIControlStateNormal];
         button.imagePosition = imagePosition;
@@ -539,7 +566,7 @@
 // 以下2个方法在3.0版本上有升级，可以使用但不推荐
 - (void)setTitle:(nullable NSString *)title image:(nullable UIImage *)image imagePosition:(SPItemImagePosition)imagePosition imageRatio:(CGFloat)ratio forItemIndex:(NSUInteger)itemIndex {
     if (itemIndex < self.buttons.count) {
-        SPPageMenuItem *button = [self.buttons objectAtIndex:itemIndex];
+        SPPageMenuButton *button = [self.buttons objectAtIndex:itemIndex];
         [button setTitle:title forState:UIControlStateNormal];
         [button setImage:image forState:UIControlStateNormal];
         button.imagePosition = imagePosition;
@@ -597,12 +624,12 @@
 - (void)addButton:(NSInteger)index object:(id)object animated:(BOOL)animated {
     
     // 如果是插入，需要改变已有button的tag值
-    for (SPPageMenuItem *button in self.buttons) {
+    for (SPPageMenuButton *button in self.buttons) {
         if (button.tag-tagBaseValue >= index) {
             button.tag = button.tag + 1; // 由于有新button的加入，新button后面的button的tag值得+1
         }
     }
-    SPPageMenuItem *button = [SPPageMenuItem buttonWithType:UIButtonTypeCustom];
+    SPPageMenuButton *button = [SPPageMenuButton buttonWithType:UIButtonTypeCustom];
     [button setTitleColor:_unSelectedItemTitleColor forState:UIControlStateNormal];
     button.titleLabel.font = _itemTitleFont;
     [button addTarget:self action:@selector(buttonInPageMenuClicked:) forControlEvents:UIControlEventTouchUpInside];
@@ -635,7 +662,7 @@
     
     if (self.insert && animated) { // 是插入的新按钮,且需要动画
         // 取出上一个按钮
-        SPPageMenuItem *lastButton;
+        SPPageMenuButton *lastButton;
         if (index > 0) {
             lastButton = self.buttons[index-1];
         }
@@ -723,7 +750,7 @@
     [backgroundView addSubview:itemScrollView];
     _itemScrollView = itemScrollView;
     
-    SPPageMenuItem *functionButton = [SPPageMenuItem buttonWithType:UIButtonTypeCustom];
+    SPPageMenuButton *functionButton = [SPPageMenuButton buttonWithType:UIButtonTypeCustom];
     functionButton.backgroundColor = [UIColor whiteColor];
     [functionButton setTitle:@"＋" forState:UIControlStateNormal];
     [functionButton setTitleColor:[UIColor blackColor] forState:UIControlStateNormal];
@@ -738,7 +765,7 @@
 }
 
 // 按钮点击方法
-- (void)buttonInPageMenuClicked:(SPPageMenuItem *)sender {
+- (void)buttonInPageMenuClicked:(SPPageMenuButton *)sender {
     NSInteger fromIndex = self.selectedButton ? self.selectedButton.tag-tagBaseValue : sender.tag - tagBaseValue;
     NSInteger toIndex = sender.tag - tagBaseValue;
     // 更新下item对应的下标,必须在代理之前，否则外界在代理方法中拿到的不是最新的,必须用下划线，用self.会造成死循环
@@ -756,7 +783,7 @@
         if (self.trackerStyle == SPPageMenuTrackerStyleTextZoom || _selectedItemZoomScale != 1) {
 
             if (labs(toIndex-fromIndex) >= 2) { // 该条件意思是当外界滑动scrollView连续的滑动了超过2页
-                for (SPPageMenuItem *button in self.buttons) { // 必须遍历将非选中按钮还原缩放，而不是仅仅只让上一个选中的按钮还原缩放。因为当用户快速滑动外界scrollView时，会频繁的调用-zoomForTitleWithProgress:fromButton:toButton:方法，有可能经过的某一个button还没彻底还原缩放就直接过去了，从而可能会导致该按钮文字会显示不全，所以在这里，将所有非选中的按钮还原缩放
+                for (SPPageMenuButton *button in self.buttons) { // 必须遍历将非选中按钮还原缩放，而不是仅仅只让上一个选中的按钮还原缩放。因为当用户快速滑动外界scrollView时，会频繁的调用-zoomForTitleWithProgress:fromButton:toButton:方法，有可能经过的某一个button还没彻底还原缩放就直接过去了，从而可能会导致该按钮文字会显示不全，所以在这里，将所有非选中的按钮还原缩放
                     if (button != sender && !CGAffineTransformEqualToTransform(button.transform, CGAffineTransformIdentity)) {
                         button.transform = CGAffineTransformIdentity;
                     }
@@ -783,7 +810,7 @@
         [_unSelectedItemTitleColor getRed:&red green:&green blue:&blue alpha:&alpha];
         // 此时alpha已经获取到了
         if (alpha < 1) { // 因为相信alpha=1的情况还是占多数的，如果不做判断，apha=1时也for循环设置未选中按钮的颜色有点浪费.alpha=1时不会产生颜色不准确问题
-            for (SPPageMenuItem *button in self.buttons) {
+            for (SPPageMenuButton *button in self.buttons) {
                 if (button == sender) {
                     [button setTitleColor:_selectedItemTitleColor forState:UIControlStateNormal];
                 } else {
@@ -799,7 +826,7 @@
 }
 
 // 点击button让itemScrollView发生偏移
-- (void)moveItemScrollViewWithSelectedButton:(SPPageMenuItem *)selectedButton {
+- (void)moveItemScrollViewWithSelectedButton:(SPPageMenuButton *)selectedButton {
     if (CGRectEqualToRect(self.backgroundView.frame, CGRectZero)) {
         return;
     }
@@ -824,7 +851,7 @@
 }
 
 // 移动跟踪器
-- (void)moveTrackerWithSelectedButton:(SPPageMenuItem *)selectedButton {
+- (void)moveTrackerWithSelectedButton:(SPPageMenuButton *)selectedButton {
     [UIView animateWithDuration:0.25 animations:^{
         [self resetSetupTrackerFrameWithSelectedButton:selectedButton];
     }];
@@ -840,7 +867,7 @@
 }
 
 // 功能按钮的点击方法
-- (void)functionButtonClicked:(SPPageMenuItem *)sender {
+- (void)functionButtonClicked:(SPPageMenuButton *)sender {
     if (self.delegate && [self.delegate respondsToSelector:@selector(pageMenu:functionButtonClicked:)]) {
         [self.delegate pageMenu:self functionButtonClicked:sender];
     }
@@ -907,8 +934,8 @@
         // 这个方法才开始移动跟踪器
         [self moveTrackerWithProgress:progress fromIndex:fromIndex toIndex:toIndex currentOffsetX:currentOffSetX beginOffsetX:_beginOffsetX];
     } else if (self.trackerFollowingMode == SPPageMenuTrackerFollowingModeHalf) {
-        SPPageMenuItem *fromButton;
-        SPPageMenuItem *toButton;
+        SPPageMenuButton *fromButton;
+        SPPageMenuButton *toButton;
         if (progress > 0.5) {
             if (toIndex >= 0 && toIndex < self.buttons.count) {
                 toButton = self.buttons[toIndex];
@@ -1182,7 +1209,7 @@
     _itemTitleFont = itemTitleFont;
     _selectedItemTitleFont = itemTitleFont;
     _unSelectedItemTitleFont = itemTitleFont;
-    for (SPPageMenuItem *button in self.buttons) {
+    for (SPPageMenuButton *button in self.buttons) {
         button.titleLabel.font = itemTitleFont;
     }
     [self setNeedsLayout];
@@ -1193,7 +1220,7 @@
 
 - (void)setUnSelectedItemTitleFont:(UIFont *)unSelectedItemTitleFont {
     _unSelectedItemTitleFont = unSelectedItemTitleFont;
-    for (SPPageMenuItem *button in self.buttons) {
+    for (SPPageMenuButton *button in self.buttons) {
         if (button == _selectedButton) {
             continue;
         }
@@ -1224,7 +1251,7 @@
 - (void)setUnSelectedItemTitleColor:(UIColor *)unSelectedItemTitleColor {
     _unSelectedItemTitleColor = unSelectedItemTitleColor;
     [self setupEndColor:unSelectedItemTitleColor];
-    for (SPPageMenuItem *button in self.buttons) {
+    for (SPPageMenuButton *button in self.buttons) {
         if (button == _selectedButton) {
             continue;  // 跳过选中的那个button
         }
@@ -1235,7 +1262,7 @@
 - (void)setSelectedItemIndex:(NSInteger)selectedItemIndex {
     _selectedItemIndex = selectedItemIndex;
     if (self.buttons.count) {
-        SPPageMenuItem *button = [self.buttons objectAtIndex:selectedItemIndex];
+        SPPageMenuButton *button = [self.buttons objectAtIndex:selectedItemIndex];
         [self buttonInPageMenuClicked:button];
     }
 }
@@ -1244,7 +1271,7 @@
     if (delegate == _delegate) {return;}
     _delegate = delegate;
     if (self.buttons.count) {
-        SPPageMenuItem *button = [self.buttons objectAtIndex:_selectedItemIndex];
+        SPPageMenuButton *button = [self.buttons objectAtIndex:_selectedItemIndex];
         [self delegatePerformMethodWithFromIndex:button.tag-tagBaseValue toIndex:button.tag-tagBaseValue];
         [self moveItemScrollViewWithSelectedButton:button];
     }
@@ -1359,7 +1386,7 @@
     NSMutableArray *buttonWidths = [NSMutableArray array];
     // 提前计算每个按钮的宽度，目的是为了计算间距
     for (int i= 0 ; i < self.buttons.count; i++) {
-        SPPageMenuItem *button = self.buttons[i];
+        SPPageMenuButton *button = self.buttons[i];
 
         CGFloat textW;
         CGFloat setupButtonW = [[self.setupWidths objectForKey:[NSString stringWithFormat:@"%d",i]] floatValue];
@@ -1373,20 +1400,18 @@
         CGFloat imageW = CGImageGetWidth(button.currentImage.CGImage);
         CGFloat imageH = CGImageGetHeight(button.currentImage.CGImage);
         CGFloat ratio = imageW / imageH;
-        if (ratio >= 1) { // 宽大于高
-            if (imageH > itemScrollViewH) { // 按比例适应在button中
-                imageH = itemScrollViewH;
-                imageW = imageH * ratio;
-            }
+        if (imageH > itemScrollViewH) { // 按比例适应在button中
+            imageH = itemScrollViewH;
+            imageW = imageH * ratio;
         }
         if (button.currentTitle && !button.currentImage) {
-            contentW = textW;
+            contentW = textW+button.contentEdgeInsets.left+button.contentEdgeInsets.right;
         } else if(button.currentImage && !button.currentTitle) {
-            contentW = imageW;
-        } else if (button.currentTitle && button.currentImage && (button.imagePosition == SPItemImagePositionRight || button.imagePosition == SPItemImagePositionLeft)) {
-            contentW = textW + imageW;
+            contentW = imageW+button.contentEdgeInsets.left+button.contentEdgeInsets.right;
+        } else if (button.currentTitle && button.currentImage && (button.imagePosition == SPItemImagePositionRight || button.imagePosition == SPItemImagePositionLeft || button.imagePosition == SPItemImagePositionDefault)) {
+            contentW = textW + imageW + button.imageTitleSpace+button.contentEdgeInsets.left+button.contentEdgeInsets.right;
         } else if (button.currentTitle && button.currentImage && (button.imagePosition == SPItemImagePositionTop || button.imagePosition == SPItemImagePositionBottom)) {
-            contentW = MAX(textW, imageW);
+            contentW = MAX(textW, imageW)+button.contentEdgeInsets.left+button.contentEdgeInsets.right;
         }
         if (setupButtonW) {
             contentW_sum += setupButtonW;
@@ -1398,7 +1423,7 @@
     }
     CGFloat diff = itemScrollViewW - contentW_sum;
     
-    [self.buttons enumerateObjectsUsingBlock:^(SPPageMenuItem *button, NSUInteger idx, BOOL * _Nonnull stop) {
+    [self.buttons enumerateObjectsUsingBlock:^(SPPageMenuButton *button, NSUInteger idx, BOOL * _Nonnull stop) {
         CGFloat setupButtonW = [[self.setupWidths objectForKey:[NSString stringWithFormat:@"%lu",(unsigned long)idx]] floatValue];
         if (self.permutationWay == SPPageMenuPermutationWayScrollAdaptContent) {
             buttonW = [buttonWidths[idx] floatValue];
@@ -1423,8 +1448,12 @@
             }
             
         } else {
-            self->_itemPadding = diff/self.buttons.count;
             buttonW = [buttonWidths[idx] floatValue];
+            self->_itemPadding = diff/self.buttons.count;
+            if (self->_itemPadding < 0) { // 如果总内容长度大于pageMenu的长度，则对每个按钮宽度进行均等压缩
+                buttonW = buttonW - fabs(diff) / self.buttons.count;
+                self->_itemPadding = 0;
+            }
             if (idx == 0) {
                 button.frame = CGRectMake(self->_itemPadding*0.5+lastButtonMaxX, 0, buttonW, itemScrollViewH);
             } else {
@@ -1451,9 +1480,10 @@
         
         [self moveItemScrollViewWithSelectedButton:self.selectedButton];
     }
+    
 }
 
-- (void)resetSetupTrackerFrameWithSelectedButton:(SPPageMenuItem *)selectedButton {
+- (void)resetSetupTrackerFrameWithSelectedButton:(SPPageMenuButton *)selectedButton {
     
     CGFloat trackerX;
     CGFloat trackerY;
@@ -1523,6 +1553,37 @@
 
 - (void)dealloc {
     [self.bridgeScrollView removeObserver:self forKeyPath:scrollViewContentOffset];
+}
+
+
+@end
+
+@implementation SPPageMenuButtonItem
+
++ (instancetype)itemWithTitle:(NSString *)title image:(UIImage *)image {
+    SPPageMenuButtonItem *item = [[SPPageMenuButtonItem alloc] initWithTitle:title image:image];
+    return item;
+}
+
+- (instancetype)initWithTitle:(NSString *)title image:(UIImage *)image {
+    if (self = [super init]) {
+        self.title = title;
+        self.image = image;
+    }
+    return self;
+}
+
+- (instancetype)init {
+    if (self = [super init]) {
+        [self initialize];
+    }
+    return self;
+}
+
+- (void)initialize {
+    _imageRatio = 0.5;
+    _imagePosition = SPItemImagePositionDefault;
+    _imageTitleSpace = 0.0;
 }
 
 @end

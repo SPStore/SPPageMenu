@@ -23,7 +23,7 @@
 #define screenW [UIScreen mainScreen].bounds.size.width
 #define screenH [UIScreen mainScreen].bounds.size.height
 #define pageMenuH 40
-#define NaviH (screenH == 812 ? 88 : 64) // 812是iPhoneX的高度
+#define NaviH (screenH >= 812 ? 88 : 64) // 812是iPhoneX的高度
 #define scrollViewHeight (screenH-NaviH-pageMenuH)
 
 @interface ParentViewController () <SPPageMenuDelegate, UIScrollViewDelegate>
@@ -212,7 +212,7 @@
 
 // 示例10:不可滑动的等宽排列，关键代码:pageMenu.permutationWay = SPPageMenuPermutationWayNotScrollEqualWidths;
 - (void)test10 {
-    self.dataArr = @[@"生活",@"影视中心",@"交通"];
+    self.dataArr = @[@"生活",@"影视中心",@"交通规则"];
     
     // trackerStyle:跟踪器的样式
     SPPageMenu *pageMenu = [SPPageMenu pageMenuWithFrame:CGRectMake(0, NaviH, screenW, pageMenuH) trackerStyle:SPPageMenuTrackerStyleLine];
@@ -232,14 +232,16 @@
 // 示例11:不可滑动的自适应内容排列，关键代码:pageMenu.permutationWay = SPPageMenuPermutationWayNotScrollAdaptContent;
 // 这种排列方式下,itemPadding属性无效，因为内部自动计算间距
 - (void)test11 {
-    self.dataArr = @[@"生活",@"影视中心",@"交通"];
+    self.dataArr = @[@"生活",@"影视中心",@"交通规则"];
     
     // trackerStyle:跟踪器的样式
     SPPageMenu *pageMenu = [SPPageMenu pageMenuWithFrame:CGRectMake(0, NaviH, screenW, pageMenuH) trackerStyle:SPPageMenuTrackerStyleLine];
     // 传递数组，默认选中第2个
     [pageMenu setItems:self.dataArr selectedItemIndex:1];
+
     // 不可滑动的自适应内容排列
     pageMenu.permutationWay = SPPageMenuPermutationWayNotScrollAdaptContent;
+
     // 设置代理
     pageMenu.delegate = self;
     // 给pageMenu传递外界的大scrollView，内部监听self.scrollView的滚动，从而实现让跟踪器跟随self.scrollView移动的效果
@@ -355,14 +357,18 @@
     self.dataArr = @[@"生活",@"影视中心",@"交通",@"电视剧",@"搞笑",@"综艺"];
 
     SPPageMenu *pageMenu = [SPPageMenu pageMenuWithFrame:CGRectMake(0, NaviH, screenW, pageMenuH) trackerStyle:SPPageMenuTrackerStyleRect];
-    // 传递数组，默认选中第3个
-    [pageMenu setItems:self.dataArr selectedItemIndex:2];
+    // 传递数组，默认选中第1个
+    [pageMenu setItems:self.dataArr selectedItemIndex:0];
     // 指定第1个item为图片
     [pageMenu setImage:[UIImage imageNamed:@"Expression_1"] forItemAtIndex:0];
     // 指定第2个item同时含有图片和文字，图片在上
-    [pageMenu setTitle:@"哈哈" image:[UIImage imageNamed:@"Expression_2"] imagePosition:SPItemImagePositionTop imageRatio:0.5 imageTitleSpace:0 forItemIndex:1];
+    SPPageMenuButtonItem *item1 = [SPPageMenuButtonItem itemWithTitle:@"害羞" image:[UIImage imageNamed:@"Expression_2"]];
+    item1.imagePosition = SPItemImagePositionTop;
+    [pageMenu setItem:item1 forItemIndex:1];
     // 指定第4个item同时含有图片和文字，图片在右
-    [pageMenu setTitle:@"哈哈" image:[UIImage imageNamed:@"dog"] imagePosition:SPItemImagePositionRight imageRatio:0.4 imageTitleSpace:0 forItemIndex:3];
+//    [pageMenu setTitle:@"可爱的小狗" image:[UIImage imageNamed:@"dog"] imagePosition:SPItemImagePositionDefault imageRatio:0.4 imageTitleSpace:0 forItemIndex:3];
+    SPPageMenuButtonItem *item2 = [SPPageMenuButtonItem itemWithTitle:@"可爱的小狗可爱的小狗" image:[UIImage imageNamed:@"dog"]];
+    [pageMenu setItem:item2 forItemIndex:3];
     pageMenu.delegate = self;
     // 给pageMenu传递外界的大scrollView，内部监听self.scrollView的滚动，从而实现让跟踪器跟随self.scrollView移动的效果
     pageMenu.bridgeScrollView = self.scrollView;

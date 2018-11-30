@@ -40,7 +40,7 @@ typedef NS_ENUM(NSInteger, SPItemImagePosition) {
     SPItemImagePositionBottom     // 图片在下面
 };
 
-@class SPPageMenu;
+@class SPPageMenu,SPPageMenuButtonItem;
 
 @protocol SPPageMenuDelegate <NSObject>
 
@@ -150,11 +150,13 @@ typedef NS_ENUM(NSInteger, SPItemImagePosition) {
  @param title    标题
  @param image    图片
  @param imagePosition        图片的位置，分上、左、下、右
- @param ratio                图片所占item的比例,图片在左右时默认0.5，图片在上下时默认2.0/3.0
+ @param ratio                图片所占item的比例,默认0.5,如果传0,图片在左右时强制0.5，图片在上下时强制2.0/3.0
  @param imageTitleSpace      图片与标题之间的间距,默认0
  @param itemIndex            item的下标
  */
 - (void)setTitle:(nullable NSString *)title image:(nullable UIImage *)image imagePosition:(SPItemImagePosition)imagePosition imageRatio:(CGFloat)ratio imageTitleSpace:(CGFloat)imageTitleSpace forItemIndex:(NSUInteger)itemIndex;
+
+- (void)setItem:(SPPageMenuButtonItem *)item forItemIndex:(NSUInteger)itemIndex; // 设置指定item,其中参数item相当于一个模型，可以同时设置文字和图片
 
 
 @property (nonatomic, assign) BOOL showFuntionButton; // 是否显示功能按钮(功能按钮显示在最右侧),默认为NO
@@ -166,7 +168,7 @@ typedef NS_ENUM(NSInteger, SPItemImagePosition) {
  *  @param title    标题
  *  @param image    图片
  *  @param imagePosition    图片的位置，分上、左、下、右
- *  @param ratio            图片所占item的比例,图片在左右时默认0.5，图片在上下时默认2.0/3.0
+ *  @param ratio            图片所占item的比例,默认0.5,如果传0,图片在左右时强制0.5，图片在上下时强制2.0/3.0
  *  @param imageTitleSpace  图片与标题之间的间距,默认0
  *  @param state            控件状态
  */
@@ -199,6 +201,24 @@ typedef NS_ENUM(NSInteger, SPItemImagePosition) {
 // 以下2个方法从3.0版本开始有升级，可以使用但不推荐
 - (void)setTitle:(nullable NSString *)title image:(nullable UIImage *)image imagePosition:(SPItemImagePosition)imagePosition imageRatio:(CGFloat)ratio forItemIndex:(NSUInteger)itemIndex NS_DEPRECATED_IOS(6_0, 6_0, "Use -setTitle:image:imagePosition:imageRatio:imageTitleSpace:forItemIndex:");
 - (void)setFunctionButtonTitle:(nullable NSString *)title image:(nullable UIImage *)image imagePosition:(SPItemImagePosition)imagePosition imageRatio:(CGFloat)ratio forState:(UIControlState)state NS_DEPRECATED_IOS(6_0, 6_0, "Use -setFunctionButtonTitle:image:imagePosition:imageRatio:imageTitleSpace:forState:");
+@end
+
+
+// 这个类相当于模型
+@interface SPPageMenuButtonItem : NSObject
+
+// 快速创建同时含有标题和图片的item，默认图片在左边，文字在右边
++ (instancetype)itemWithTitle:(NSString *)title image:(UIImage *)image;
+
+@property (nonatomic, copy) NSString *title;
+@property (nonatomic, strong) UIImage *image;
+// 图片的高度所占按钮的高度比例,注意要浮点数，如果传分数比如三分之二，要写2.0/3.0，不能写2/3。  默认为0.5，如果为0，图片在左右时强制为0.5，图片在上下时为2.0/3.0
+@property (nonatomic, assign) CGFloat imageRatio;
+// 图片的位置
+@property (nonatomic, assign) SPItemImagePosition imagePosition;
+// 图片与标题之间的间距,默认0.0
+@property (nonatomic, assign) CGFloat imageTitleSpace;
+
 @end
 
 NS_ASSUME_NONNULL_END
