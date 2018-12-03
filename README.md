@@ -14,13 +14,25 @@
 * [使用者提问](#使用者提问)
 
 ## 如何安装
+#### 版本3.4.4
+```
+target 'MyApp' do
+  pod 'SPPageMenu', '~> 3.4.4'
+end
+
+说明：3.4.4版本在3.4.2版本的基础上改动如下:
+1、重构了内部自定义按钮
+2、解决了标题颜色的alpha值小于1时颜色渐变不准确问题
+3、新增SPPageMenuButtonItem模型，用于同时设置文字和图片
+```
+
 #### 版本3.4.2
 ```
 target 'MyApp' do
   pod 'SPPageMenu', '~> 3.4.2'
 end
 
-3.4.2版本在3.4.1版本的基础上,trackStyle属性支持storyBoard/xib,方便在storyBoard/xib中创建时可以直接设置
+说明：3.4.2版本在3.4.1版本的基础上,trackStyle属性支持storyBoard/xib,方便在storyBoard/xib中创建时可以直接设置
 ```
 
 #### 版本3.4.1
