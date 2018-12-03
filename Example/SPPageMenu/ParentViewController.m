@@ -232,13 +232,12 @@
 // 示例11:不可滑动的自适应内容排列，关键代码:pageMenu.permutationWay = SPPageMenuPermutationWayNotScrollAdaptContent;
 // 这种排列方式下,itemPadding属性无效，因为内部自动计算间距
 - (void)test11 {
-    self.dataArr = @[@"生活",@"影视中心",@"交通规则"];
+    self.dataArr = @[@"生活",@"音乐榜中榜",@"交通规则"];
     
     // trackerStyle:跟踪器的样式
     SPPageMenu *pageMenu = [SPPageMenu pageMenuWithFrame:CGRectMake(0, NaviH, screenW, pageMenuH) trackerStyle:SPPageMenuTrackerStyleLine];
     // 传递数组，默认选中第2个
     [pageMenu setItems:self.dataArr selectedItemIndex:1];
-
     // 不可滑动的自适应内容排列
     pageMenu.permutationWay = SPPageMenuPermutationWayNotScrollAdaptContent;
 
@@ -327,7 +326,8 @@
     // 传递数组，默认选中第2个
     [pageMenu setItems:self.dataArr selectedItemIndex:1];
     // 同时设置图片和文字，如果只想要文字，image传nil，如果只想要图片，title传nil，imagePosition和ratio传0即可
-    [pageMenu setFunctionButtonTitle:@"更多" image:[UIImage imageNamed:@"Expression_1"] imagePosition:SPItemImagePositionTop imageRatio:0.5 imageTitleSpace:0 forState:UIControlStateNormal];
+    //[pageMenu setFunctionButtonTitle:@"更多" image:[UIImage imageNamed:@"Expression_1"] imagePosition:SPItemImagePositionTop imageRatio:0.5 imageTitleSpace:0 forState:UIControlStateNormal];
+    [pageMenu setFunctionButtonWithItem:[SPPageMenuButtonItem itemWithTitle:@"更多" image:[UIImage imageNamed:@"Expression_1"] imagePosition:SPItemImagePositionTop] forState:UIControlStateNormal];
     [pageMenu setFunctionButtonTitleTextAttributes:@{NSFontAttributeName:[UIFont systemFontOfSize:13]} forState:UIControlStateNormal];
     pageMenu.showFuntionButton = YES;
     // 设置代理
@@ -367,7 +367,7 @@
     [pageMenu setItem:item1 forItemIndex:1];
     // 指定第4个item同时含有图片和文字，图片在右
 //    [pageMenu setTitle:@"可爱的小狗" image:[UIImage imageNamed:@"dog"] imagePosition:SPItemImagePositionDefault imageRatio:0.4 imageTitleSpace:0 forItemIndex:3];
-    SPPageMenuButtonItem *item2 = [SPPageMenuButtonItem itemWithTitle:@"可爱的小狗可爱的小狗" image:[UIImage imageNamed:@"dog"]];
+    SPPageMenuButtonItem *item2 = [SPPageMenuButtonItem itemWithTitle:@"歌曲" image:[UIImage imageNamed:@"asc"] imagePosition:SPItemImagePositionRight];
     [pageMenu setItem:item2 forItemIndex:3];
     pageMenu.delegate = self;
     // 给pageMenu传递外界的大scrollView，内部监听self.scrollView的滚动，从而实现让跟踪器跟随self.scrollView移动的效果
