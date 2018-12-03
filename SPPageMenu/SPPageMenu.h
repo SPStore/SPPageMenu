@@ -62,7 +62,7 @@ typedef NS_ENUM(NSInteger, SPItemImagePosition) {
 /**
  *  传递数据
  *
- *  @param items    数组 (数组元素只能是NSString或UIImage类型)
+ *  @param items    数组 (数组元素可以是NSString、UIImage类型、SPPageMenuButtonItem类型，其中SPPageMenuButtonItem相当于一个模型，可以同时设置图片和文字)
  *  @param selectedItemIndex  默认选中item的下标
  */
 - (void)setItems:(nullable NSArray *)items selectedItemIndex:(NSInteger)selectedItemIndex;
@@ -123,7 +123,8 @@ typedef NS_ENUM(NSInteger, SPItemImagePosition) {
 
 // 插入item,插入和删除操作时,如果itemIndex超过了了items的个数,则不做任何操作
 - (void)insertItemWithTitle:(nullable NSString *)title atIndex:(NSUInteger)itemIndex animated:(BOOL)animated;
-- (void)insertItemWithImage:(nullable UIImage *)image  atIndex:(NSUInteger)itemIndex animated:(BOOL)animated;
+- (void)insertItemWithImage:(nullable UIImage *)image atIndex:(NSUInteger)itemIndex animated:(BOOL)animated;
+- (void)insertItem:(nullable SPPageMenuButtonItem *)item atIndex:(NSUInteger)itemIndex animated:(BOOL)animated;
 // 如果移除的正是当前选中的item(当前选中的item下标不为0),删除之后,选中的item会切换为上一个item
 - (void)removeItemAtIndex:(NSUInteger)itemIndex animated:(BOOL)animated;
 - (void)removeAllItems;
@@ -133,6 +134,11 @@ typedef NS_ENUM(NSInteger, SPItemImagePosition) {
 
 - (void)setImage:(nullable UIImage *)image forItemAtIndex:(NSUInteger)itemIndex; // 设置指定item的图片,设置后，仅会有图片
 - (nullable UIImage *)imageForItemAtIndex:(NSUInteger)itemIndex; // 获取指定item的图片
+
+- (void)setItem:(SPPageMenuButtonItem *)item forItemIndex:(NSUInteger)itemIndex; // 同时为指定item设置标题和图片,其中参数item相当于一个模型，可以同时设置文字和图片
+- (nullable SPPageMenuButtonItem *)itemAtIndex:(NSUInteger)itemIndex; // 获取指定item
+
+- (id)objectForItemAtIndex:(NSUInteger)itemIndex; // 获取指定item，该方法获取的item可能是NSString、UIImage或SPPageMenuButtonItem类型
 
 - (void)setWidth:(CGFloat)width forItemAtIndex:(NSUInteger)itemIndex; // 设置指定item的宽度(如果width为0,item会根据内容自动计算width)
 - (CGFloat)widthForItemAtIndex:(NSUInteger)itemIndex; // 获取指定item的宽度
@@ -146,9 +152,6 @@ typedef NS_ENUM(NSInteger, SPItemImagePosition) {
 // 设置背景图片，barMetrics只有为UIBarMetricsDefault时才生效，如果外界传进来的backgroundImage调用过- resizableImageWithCapInsets:且参数capInsets不为UIEdgeInsetsZero，则直接用backgroundImage作为背景图; 否则内部会自动调用- resizableImageWithCapInsets:进行拉伸
 - (void)setBackgroundImage:(nullable UIImage *)backgroundImage barMetrics:(UIBarMetrics)barMetrics;
 - (nullable UIImage *)backgroundImageForBarMetrics:(UIBarMetrics)barMetrics; // 获取背景图片
-
-// 同时为指定item设置标题和图片,其中参数item相当于一个模型，可以同时设置文字和图片
-- (void)setItem:(SPPageMenuButtonItem *)item forItemIndex:(NSUInteger)itemIndex;
 
 // 同时为functionButton设置标题和图片
 - (void)setFunctionButtonWithItem:(SPPageMenuButtonItem *)item forState:(UIControlState)state;

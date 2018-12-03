@@ -472,7 +472,7 @@
     
     for (int i = 0; i < items.count; i++) {
         id object = items[i];
-        NSAssert([object isKindOfClass:[NSString class]] || [object isKindOfClass:[UIImage class]], @"items中的元素只能是NSString或UIImage类型");
+        NSAssert([object isKindOfClass:[NSString class]] || [object isKindOfClass:[UIImage class]] || [object isKindOfClass:[SPPageMenuButtonItem class]], @"items中的元素类型只能是NSString、UIImage或SPPageMenuButtonItem");
         [self addButton:i object:object animated:NO];
     }
 
@@ -512,6 +512,18 @@
     [objects insertObject:image atIndex:itemIndex];
     self.items = objects.copy;
     [self addButton:itemIndex object:image animated:animated];
+    if (itemIndex <= self.selectedItemIndex) {
+        _selectedItemIndex += 1;
+    }
+}
+
+- (void)insertItem:(SPPageMenuButtonItem *)item atIndex:(NSUInteger)itemIndex animated:(BOOL)animated {
+    self.insert = YES;
+    NSAssert(itemIndex <= self.items.count, @"itemIndex超过了items的总个数“%ld”",self.items.count);
+    NSMutableArray *objects = self.items.mutableCopy;
+    [objects insertObject:item atIndex:itemIndex];
+    self.items = objects.copy;
+    [self addButton:itemIndex object:item animated:animated];
     if (itemIndex <= self.selectedItemIndex) {
         _selectedItemIndex += 1;
     }
@@ -591,8 +603,9 @@
 
 - (nullable NSString *)titleForItemAtIndex:(NSUInteger)itemIndex {
     if (itemIndex < self.buttons.count) {
-        SPPageMenuButton *button = [self.buttons objectAtIndex:itemIndex];
-        return button.currentTitle;
+        id object = [self.items objectAtIndex:itemIndex];
+        NSAssert([object isKindOfClass:[NSString class]],@"itemIndex对应的item不是NSString类型，请仔细核对");
+        return object;
     }
     return nil;
 }
@@ -612,12 +625,47 @@
 
 - (nullable UIImage *)imageForItemAtIndex:(NSUInteger)itemIndex {
     if (itemIndex < self.buttons.count) {
-        SPPageMenuButton *button = [self.buttons objectAtIndex:itemIndex];
-        return button.currentImage;
+        id object = [self.items objectAtIndex:itemIndex];
+        NSAssert([object isKindOfClass:[UIImage class]],@"itemIndex对应的item不是UIImage类型，请仔细核对");
+        return object;
     }
     return nil;
 }
 
+- (void)setItem:(SPPageMenuButtonItem *)item forItemIndex:(NSUInteger)itemIndex {
+    if (itemIndex < self.buttons.count) {
+        SPPageMenuButton *button = [self.buttons objectAtIndex:itemIndex];
+        [button setTitle:item.title forState:UIControlStateNormal];
+        [button setImage:item.image forState:UIControlStateNormal];
+        button.imagePosition = item.imagePosition;
+        button.imageTitleSpace = item.imageTitleSpace;
+        
+        if (item != nil) {
+            NSMutableArray *items = self.items.mutableCopy;
+            [items replaceObjectAtIndex:itemIndex withObject:item];
+            self.items = items.copy;
+        }
+        [self setNeedsLayout];
+        [self layoutIfNeeded];
+    }
+}
+
+- (SPPageMenuButtonItem *)itemAtIndex:(NSUInteger)itemIndex {
+    if (itemIndex < self.buttons.count) {
+        id object = [self.items objectAtIndex:itemIndex];
+        NSAssert([object isKindOfClass:[SPPageMenuButtonItem class]],@"itemIndex对应的item不是SPPageMenuButtonItem类型，请仔细核对");
+        return object;
+    }
+    return nil;
+}
+
+- (id)objectForItemAtIndex:(NSUInteger)itemIndex {
+    if (itemIndex < self.buttons.count) {
+        id object = [self.items objectAtIndex:itemIndex];
+        return object;
+    }
+    return nil;
+}
 
 - (void)setEnabled:(BOOL)enaled forItemAtIndex:(NSUInteger)itemIndex {
     if (itemIndex < self.buttons.count) {
@@ -696,24 +744,6 @@
     self.tracker.layer.cornerRadius = cornerRadius;
     [self setNeedsLayout];
     [self layoutIfNeeded];
-}
-
-- (void)setItem:(SPPageMenuButtonItem *)item forItemIndex:(NSUInteger)itemIndex {
-    if (itemIndex < self.buttons.count) {
-        SPPageMenuButton *button = [self.buttons objectAtIndex:itemIndex];
-        [button setTitle:item.title forState:UIControlStateNormal];
-        [button setImage:item.image forState:UIControlStateNormal];
-        button.imagePosition = item.imagePosition;
-        button.imageTitleSpace = item.imageTitleSpace;
-        
-        if (item != nil) {
-            NSMutableArray *items = self.items.mutableCopy;
-            [items replaceObjectAtIndex:itemIndex withObject:item];
-            self.items = items.copy;
-        }
-        [self setNeedsLayout];
-        [self layoutIfNeeded];
-    }
 }
 
 - (void)setTitle:(nullable NSString *)title image:(nullable UIImage *)image imagePosition:(SPItemImagePosition)imagePosition imageRatio:(CGFloat)ratio imageTitleSpace:(CGFloat)imageTitleSpace forItemIndex:(NSUInteger)itemIndex {
@@ -829,8 +859,14 @@
     button.tag = tagBaseValue + index;
     if ([object isKindOfClass:[NSString class]]) {
         [button setTitle:object forState:UIControlStateNormal];
-    } else {
+    } else if ([object isKindOfClass:[UIImage class]]) {
         [button setImage:object forState:UIControlStateNormal];
+    } else {
+        SPPageMenuButtonItem *item = (SPPageMenuButtonItem *)object;
+        [button setTitle:item.title forState:UIControlStateNormal];
+        [button setImage:item.image forState:UIControlStateNormal];
+        button.imagePosition = item.imagePosition;
+        button.imageTitleSpace = item.imageTitleSpace;
     }
     if (self.insert) {
         if ([self haveOrNeedsTracker]) {
