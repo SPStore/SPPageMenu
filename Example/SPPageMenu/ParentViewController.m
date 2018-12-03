@@ -49,7 +49,6 @@
     pageMenu.bridgeScrollView = self.scrollView;
     [self.view addSubview:pageMenu];
     _pageMenu = pageMenu;
-
 }
 
 // 示例2:SPPageMenuTrackerStyleLineLongerThanItem,下划线比item略长，长度等于tem宽＋间距
@@ -534,11 +533,14 @@
     for (int i = 0; i < self.dataArr.count; i++) {
         if (controllerClassNames.count > i) {
             BaseViewController *baseVc = [[NSClassFromString(controllerClassNames[i]) alloc] init];
-            NSString *text = [self.pageMenu titleForItemAtIndex:i];
-            if (text.length) {
-                baseVc.text = text;
-            } else {
+            id object = [self.pageMenu objectForItemAtIndex:i];
+            if ([object isKindOfClass:[NSString class]]) {
+                baseVc.text = object;
+            } else if ([object isKindOfClass:[UIImage class]]) {
                 baseVc.text = @"图片";
+            } else {
+                SPPageMenuButtonItem *item = (SPPageMenuButtonItem *)object;
+                baseVc.text = item.title;
             }
             [self addChildViewController:baseVc];
             // 控制器本来自带childViewControllers,但是遗憾的是该数组的元素顺序永远无法改变，只要是addChildViewController,都是添加到最后一个，而控制器不像数组那样，可以插入或删除任意位置，所以这里自己定义可变数组，以便插入(删除)(如果没有插入(删除)功能，直接用自带的childViewControllers即可)
@@ -613,7 +615,7 @@
 
 #pragma mark - insert or remove
 
-// object是插入的对象(NSString或UIImage),insertNumber是插入到第几个
+// object是插入的对象(NSString、UIImage或SPPageMenuButtonItem),insertNumber是插入到第几个
 - (void)insertItemWithObject:(id)object toIndex:(NSInteger)insertNumber {
     if (insertNumber > self.myChildViewControllers.count) return;
     // 插入之前，先将新控制器之后的控制器view往后偏移
@@ -639,8 +641,10 @@
     // 要先添加控制器，再添加item，如果先添加item，会立即调代理方法，此时myChildViewControllers的个数还是0，在代理方法中retun了
     if ([object isKindOfClass:[NSString class]]) {
         [self.pageMenu insertItemWithTitle:object atIndex:insertNumber animated:YES];
-    } else {
+    } else if([object isKindOfClass:[UIImage class]]) {
         [self.pageMenu insertItemWithImage:object atIndex:insertNumber animated:YES];
+    } else {
+        [self.pageMenu insertItem:object atIndex:insertNumber animated:YES];
     }
     
     // 重新设置scrollView容量
