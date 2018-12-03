@@ -602,7 +602,7 @@
 }
 
 - (nullable NSString *)titleForItemAtIndex:(NSUInteger)itemIndex {
-    if (itemIndex < self.buttons.count) {
+    if (itemIndex < self.items.count) {
         id object = [self.items objectAtIndex:itemIndex];
         NSAssert([object isKindOfClass:[NSString class]],@"itemIndex对应的item不是NSString类型，请仔细核对");
         return object;
@@ -624,7 +624,7 @@
 }
 
 - (nullable UIImage *)imageForItemAtIndex:(NSUInteger)itemIndex {
-    if (itemIndex < self.buttons.count) {
+    if (itemIndex < self.items.count) {
         id object = [self.items objectAtIndex:itemIndex];
         NSAssert([object isKindOfClass:[UIImage class]],@"itemIndex对应的item不是UIImage类型，请仔细核对");
         return object;
@@ -651,7 +651,7 @@
 }
 
 - (SPPageMenuButtonItem *)itemAtIndex:(NSUInteger)itemIndex {
-    if (itemIndex < self.buttons.count) {
+    if (itemIndex < self.items.count) {
         id object = [self.items objectAtIndex:itemIndex];
         NSAssert([object isKindOfClass:[SPPageMenuButtonItem class]],@"itemIndex对应的item不是SPPageMenuButtonItem类型，请仔细核对");
         return object;
@@ -660,7 +660,7 @@
 }
 
 - (id)objectForItemAtIndex:(NSUInteger)itemIndex {
-    if (itemIndex < self.buttons.count) {
+    if (itemIndex < self.items.count) {
         id object = [self.items objectAtIndex:itemIndex];
         return object;
     }
