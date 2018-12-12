@@ -102,7 +102,6 @@
     [pageMenu setItems:self.dataArr selectedItemIndex:0];
     // 设置缩放
     pageMenu.selectedItemZoomScale = 1.3;
-    pageMenu.trackerFollowingMode = SPPageMenuTrackerFollowingModeHalf;
     // 设置代理
     pageMenu.delegate = self;
     // 给pageMenu传递外界的大scrollView，内部监听self.scrollView的滚动，从而实现让跟踪器跟随self.scrollView移动的效果
