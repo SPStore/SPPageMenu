@@ -602,7 +602,7 @@
 }
 
 - (nullable NSString *)titleForItemAtIndex:(NSUInteger)itemIndex {
-    if (itemIndex < self.buttons.count) {
+    if (itemIndex < self.items.count) {
         id object = [self.items objectAtIndex:itemIndex];
         NSAssert([object isKindOfClass:[NSString class]],@"itemIndex对应的item不是NSString类型，请仔细核对");
         return object;
@@ -624,7 +624,7 @@
 }
 
 - (nullable UIImage *)imageForItemAtIndex:(NSUInteger)itemIndex {
-    if (itemIndex < self.buttons.count) {
+    if (itemIndex < self.items.count) {
         id object = [self.items objectAtIndex:itemIndex];
         NSAssert([object isKindOfClass:[UIImage class]],@"itemIndex对应的item不是UIImage类型，请仔细核对");
         return object;
@@ -651,7 +651,7 @@
 }
 
 - (SPPageMenuButtonItem *)itemAtIndex:(NSUInteger)itemIndex {
-    if (itemIndex < self.buttons.count) {
+    if (itemIndex < self.items.count) {
         id object = [self.items objectAtIndex:itemIndex];
         NSAssert([object isKindOfClass:[SPPageMenuButtonItem class]],@"itemIndex对应的item不是SPPageMenuButtonItem类型，请仔细核对");
         return object;
@@ -660,7 +660,7 @@
 }
 
 - (id)objectForItemAtIndex:(NSUInteger)itemIndex {
-    if (itemIndex < self.buttons.count) {
+    if (itemIndex < self.items.count) {
         id object = [self.items objectAtIndex:itemIndex];
         return object;
     }
@@ -854,7 +854,7 @@
     }
     SPPageMenuButton *button = [SPPageMenuButton buttonWithType:UIButtonTypeCustom];
     [button setTitleColor:_unSelectedItemTitleColor forState:UIControlStateNormal];
-    button.titleLabel.font = _itemTitleFont;
+    button.titleLabel.font = _unSelectedItemTitleFont; // 此时必然还没有选中任何按钮，设置_unSelectedItemTitleFont就相是设置所有按钮的文字颜色，这里不能用_itemTitleFont，如果外界先设置_unSelectedItemTitleFont，再创建按钮，假如这里使用_itemTitleFont，那外界设置的_unSelectedItemTitleFont就不生效
     [button addTarget:self action:@selector(buttonInPageMenuClicked:) forControlEvents:UIControlEventTouchUpInside];
     button.tag = tagBaseValue + index;
     if ([object isKindOfClass:[NSString class]]) {

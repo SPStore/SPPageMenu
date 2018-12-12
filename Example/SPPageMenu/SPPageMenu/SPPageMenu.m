@@ -854,7 +854,7 @@
     }
     SPPageMenuButton *button = [SPPageMenuButton buttonWithType:UIButtonTypeCustom];
     [button setTitleColor:_unSelectedItemTitleColor forState:UIControlStateNormal];
-    button.titleLabel.font = _itemTitleFont;
+    button.titleLabel.font = _unSelectedItemTitleFont; // 此时必然还没有选中任何按钮，设置_unSelectedItemTitleFont就相是设置所有按钮的文字颜色，这里不能用_itemTitleFont，如果外界先设置_unSelectedItemTitleFont，再创建按钮，假如这里使用_itemTitleFont，那外界设置的_unSelectedItemTitleFont就不生效
     [button addTarget:self action:@selector(buttonInPageMenuClicked:) forControlEvents:UIControlEventTouchUpInside];
     button.tag = tagBaseValue + index;
     if ([object isKindOfClass:[NSString class]]) {

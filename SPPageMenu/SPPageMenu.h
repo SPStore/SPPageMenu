@@ -192,7 +192,7 @@ typedef NS_ENUM(NSInteger, SPItemImagePosition) {
 
 // 快速创建同时含有标题和图片的item，默认图片在左边，文字在右边
 + (instancetype)itemWithTitle:(NSString *)title image:(UIImage *)image;
-// 快速创建同时含有标题和图片的item，imagePosition为图片位置
+// 快速创建同时含有标题和图片的item，imagePositiona参数为图片位置
 + (instancetype)itemWithTitle:(NSString *)title image:(UIImage *)image imagePosition:(SPItemImagePosition)imagePosition;
 
 @property (nonatomic, copy) NSString *title;
