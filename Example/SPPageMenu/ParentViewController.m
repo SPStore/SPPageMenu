@@ -23,7 +23,7 @@
 #define screenW [UIScreen mainScreen].bounds.size.width
 #define screenH [UIScreen mainScreen].bounds.size.height
 #define pageMenuH 40
-#define NaviH (screenH == 812 ? 88 : 64) // 812是iPhoneX的高度
+#define NaviH (screenH >= 812 ? 88 : 64) // 812是iPhoneX的高度
 #define scrollViewHeight (screenH-NaviH-pageMenuH)
 
 @interface ParentViewController () <SPPageMenuDelegate, UIScrollViewDelegate>
@@ -49,7 +49,6 @@
     pageMenu.bridgeScrollView = self.scrollView;
     [self.view addSubview:pageMenu];
     _pageMenu = pageMenu;
-
 }
 
 // 示例2:SPPageMenuTrackerStyleLineLongerThanItem,下划线比item略长，长度等于tem宽＋间距
@@ -103,7 +102,6 @@
     [pageMenu setItems:self.dataArr selectedItemIndex:0];
     // 设置缩放
     pageMenu.selectedItemZoomScale = 1.3;
-    pageMenu.trackerFollowingMode = SPPageMenuTrackerFollowingModeHalf;
     // 设置代理
     pageMenu.delegate = self;
     // 给pageMenu传递外界的大scrollView，内部监听self.scrollView的滚动，从而实现让跟踪器跟随self.scrollView移动的效果
@@ -212,7 +210,7 @@
 
 // 示例10:不可滑动的等宽排列，关键代码:pageMenu.permutationWay = SPPageMenuPermutationWayNotScrollEqualWidths;
 - (void)test10 {
-    self.dataArr = @[@"生活",@"影视中心",@"交通"];
+    self.dataArr = @[@"生活",@"影视中心",@"交通规则"];
     
     // trackerStyle:跟踪器的样式
     SPPageMenu *pageMenu = [SPPageMenu pageMenuWithFrame:CGRectMake(0, NaviH, screenW, pageMenuH) trackerStyle:SPPageMenuTrackerStyleLine];
@@ -232,7 +230,7 @@
 // 示例11:不可滑动的自适应内容排列，关键代码:pageMenu.permutationWay = SPPageMenuPermutationWayNotScrollAdaptContent;
 // 这种排列方式下,itemPadding属性无效，因为内部自动计算间距
 - (void)test11 {
-    self.dataArr = @[@"生活",@"影视中心",@"交通"];
+    self.dataArr = @[@"生活",@"音乐榜中榜",@"交通规则"];
     
     // trackerStyle:跟踪器的样式
     SPPageMenu *pageMenu = [SPPageMenu pageMenuWithFrame:CGRectMake(0, NaviH, screenW, pageMenuH) trackerStyle:SPPageMenuTrackerStyleLine];
@@ -240,6 +238,7 @@
     [pageMenu setItems:self.dataArr selectedItemIndex:1];
     // 不可滑动的自适应内容排列
     pageMenu.permutationWay = SPPageMenuPermutationWayNotScrollAdaptContent;
+
     // 设置代理
     pageMenu.delegate = self;
     // 给pageMenu传递外界的大scrollView，内部监听self.scrollView的滚动，从而实现让跟踪器跟随self.scrollView移动的效果
@@ -325,7 +324,8 @@
     // 传递数组，默认选中第2个
     [pageMenu setItems:self.dataArr selectedItemIndex:1];
     // 同时设置图片和文字，如果只想要文字，image传nil，如果只想要图片，title传nil，imagePosition和ratio传0即可
-    [pageMenu setFunctionButtonTitle:@"更多" image:[UIImage imageNamed:@"Expression_1"] imagePosition:SPItemImagePositionTop imageRatio:0.5 imageTitleSpace:0 forState:UIControlStateNormal];
+    //[pageMenu setFunctionButtonTitle:@"更多" image:[UIImage imageNamed:@"Expression_1"] imagePosition:SPItemImagePositionTop imageRatio:0.5 imageTitleSpace:0 forState:UIControlStateNormal];
+    [pageMenu setFunctionButtonWithItem:[SPPageMenuButtonItem itemWithTitle:@"更多" image:[UIImage imageNamed:@"Expression_1"] imagePosition:SPItemImagePositionTop] forState:UIControlStateNormal];
     [pageMenu setFunctionButtonTitleTextAttributes:@{NSFontAttributeName:[UIFont systemFontOfSize:13]} forState:UIControlStateNormal];
     pageMenu.showFunctionButton = YES;
     // 设置代理
@@ -355,14 +355,18 @@
     self.dataArr = @[@"生活",@"影视中心",@"交通",@"电视剧",@"搞笑",@"综艺"];
 
     SPPageMenu *pageMenu = [SPPageMenu pageMenuWithFrame:CGRectMake(0, NaviH, screenW, pageMenuH) trackerStyle:SPPageMenuTrackerStyleRect];
-    // 传递数组，默认选中第3个
-    [pageMenu setItems:self.dataArr selectedItemIndex:2];
+    // 传递数组，默认选中第1个
+    [pageMenu setItems:self.dataArr selectedItemIndex:0];
     // 指定第1个item为图片
     [pageMenu setImage:[UIImage imageNamed:@"Expression_1"] forItemAtIndex:0];
     // 指定第2个item同时含有图片和文字，图片在上
-    [pageMenu setTitle:@"哈哈" image:[UIImage imageNamed:@"Expression_2"] imagePosition:SPItemImagePositionTop imageRatio:0.5 imageTitleSpace:0 forItemIndex:1];
+    SPPageMenuButtonItem *item1 = [SPPageMenuButtonItem itemWithTitle:@"害羞" image:[UIImage imageNamed:@"Expression_2"]];
+    item1.imagePosition = SPItemImagePositionTop;
+    [pageMenu setItem:item1 forItemIndex:1];
     // 指定第4个item同时含有图片和文字，图片在右
-    [pageMenu setTitle:@"哈哈" image:[UIImage imageNamed:@"dog"] imagePosition:SPItemImagePositionRight imageRatio:0.4 imageTitleSpace:0 forItemIndex:3];
+//    [pageMenu setTitle:@"可爱的小狗" image:[UIImage imageNamed:@"dog"] imagePosition:SPItemImagePositionDefault imageRatio:0.4 imageTitleSpace:0 forItemIndex:3];
+    SPPageMenuButtonItem *item2 = [SPPageMenuButtonItem itemWithTitle:@"歌曲" image:[UIImage imageNamed:@"asc"] imagePosition:SPItemImagePositionRight];
+    [pageMenu setItem:item2 forItemIndex:3];
     pageMenu.delegate = self;
     // 给pageMenu传递外界的大scrollView，内部监听self.scrollView的滚动，从而实现让跟踪器跟随self.scrollView移动的效果
     pageMenu.bridgeScrollView = self.scrollView;
@@ -404,7 +408,7 @@
     // 给pageMenu传递外界的大scrollView，内部监听self.scrollView的滚动，从而实现让跟踪器跟随self.scrollView移动的效果
     pageMenu.bridgeScrollView = self.scrollView;
 
-    // 这里通过KVC的形式取出按钮数组，在通过下标获取指定的按钮。本框架没有特别提供返回指定按钮的方法，因为按钮是不能返回的，一旦返回，该按钮的属性就可以被外界轻松地任意修改，这是一个框架该考虑的安全问题。如果专门提供一个设置角标的方法，那么角标的样式又可以自定义，角标并非本框架的核心功能，所以没必要因为它将框架搞得3过于臃肿。
+    // 这里通过KVC的形式取出按钮数组，再通过下标获取指定的按钮。本框架没有特别提供返回指定按钮的方法，因为按钮是不能返回的，一旦返回，该按钮的属性就可以被外界轻松地任意修改，这是一个框架该考虑的安全问题。如果专门提供一个设置角标的方法，那么角标的样式又可以自定义，角标并非本框架的核心功能，所以没必要因为它将框架搞得过于臃肿。
     NSArray *buttons = [pageMenu valueForKey:@"_buttons"];
     UIButton *button0 = [buttons objectAtIndex:0];
     JSBadgeView *badgeView0 = [[JSBadgeView alloc] initWithParentView:button0.titleLabel alignment:JSBadgeViewAlignmentTopRight];
@@ -528,11 +532,14 @@
     for (int i = 0; i < self.dataArr.count; i++) {
         if (controllerClassNames.count > i) {
             BaseViewController *baseVc = [[NSClassFromString(controllerClassNames[i]) alloc] init];
-            NSString *text = [self.pageMenu titleForItemAtIndex:i];
-            if (text.length) {
-                baseVc.text = text;
-            } else {
+            id object = [self.pageMenu objectForItemAtIndex:i];
+            if ([object isKindOfClass:[NSString class]]) {
+                baseVc.text = object;
+            } else if ([object isKindOfClass:[UIImage class]]) {
                 baseVc.text = @"图片";
+            } else {
+                SPPageMenuButtonItem *item = (SPPageMenuButtonItem *)object;
+                baseVc.text = item.title;
             }
             [self addChildViewController:baseVc];
             // 控制器本来自带childViewControllers,但是遗憾的是该数组的元素顺序永远无法改变，只要是addChildViewController,都是添加到最后一个，而控制器不像数组那样，可以插入或删除任意位置，所以这里自己定义可变数组，以便插入(删除)(如果没有插入(删除)功能，直接用自带的childViewControllers即可)
@@ -607,7 +614,7 @@
 
 #pragma mark - insert or remove
 
-// object是插入的对象(NSString或UIImage),insertNumber是插入到第几个
+// object是插入的对象(NSString、UIImage或SPPageMenuButtonItem),insertNumber是插入到第几个
 - (void)insertItemWithObject:(id)object toIndex:(NSInteger)insertNumber {
     if (insertNumber > self.myChildViewControllers.count) return;
     // 插入之前，先将新控制器之后的控制器view往后偏移
@@ -633,8 +640,10 @@
     // 要先添加控制器，再添加item，如果先添加item，会立即调代理方法，此时myChildViewControllers的个数还是0，在代理方法中retun了
     if ([object isKindOfClass:[NSString class]]) {
         [self.pageMenu insertItemWithTitle:object atIndex:insertNumber animated:YES];
-    } else {
+    } else if([object isKindOfClass:[UIImage class]]) {
         [self.pageMenu insertItemWithImage:object atIndex:insertNumber animated:YES];
+    } else {
+        [self.pageMenu insertItem:object atIndex:insertNumber animated:YES];
     }
     
     // 重新设置scrollView容量
