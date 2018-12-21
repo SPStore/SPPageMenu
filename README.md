@@ -14,6 +14,15 @@
 * [使用者提问](#使用者提问)
 
 ## 如何安装
+#### 版本3.4.5
+```
+target 'MyApp' do
+  pod 'SPPageMenu', '~> 3.4.5'
+end
+
+说明：3.4.5版本在3.4.4版本的基础上修复了先设置unSelectedItemTitleFont，再设置items文字显示不全问题
+```
+
 #### 版本3.4.4
 ```
 target 'MyApp' do
