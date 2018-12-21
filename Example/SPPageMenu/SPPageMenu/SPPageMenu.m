@@ -564,7 +564,6 @@
     } else {
         [self setNeedsLayout];
     }
-    
 }
 
 - (void)removeAllItems {
@@ -589,6 +588,7 @@
 }
 
 - (void)setTitle:(NSString *)title forItemAtIndex:(NSUInteger)itemIndex {
+    if (title == nil) return;
     if (itemIndex < self.buttons.count) {
         SPPageMenuButton *button = [self.buttons objectAtIndex:itemIndex];
         [button setImage:nil forState:UIControlStateNormal];
@@ -601,7 +601,7 @@
     [self setNeedsLayout];
 }
 
-- (nullable NSString *)titleForItemAtIndex:(NSUInteger)itemIndex {
+- (NSString *)titleForItemAtIndex:(NSUInteger)itemIndex {
     if (itemIndex < self.items.count) {
         id object = [self.items objectAtIndex:itemIndex];
         NSAssert([object isKindOfClass:[NSString class]],@"itemIndex对应的item不是NSString类型，请仔细核对");
@@ -611,6 +611,7 @@
 }
 
 - (void)setImage:(UIImage *)image forItemAtIndex:(NSUInteger)itemIndex {
+    if (image == nil) return;
     if (itemIndex < self.buttons.count) {
         SPPageMenuButton *button = [self.buttons objectAtIndex:itemIndex];
         [button setTitle:nil forState:UIControlStateNormal];
@@ -623,7 +624,7 @@
     [self setNeedsLayout];
 }
 
-- (nullable UIImage *)imageForItemAtIndex:(NSUInteger)itemIndex {
+- (UIImage *)imageForItemAtIndex:(NSUInteger)itemIndex {
     if (itemIndex < self.items.count) {
         id object = [self.items objectAtIndex:itemIndex];
         NSAssert([object isKindOfClass:[UIImage class]],@"itemIndex对应的item不是UIImage类型，请仔细核对");
@@ -633,6 +634,7 @@
 }
 
 - (void)setItem:(SPPageMenuButtonItem *)item forItemIndex:(NSUInteger)itemIndex {
+    if (item == nil) return;
     if (itemIndex < self.buttons.count) {
         SPPageMenuButton *button = [self.buttons objectAtIndex:itemIndex];
         [button setTitle:item.title forState:UIControlStateNormal];
@@ -655,6 +657,37 @@
         id object = [self.items objectAtIndex:itemIndex];
         NSAssert([object isKindOfClass:[SPPageMenuButtonItem class]],@"itemIndex对应的item不是SPPageMenuButtonItem类型，请仔细核对");
         return object;
+    }
+    return nil;
+}
+
+- (void)setContent:(id)content forItemIndex:(NSUInteger)itemIndex {
+    if (content == nil) return;
+    if (itemIndex < self.buttons.count) {
+        SPPageMenuButton *button = [self.buttons objectAtIndex:itemIndex];
+        if ([content isKindOfClass:[NSString class]]) {
+            [button setTitle:content forState:UIControlStateNormal];
+        } else if ([content isKindOfClass:[UIImage class]]) {
+            [button setImage:content forState:UIControlStateNormal];
+        } else if ([content isKindOfClass:[SPPageMenuButtonItem class]]) {
+            SPPageMenuButtonItem *item = (SPPageMenuButtonItem *)content;
+            [button setTitle:item.title forState:UIControlStateNormal];
+            [button setImage:item.image forState:UIControlStateNormal];
+            button.imagePosition = item.imagePosition;
+            button.imageTitleSpace = item.imageTitleSpace;
+        }
+        NSMutableArray *items = self.items.mutableCopy;
+        [items replaceObjectAtIndex:itemIndex withObject:content];
+        self.items = items.copy;
+        [self setNeedsLayout];
+        [self layoutIfNeeded];
+    }
+}
+
+- (id)contentForItemAtIndex:(NSUInteger)itemIndex {
+    if (itemIndex < self.items.count) {
+        id content = [self.items objectAtIndex:itemIndex];
+        return content;
     }
     return nil;
 }
@@ -746,6 +779,73 @@
     [self layoutIfNeeded];
 }
 
+- (void)setFunctionButtonWithItem:(SPPageMenuButtonItem *)item forState:(UIControlState)state {
+    [self.functionButton setTitle:item.title forState:state];
+    [self.functionButton setImage:item.image forState:state];
+    self.functionButton.imagePosition = item.imagePosition;
+    self.functionButton.imageTitleSpace = item.imageTitleSpace;
+}
+
+- (void)setFunctionButtonContent:(id)content forState:(UIControlState)state {
+    if ([content isKindOfClass:[NSString class]]) {
+        [self.functionButton setTitle:content forState:state];
+    } else if ([content isKindOfClass:[UIImage class]]) {
+        [self.functionButton setImage:content forState:state];
+    } else if ([content isKindOfClass:[SPPageMenuButtonItem class]]) {
+        SPPageMenuButtonItem *item = (SPPageMenuButtonItem *)content;
+        [self.functionButton setTitle:item.title forState:state];
+        [self.functionButton setImage:item.image forState:state];
+        self.functionButton.imagePosition = item.imagePosition;
+        self.functionButton.imageTitleSpace = item.imageTitleSpace;
+    }
+}
+
+- (void)setFunctionButtonTitleTextAttributes:(nullable NSDictionary *)attributes forState:(UIControlState)state {
+    if (attributes[NSFontAttributeName]) {
+        self.functionButton.titleLabel.font = attributes[NSFontAttributeName];
+    }
+    if (attributes[NSForegroundColorAttributeName]) {
+        [self.functionButton setTitleColor:attributes[NSForegroundColorAttributeName] forState:state];
+    }
+    if (attributes[NSBackgroundColorAttributeName]) {
+        self.functionButton.backgroundColor = attributes[NSBackgroundColorAttributeName];
+    }
+}
+
+- (void)moveTrackerFollowScrollView:(UIScrollView *)scrollView {
+    // 说明外界传进来了一个scrollView,如果外界传进来了，pageMenu会观察该scrollView的contentOffset自动处理跟踪器的跟踪
+    if (self.bridgeScrollView == scrollView) { return; }
+    [self prepareMoveTrackerFollowScrollView:scrollView];
+}
+
+// 以下方法在3.0版本上有升级，可以使用但不推荐
+- (void)setTitle:(nullable NSString *)title image:(nullable UIImage *)image imagePosition:(SPItemImagePosition)imagePosition imageRatio:(CGFloat)ratio forItemIndex:(NSUInteger)itemIndex {
+    if (itemIndex < self.buttons.count) {
+        SPPageMenuButton *button = [self.buttons objectAtIndex:itemIndex];
+        [button setTitle:title forState:UIControlStateNormal];
+        [button setImage:image forState:UIControlStateNormal];
+        button.imagePosition = imagePosition;
+        
+        // 文字和图片只能替换其一，因为items数组里不能同时装文字和图片。当文字和图片同时设置时，items里只更新文字
+        if (title == nil || title.length == 0 || [title isKindOfClass:[NSNull class]]) {
+            NSMutableArray *items = self.items.mutableCopy;
+            [items replaceObjectAtIndex:itemIndex withObject:image];
+            self.items = items.copy;
+        } else if (image == nil) {
+            NSMutableArray *items = self.items.mutableCopy;
+            [items replaceObjectAtIndex:itemIndex withObject:title];
+            self.items = items.copy;
+        } else {
+            NSMutableArray *items = self.items.mutableCopy;
+            [items replaceObjectAtIndex:itemIndex withObject:image];
+            self.items = items.copy;
+        }
+        
+        [self setNeedsLayout];
+        [self layoutIfNeeded];
+    }
+}
+
 - (void)setTitle:(nullable NSString *)title image:(nullable UIImage *)image imagePosition:(SPItemImagePosition)imagePosition imageRatio:(CGFloat)ratio imageTitleSpace:(CGFloat)imageTitleSpace forItemIndex:(NSUInteger)itemIndex {
     if (itemIndex < self.buttons.count) {
         SPPageMenuButton *button = [self.buttons objectAtIndex:itemIndex];
@@ -774,6 +874,12 @@
     }
 }
 
+- (void)setFunctionButtonTitle:(nullable NSString *)title image:(nullable UIImage *)image imagePosition:(SPItemImagePosition)imagePosition imageRatio:(CGFloat)ratio forState:(UIControlState)state {
+    [self.functionButton setTitle:title forState:state];
+    [self.functionButton setImage:image forState:state];
+    self.functionButton.imagePosition = imagePosition;
+}
+
 - (void)setFunctionButtonTitle:(nullable NSString *)title image:(nullable UIImage *)image imagePosition:(SPItemImagePosition)imagePosition imageRatio:(CGFloat)ratio imageTitleSpace:(CGFloat)imageTitleSpace forState:(UIControlState)state {
     [self.functionButton setTitle:title forState:state];
     [self.functionButton setImage:image forState:state];
@@ -781,71 +887,9 @@
     self.functionButton.imageTitleSpace = imageTitleSpace;
 }
 
-- (void)setFunctionButtonWithItem:(SPPageMenuButtonItem *)item forState:(UIControlState)state {
-    [self.functionButton setTitle:item.title forState:state];
-    [self.functionButton setImage:item.image forState:state];
-    self.functionButton.imagePosition = item.imagePosition;
-    self.functionButton.imageTitleSpace = item.imageTitleSpace;
-}
-
-// 以下2个方法在3.0版本上有升级，可以使用但不推荐
-- (void)setTitle:(nullable NSString *)title image:(nullable UIImage *)image imagePosition:(SPItemImagePosition)imagePosition imageRatio:(CGFloat)ratio forItemIndex:(NSUInteger)itemIndex {
-    if (itemIndex < self.buttons.count) {
-        SPPageMenuButton *button = [self.buttons objectAtIndex:itemIndex];
-        [button setTitle:title forState:UIControlStateNormal];
-        [button setImage:image forState:UIControlStateNormal];
-        button.imagePosition = imagePosition;
-        
-        // 文字和图片只能替换其一，因为items数组里不能同时装文字和图片。当文字和图片同时设置时，items里只更新文字
-        if (title == nil || title.length == 0 || [title isKindOfClass:[NSNull class]]) {
-            NSMutableArray *items = self.items.mutableCopy;
-            [items replaceObjectAtIndex:itemIndex withObject:image];
-            self.items = items.copy;
-        } else if (image == nil) {
-            NSMutableArray *items = self.items.mutableCopy;
-            [items replaceObjectAtIndex:itemIndex withObject:title];
-            self.items = items.copy;
-        } else {
-            NSMutableArray *items = self.items.mutableCopy;
-            [items replaceObjectAtIndex:itemIndex withObject:image];
-            self.items = items.copy;
-        }
-        
-        [self setNeedsLayout];
-        [self layoutIfNeeded];
-    }
-}
-- (void)setFunctionButtonTitle:(nullable NSString *)title image:(nullable UIImage *)image imagePosition:(SPItemImagePosition)imagePosition imageRatio:(CGFloat)ratio forState:(UIControlState)state {
-    [self.functionButton setTitle:title forState:state];
-    [self.functionButton setImage:image forState:state];
-    self.functionButton.imagePosition = imagePosition;
-}
-
-- (void)setFunctionButtonTitleTextAttributes:(nullable NSDictionary *)attributes forState:(UIControlState)state {
-    if (attributes[NSFontAttributeName]) {
-        self.functionButton.titleLabel.font = attributes[NSFontAttributeName];
-    }
-    if (attributes[NSForegroundColorAttributeName]) {
-        [self.functionButton setTitleColor:attributes[NSForegroundColorAttributeName] forState:state];
-    }
-    if (attributes[NSBackgroundColorAttributeName]) {
-        self.functionButton.backgroundColor = attributes[NSBackgroundColorAttributeName];
-    }
-}
-
-- (void)moveTrackerFollowScrollView:(UIScrollView *)scrollView {
-    
-    // 说明外界传进来了一个scrollView,如果外界传进来了，pageMenu会观察该scrollView的contentOffset自动处理跟踪器的跟踪
-    if (self.bridgeScrollView == scrollView) { return; }
-    
-    [self prepareMoveTrackerFollowScrollView:scrollView];
-}
- 
-
 #pragma mark - private
 
 - (void)addButton:(NSInteger)index object:(id)object animated:(BOOL)animated {
-    
     // 如果是插入，需要改变已有button的tag值
     for (SPPageMenuButton *button in self.buttons) {
         if (button.tag-tagBaseValue >= index) {
@@ -886,9 +930,7 @@
         [self.itemScrollView insertSubview:button atIndex:index];
     }
     [self.buttons insertObject:button atIndex:index];
-    
-    // setNeedsLayout会标记为需要刷新,layoutIfNeeded只有在有标记的情况下才会立即调用layoutSubViews,当然标记为刷新并非只有调用setNeedsLayout,如frame改变，addSubView等都会标记为刷新
-    
+
     if (self.insert && animated) { // 是插入的新按钮,且需要动画
         // 取出上一个按钮
         SPPageMenuButton *lastButton;
@@ -1010,7 +1052,6 @@
         [self moveItemScrollViewWithSelectedButton:sender];
         
         if (self.trackerStyle == SPPageMenuTrackerStyleTextZoom || _selectedItemZoomScale != 1) {
-
             if (labs(toIndex-fromIndex) >= 2) { // 该条件意思是当外界滑动scrollView连续的滑动了超过2页
                 for (SPPageMenuButton *button in self.buttons) { // 必须遍历将非选中按钮还原缩放，而不是仅仅只让上一个选中的按钮还原缩放。因为当用户快速滑动外界scrollView时，会频繁的调用-zoomForTitleWithProgress:fromButton:toButton:方法，有可能经过的某一个button还没彻底还原缩放就直接过去了，从而可能会导致该按钮文字会显示不全，所以在这里，将所有非选中的按钮还原缩放
                     if (button != sender && !CGAffineTransformEqualToTransform(button.transform, CGAffineTransformIdentity)) {
@@ -1045,7 +1086,7 @@
     // CGRectGetMidX(self.backgroundView.frame)指的是屏幕水平中心位置，它的值是固定不变的
     CGFloat offSetX = centerInPageMenu.x - CGRectGetMidX(self.backgroundView.frame);
     
-    // itemScrollView的容量宽与自身宽之差(难点)
+    // itemScrollView的容量宽与自身宽之差
     CGFloat maxOffsetX = self.itemScrollView.contentSize.width - self.itemScrollView.frame.size.width;
     // 如果选中的button中心x值小于或者等于itemScrollView的中心x值，或者itemScrollView的容量宽度小于itemScrollView本身，此时点击button时不发生任何偏移，置offSetX为0
     if (offSetX <= 0 || maxOffsetX <= 0) {
@@ -1055,9 +1096,7 @@
     else if (offSetX > maxOffsetX){
         offSetX = maxOffsetX;
     }
-
     [self.itemScrollView setContentOffset:CGPointMake(offSetX, 0) animated:YES];
-    
 }
 
 // 移动跟踪器
@@ -1087,11 +1126,8 @@
 
     // 这个if条件的意思是scrollView的滑动不是由手指拖拽产生
     if (!scrollView.isDragging && !scrollView.isDecelerating) {return;}
-
     // 当滑到边界时，继续通过scrollView的bouces效果滑动时，直接return
-    if (scrollView.contentOffset.x < 0 || scrollView.contentOffset.x > scrollView.contentSize.width-scrollView.bounds.size.width) {
-        return;
-    }
+    if (scrollView.contentOffset.x < 0 || scrollView.contentOffset.x > scrollView.contentSize.width-scrollView.bounds.size.width) {return;}
 
     // 当前偏移量
     CGFloat currentOffSetX = scrollView.contentOffset.x;
@@ -1123,13 +1159,10 @@
         fromIndex = self.selectedItemIndex;
         toIndex = fromIndex;
     }
-
     if (currentOffSetX == scrollView.bounds.size.width * fromIndex) {// 滚动停止了
         progress = 1.0;
         toIndex = fromIndex;
     }
-
-
     // 如果滚动停止，直接通过点击按钮选中toIndex对应的item
     if (currentOffSetX == scrollView.bounds.size.width*toIndex) { // 这里toIndex==fromIndex
         // 这一次赋值起到2个作用，一是点击toIndex对应的按钮，走一遍代理方法,二是弥补跟踪器的结束跟踪，因为本方法是在scrollViewDidScroll中调用，可能离滚动结束还有一丁点的距离，本方法就不调了,最终导致外界还要在scrollView滚动结束的方法里self.selectedItemIndex进行赋值,直接在这里赋值可以让外界不用做此操作
@@ -1139,37 +1172,36 @@
         // 要return，点击了按钮，跟踪器自然会跟着被点击的按钮走
         return;
     }
-
-    if (self.trackerFollowingMode == SPPageMenuTrackerFollowingModeAlways) {
-        // 这个方法才开始移动跟踪器
-        [self moveTrackerWithProgress:progress fromIndex:fromIndex toIndex:toIndex currentOffsetX:currentOffSetX beginOffsetX:_beginOffsetX];
-    } else if (self.trackerFollowingMode == SPPageMenuTrackerFollowingModeHalf) {
-        SPPageMenuButton *fromButton;
-        SPPageMenuButton *toButton;
-        if (progress > 0.5) {
-            if (toIndex >= 0 && toIndex < self.buttons.count) {
-                toButton = self.buttons[toIndex];
-                fromButton = self.buttons[fromIndex];
-
-                if (_selectedItemIndex != toIndex) {
-                    self.selectedItemIndex = toIndex;
+    switch (self.trackerFollowingMode) {
+        case SPPageMenuTrackerFollowingModeAlways:
+            // 这个方法才开始移动跟踪器
+            [self moveTrackerWithProgress:progress fromIndex:fromIndex toIndex:toIndex currentOffsetX:currentOffSetX beginOffsetX:_beginOffsetX];
+            break;
+        case SPPageMenuTrackerFollowingModeHalf:{
+            SPPageMenuButton *fromButton;
+            SPPageMenuButton *toButton;
+            if (progress > 0.5) {
+                if (toIndex >= 0 && toIndex < self.buttons.count) {
+                    toButton = self.buttons[toIndex];
+                    fromButton = self.buttons[fromIndex];
+                    if (_selectedItemIndex != toIndex) {
+                        self.selectedItemIndex = toIndex;
+                    }
                 }
-            }
-        } else {
-            if (fromIndex >= 0 && fromIndex < self.buttons.count) {
-                toButton = self.buttons[fromIndex];
-                fromButton = self.buttons[toIndex];
-
-                if (_selectedItemIndex != fromIndex) {
-                    self.selectedItemIndex = fromIndex;
+            } else {
+                if (fromIndex >= 0 && fromIndex < self.buttons.count) {
+                    toButton = self.buttons[fromIndex];
+                    fromButton = self.buttons[toIndex];
+                    if (_selectedItemIndex != fromIndex) {
+                        self.selectedItemIndex = fromIndex;
+                    }
                 }
             }
         }
-
-    } else { // self.trackerFollowingMode = SPPageMenuTrackerFollowingModeEnd
-        // 什么都不用做
+            break;
+        default:
+            break;
     }
-
 }
 
 // 这个方法才开始真正滑动跟踪器，上面都是做铺垫
@@ -1316,16 +1348,16 @@
     }
 }
 
-
 #pragma mark - setter
 
 - (void)setBridgeScrollView:(UIScrollView *)bridgeScrollView {
+    if (bridgeScrollView == _bridgeScrollView) return;
+    if (_bridgeScrollView && bridgeScrollView != _bridgeScrollView) {
+        [_bridgeScrollView removeObserver:self forKeyPath:scrollViewContentOffset];
+    };
     _bridgeScrollView = bridgeScrollView;
     if (bridgeScrollView) {
-        
         [bridgeScrollView addObserver:self forKeyPath:scrollViewContentOffset options:NSKeyValueObservingOptionNew context:nil];
-    } else {
-        NSLog(@"你传了一个空的scrollView");
     }
 }
 
@@ -1636,7 +1668,6 @@
                 button.frame = CGRectMake(self->_itemPadding*0.5+lastButtonMaxX, 0, buttonW, itemScrollViewH);
             } else {
                 button.frame = CGRectMake(self->_itemPadding+lastButtonMaxX, 0, buttonW, itemScrollViewH);
-
             }
         } else if (self.permutationWay == SPPageMenuPermutationWayNotScrollEqualWidths) {
             // 求出外界设置的按钮宽度之和
@@ -1760,7 +1791,6 @@
     [self.bridgeScrollView removeObserver:self forKeyPath:scrollViewContentOffset];
 }
 
-
 @end
 
 @implementation SPPageMenuButtonItem
@@ -1782,18 +1812,6 @@
         self.imagePosition = imagePosition;
     }
     return self;
-}
-
-- (instancetype)init {
-    if (self = [super init]) {
-        [self initialize];
-    }
-    return self;
-}
-
-- (void)initialize {
-    _imagePosition = SPItemImagePositionDefault;
-    _imageTitleSpace = 0.0;
 }
 
 @end

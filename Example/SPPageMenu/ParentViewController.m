@@ -88,7 +88,8 @@
     // 设置代理
     pageMenu.delegate = self;
     // 给pageMenu传递外界的大scrollView，内部监听self.scrollView的滚动，从而实现让跟踪器跟随self.scrollView移动的效果
-    pageMenu.bridgeScrollView = self.scrollView;    [self.view addSubview:pageMenu];
+    pageMenu.bridgeScrollView = self.scrollView;
+    [self.view addSubview:pageMenu];
     _pageMenu = pageMenu;
 }
 
@@ -324,8 +325,7 @@
     // 传递数组，默认选中第2个
     [pageMenu setItems:self.dataArr selectedItemIndex:1];
     // 同时设置图片和文字，如果只想要文字，image传nil，如果只想要图片，title传nil，imagePosition和ratio传0即可
-    //[pageMenu setFunctionButtonTitle:@"更多" image:[UIImage imageNamed:@"Expression_1"] imagePosition:SPItemImagePositionTop imageRatio:0.5 imageTitleSpace:0 forState:UIControlStateNormal];
-    [pageMenu setFunctionButtonWithItem:[SPPageMenuButtonItem itemWithTitle:@"更多" image:[UIImage imageNamed:@"Expression_1"] imagePosition:SPItemImagePositionTop] forState:UIControlStateNormal];
+    [pageMenu setFunctionButtonContent:[SPPageMenuButtonItem itemWithTitle:@"更多" image:[UIImage imageNamed:@"Expression_1"] imagePosition:SPItemImagePositionTop] forState:UIControlStateNormal];
     [pageMenu setFunctionButtonTitleTextAttributes:@{NSFontAttributeName:[UIFont systemFontOfSize:13]} forState:UIControlStateNormal];
     pageMenu.showFuntionButton = YES;
     // 设置代理
@@ -532,7 +532,7 @@
     for (int i = 0; i < self.dataArr.count; i++) {
         if (controllerClassNames.count > i) {
             BaseViewController *baseVc = [[NSClassFromString(controllerClassNames[i]) alloc] init];
-            id object = [self.pageMenu objectForItemAtIndex:i];
+            id object = [self.pageMenu contentForItemAtIndex:i];
             if ([object isKindOfClass:[NSString class]]) {
                 baseVc.text = object;
             } else if ([object isKindOfClass:[UIImage class]]) {
