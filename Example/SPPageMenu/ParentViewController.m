@@ -219,6 +219,7 @@
     [pageMenu setItems:self.dataArr selectedItemIndex:1];
     // 不可滑动的等宽排列
     pageMenu.permutationWay = SPPageMenuPermutationWayNotScrollEqualWidths;
+    pageMenu.trackerWidth = 20;
     pageMenu.itemPadding = 0;
     // 设置代理
     pageMenu.delegate = self;
@@ -231,7 +232,7 @@
 // 示例11:不可滑动的自适应内容排列，关键代码:pageMenu.permutationWay = SPPageMenuPermutationWayNotScrollAdaptContent;
 // 这种排列方式下,itemPadding属性无效，因为内部自动计算间距
 - (void)test11 {
-    self.dataArr = @[@"生活",@"音乐榜中榜",@"交通规则"];
+    self.dataArr = @[@"生活",@"音乐榜中榜音乐榜中榜音乐榜中榜音乐榜中榜音乐榜中榜",@"交通规则"];
     
     // trackerStyle:跟踪器的样式
     SPPageMenu *pageMenu = [SPPageMenu pageMenuWithFrame:CGRectMake(0, NaviH, screenW, pageMenuH) trackerStyle:SPPageMenuTrackerStyleLine];
@@ -239,7 +240,9 @@
     [pageMenu setItems:self.dataArr selectedItemIndex:1];
     // 不可滑动的自适应内容排列
     pageMenu.permutationWay = SPPageMenuPermutationWayNotScrollAdaptContent;
-
+//    pageMenu.itemPadding = 20;
+//    [pageMenu setWidth:200 forItemAtIndex:1];
+    [pageMenu setCustomSpacing:80 afterItemAtIndex:1];
     // 设置代理
     pageMenu.delegate = self;
     // 给pageMenu传递外界的大scrollView，内部监听self.scrollView的滚动，从而实现让跟踪器跟随self.scrollView移动的效果
@@ -396,8 +399,39 @@
     _pageMenu = pageMenu;
 }
 
-// 示例20:给指定按钮加角标
+// 示例20:某个按钮上添加一个副标题
 - (void)test20 {
+    self.dataArr = @[@"点菜",@"评论",@"商家",@"已购"];
+    
+    SPPageMenu *pageMenu = [SPPageMenu pageMenuWithFrame:CGRectMake(0, NaviH, screenW, pageMenuH) trackerStyle:SPPageMenuTrackerStyleLineAttachment];
+    // 传递数组，默认选中第2个
+    [pageMenu setItems:self.dataArr selectedItemIndex:0];
+    pageMenu.itemTitleFont = [UIFont  boldSystemFontOfSize:17];
+    pageMenu.selectedItemTitleColor = [UIColor blackColor];
+    pageMenu.unSelectedItemTitleColor = [UIColor grayColor];
+    pageMenu.trackerWidth = 20;
+    // 设置第一个按钮后面的自定义间距为60，增大第一个和第二个按钮之间的间距，腾出空间方便在第一个按钮的后面放置一个副标题
+    [pageMenu setCustomSpacing:60 afterItemAtIndex:1];
+    pageMenu.delegate = self;
+    pageMenu.permutationWay = SPPageMenuPermutationWayNotScrollEqualWidths;
+    // 给pageMenu传递外界的大scrollView，内部监听self.scrollView的滚动，从而实现让跟踪器跟随self.scrollView移动的效果
+    pageMenu.bridgeScrollView = self.scrollView;
+    [self.view addSubview:pageMenu];
+    _pageMenu = pageMenu;
+    
+    // 获取第1个item上文字相对pageMenu的位置大小
+    CGRect titleRect = [pageMenu titleRectAtPageMenuForItemAtIndex:1];
+    
+    UILabel *detailLabel = [[UILabel alloc] init];
+    detailLabel.text = @"8384";
+    detailLabel.font = [UIFont systemFontOfSize:11];
+    detailLabel.textColor = [UIColor lightGrayColor];
+    detailLabel.frame = CGRectMake(CGRectGetMaxX(titleRect),CGRectGetMaxY(titleRect)-16, 50, 16);
+    [pageMenu addSubview:detailLabel];
+}
+
+// 示例21:给指定按钮加角标
+- (void)test21 {
     self.dataArr = @[@"生活",@"军事",@"水木年华",@"综艺"];
 
     SPPageMenu *pageMenu = [SPPageMenu pageMenuWithFrame:CGRectMake(0, NaviH, screenW, pageMenuH) trackerStyle:SPPageMenuTrackerStyleNothing];
@@ -433,8 +467,8 @@
     _pageMenu = pageMenu;
 }
 
-// 示例21:特别属性说明
-- (void)test21 {
+// 示例22:特别属性说明
+- (void)test22 {
     self.dataArr = nil;
     
     NSString *text = @"本框架的bridgeScrollView属性是一个很重要但又容易忽略的属性，在外界的viewDidLoad中，每种示例都传了一个scrollView，即:“self.pageMenu.bridgeScrollView = self.scrollView”，这一传递，SPPageMenu内部会监听该scrollView的滚动状况，当该scrollView滚动的时候，就可以让跟踪器时刻跟随；如果你忘了或者不想设置这个属性，也可以在外界的scrollView的代理方法scrollViewDidScroll中调用接口“- (void)moveTrackerFollowScrollView:(UIScrollView *)scrollView”,这样也能实现跟踪器时刻跟随scrollView；如果不想让跟踪器时刻跟踪，而直到scrollView滑动结束才跟踪，在上面2种方式采取了任意一种的情况下，可以设置属性”pageMenu.closeTrackerFollowingMode = YES“";
@@ -522,7 +556,8 @@
         case 20:
             [self test21];
             break;
-        default:
+        case 21:
+            [self test22];
             break;
     }
     

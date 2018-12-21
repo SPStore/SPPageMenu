@@ -411,7 +411,8 @@
 @property (nonatomic, weak) SPPageMenuButton *functionButton;
 @property (nonatomic, strong) NSMutableArray *buttons;
 @property (nonatomic, strong) SPPageMenuButton *selectedButton;
-@property (nonatomic, strong) NSMutableDictionary *setupWidths;
+@property (nonatomic, strong) NSMutableDictionary *customWidths;
+@property (nonatomic, strong) NSMutableDictionary *customSpacings;
 @property (nonatomic, assign) BOOL insert;
 // 起始偏移量,为了判断滑动方向
 @property (nonatomic, assign) CGFloat beginOffsetX;
@@ -429,6 +430,7 @@
 
 // 这个高度，是存储itemScrollView的高度
 @property (nonatomic, assign) CGFloat itemScrollViewH;
+@property (nonatomic, assign) BOOL forceUseSettingSpacing;
 @end
 
 #pragma clang diagnostic push
@@ -652,6 +654,10 @@
     }
 }
 
+- (void)setItem:(SPPageMenuButtonItem *)item forItemAtIndex:(NSUInteger)itemIndex {
+    [self setItem:item forItemIndex:itemIndex];
+}
+
 - (SPPageMenuButtonItem *)itemAtIndex:(NSUInteger)itemIndex {
     if (itemIndex < self.items.count) {
         id object = [self.items objectAtIndex:itemIndex];
@@ -682,6 +688,10 @@
         [self setNeedsLayout];
         [self layoutIfNeeded];
     }
+}
+
+- (void)setContent:(id)content forItemAtIndex:(NSUInteger)itemIndex {
+    [self setContent:content forItemIndex:itemIndex];
 }
 
 - (id)contentForItemAtIndex:(NSUInteger)itemIndex {
@@ -717,14 +727,16 @@
 
 - (void)setWidth:(CGFloat)width forItemAtIndex:(NSUInteger)itemIndex {
     if (itemIndex < self.buttons.count) {
-        [self.setupWidths setObject:@(width) forKey:[NSString stringWithFormat:@"%lu",(unsigned long)itemIndex]];
+        [self.customWidths setValue:@(width) forKey:[NSString stringWithFormat:@"%lu",(unsigned long)itemIndex]];
+        [self setNeedsLayout];
+        [self layoutIfNeeded];
     }
 }
 
 - (CGFloat)widthForItemAtIndex:(NSUInteger)itemIndex {
-    CGFloat setupWidth = [[self.setupWidths objectForKey:[NSString stringWithFormat:@"%lu",(unsigned long)itemIndex]] floatValue];
-    if (setupWidth) {
-        return setupWidth;
+    CGFloat customWidth = [[self.customWidths valueForKey:[NSString stringWithFormat:@"%lu",(unsigned long)itemIndex]] floatValue];
+    if (customWidth) {
+        return customWidth;
     } else {
         if (itemIndex < self.buttons.count) {
             SPPageMenuButton *button = [self.buttons objectAtIndex:itemIndex];
@@ -732,6 +744,19 @@
         }
     }
     return 0;
+}
+
+- (void)setCustomSpacing:(CGFloat)spacing afterItemAtIndex:(NSUInteger)itemIndex {
+    if (itemIndex < self.buttons.count) {
+        [self.customSpacings setValue:@(spacing) forKey:[NSString stringWithFormat:@"%lu",(unsigned long)itemIndex]];
+        [self setNeedsLayout];
+        [self layoutIfNeeded];
+    }
+}
+
+- (CGFloat)customSpacingAfterItemAtIndex:(NSUInteger)itemIndex {
+    CGFloat customSpacing = [[self.customSpacings valueForKey:[NSString stringWithFormat:@"%lu",(unsigned long)itemIndex]] floatValue];
+    return customSpacing;
 }
 
 - (void)setContentEdgeInsets:(UIEdgeInsets)contentInset forForItemAtIndex:(NSUInteger)itemIndex {
@@ -745,6 +770,8 @@
     if (itemIndex < self.buttons.count) {
         SPPageMenuButton *button = [self.buttons objectAtIndex:itemIndex];
         button.contentEdgeInsets = contentInset;
+        [self setNeedsLayout];
+        [self layoutIfNeeded];
     }
 }
 
@@ -770,6 +797,33 @@
 
 - (UIImage *)backgroundImageForBarMetrics:(UIBarMetrics)barMetrics {
     return self.backgroundImageView.image;
+}
+
+- (CGRect)titleRectAtPageMenuForItemAtIndex:(NSUInteger)itemIndex {
+    if (itemIndex < self.buttons.count) {
+        SPPageMenuButton *button = [self.buttons objectAtIndex:itemIndex];
+        CGRect titleRectAtPageMenu = [button.titleLabel convertRect:button.titleLabel.bounds toView:self];
+        return titleRectAtPageMenu;
+    }
+    return CGRectZero;
+}
+
+- (CGRect)imageRectAtPageMenuForItemAtIndex:(NSUInteger)itemIndex {
+    if (itemIndex < self.buttons.count) {
+        SPPageMenuButton *button = [self.buttons objectAtIndex:itemIndex];
+        CGRect imageRectAtPageMenu = [button.imageView convertRect:button.imageView.bounds toView:self];
+        return imageRectAtPageMenu;
+    }
+    return CGRectZero;
+}
+
+- (CGRect)buttonRectAtPageMenuForItemAtIndex:(NSUInteger)itemIndex {
+    if (itemIndex < self.buttons.count) {
+        SPPageMenuButton *button = [self.buttons objectAtIndex:itemIndex];
+        CGRect buttonRectAtPageMenu = [button convertRect:button.bounds toView:self];
+        return buttonRectAtPageMenu;
+    }
+    return CGRectZero;
 }
 
 - (void)setTrackerHeight:(CGFloat)trackerHeight cornerRadius:(CGFloat)cornerRadius {
@@ -1436,6 +1490,7 @@
 
 - (void)setItemPadding:(CGFloat)itemPadding {
     _itemPadding = itemPadding;
+    _forceUseSettingSpacing = YES;
     [self setNeedsLayout];
     [self layoutIfNeeded];
     // 修正scrollView偏移
@@ -1556,12 +1611,19 @@
     return _buttons;
 }
 
-- (NSMutableDictionary *)setupWidths {
+- (NSMutableDictionary *)customWidths {
     
-    if (!_setupWidths) {
-        _setupWidths = [NSMutableDictionary dictionary];
+    if (!_customWidths) {
+        _customWidths = [NSMutableDictionary dictionary];
     }
-    return _setupWidths;
+    return _customWidths;
+}
+
+- (NSMutableDictionary *)customSpacings {
+    if (!_customSpacings) {
+        _customSpacings = [[NSMutableDictionary alloc] init];
+    }
+    return _customSpacings;
 }
 
 - (UIImageView *)tracker {
@@ -1582,7 +1644,7 @@
 
 - (void)layoutSubviews {
     [super layoutSubviews];
-    
+
     CGFloat backgroundViewX = self.bounds.origin.x+_contentInset.left;
     CGFloat backgroundViewY = self.bounds.origin.y+_contentInset.top;
     CGFloat backgroundViewW = self.bounds.size.width-(_contentInset.left+_contentInset.right);
@@ -1605,7 +1667,6 @@
     if (self.funtionButtonshadowOpacity > 0) {
         self.functionButton.layer.shadowPath = [UIBezierPath bezierPathWithRect:CGRectMake(0, 2.5, 2, functionButtonH-5)].CGPath;
     }
-
     CGFloat itemScrollViewX = 0;
     CGFloat itemScrollViewY = 0;
     CGFloat itemScrollViewW = self.showFuntionButton ? backgroundViewW-functionButtonW : backgroundViewW;
@@ -1626,7 +1687,7 @@
         SPPageMenuButton *button = self.buttons[i];
 
         CGFloat textW;
-        CGFloat setupButtonW = [[self.setupWidths objectForKey:[NSString stringWithFormat:@"%d",i]] floatValue];
+        CGFloat customWidth = [[self.customWidths valueForKey:[NSString stringWithFormat:@"%d",i]] floatValue];
         if (button == _selectedButton) {
             textW = ceil([button.titleLabel.text boundingRectWithSize:CGSizeMake(MAXFLOAT, itemScrollViewH) options:NSStringDrawingUsesLineFragmentOrigin attributes:@{NSFontAttributeName:_selectedItemTitleFont} context:nil].size.width);
         } else {
@@ -1648,9 +1709,9 @@
         } else if (button.currentTitle && button.currentImage && (button.imagePosition == SPItemImagePositionTop || button.imagePosition == SPItemImagePositionBottom)) {
             contentW = MAX(textW, imageW)+button.contentEdgeInsets.left+button.contentEdgeInsets.right;
         }
-        if (setupButtonW) {
-            contentW_sum += setupButtonW;
-            [buttonWidths addObject:@(setupButtonW)];
+        if (customWidth) {
+            contentW_sum += customWidth;
+            [buttonWidths addObject:@(customWidth)];
         } else {
             contentW_sum += contentW;
             [buttonWidths addObject:@(contentW)];
@@ -1659,39 +1720,56 @@
     CGFloat diff = itemScrollViewW - contentW_sum;
     
     [self.buttons enumerateObjectsUsingBlock:^(SPPageMenuButton *button, NSUInteger idx, BOOL * _Nonnull stop) {
-        CGFloat setupButtonW = [[self.setupWidths objectForKey:[NSString stringWithFormat:@"%lu",(unsigned long)idx]] floatValue];
+        CGFloat customWidth = [[self.customWidths valueForKey:[NSString stringWithFormat:@"%lu",(unsigned long)idx]] floatValue];
+        CGFloat customSpacing = 0.0;
+        if (idx > 0) {
+            customSpacing = [[self.customSpacings valueForKey:[NSString stringWithFormat:@"%lu",(unsigned long)(idx-1)]] floatValue];
+            if (customSpacing == 0.0) {
+                customSpacing = self->_itemPadding;
+            }
+        }
+        CGFloat totalCustomSpacing = [[self.customSpacings.allValues valueForKeyPath:@"@sum.floatValue"] floatValue];
+        CGFloat totalSpacing = totalCustomSpacing + (self.buttons.count-self.customSpacings.count)*self->_itemPadding;
         if (self.permutationWay == SPPageMenuPermutationWayScrollAdaptContent) {
             buttonW = [buttonWidths[idx] floatValue];
             if (idx == 0) {
                 button.frame = CGRectMake(self->_itemPadding*0.5+lastButtonMaxX, 0, buttonW, itemScrollViewH);
             } else {
-                button.frame = CGRectMake(self->_itemPadding+lastButtonMaxX, 0, buttonW, itemScrollViewH);
+                button.frame = CGRectMake(customSpacing+lastButtonMaxX, 0, buttonW, itemScrollViewH);
             }
         } else if (self.permutationWay == SPPageMenuPermutationWayNotScrollEqualWidths) {
             // 求出外界设置的按钮宽度之和
-            CGFloat totalSetupButtonW = [[self.setupWidths.allValues valueForKeyPath:@"@sum.floatValue"] floatValue];
+            CGFloat totalCustomWidth = [[self.customWidths.allValues valueForKeyPath:@"@sum.floatValue"] floatValue];
             // 如果该按钮外界设置了宽，则取外界设置的，如果外界没设置，则其余按钮等宽
-            buttonW = setupButtonW ? setupButtonW : (itemScrollViewW-self->_itemPadding*(self.buttons.count)-totalSetupButtonW)/(self.buttons.count-self.setupWidths.count);
+            buttonW = customWidth ? customWidth : (itemScrollViewW-totalSpacing-totalCustomWidth)/(self.buttons.count-self.customWidths.count);
             if (buttonW < 0) { // 按钮过多时,有可能会为负数
                 buttonW = 0;
             }
             if (idx == 0) {
                 button.frame = CGRectMake(self->_itemPadding*0.5+lastButtonMaxX, 0, buttonW, itemScrollViewH);
             } else {
-                button.frame = CGRectMake(self->_itemPadding+lastButtonMaxX, 0, buttonW, itemScrollViewH);
+                button.frame = CGRectMake(customSpacing+lastButtonMaxX, 0, buttonW, itemScrollViewH);
             }
             
         } else {
             buttonW = [buttonWidths[idx] floatValue];
-            self->_itemPadding = diff/self.buttons.count;
-            if (self->_itemPadding < 0) { // 如果总内容长度大于pageMenu的长度，则对每个按钮宽度进行均等压缩
-                buttonW = buttonW - fabs(diff) / self.buttons.count;
-                self->_itemPadding = 0;
+            CGFloat reaminAutoPadding = (diff - totalCustomSpacing)/(self.buttons.count-self.customSpacings.count); // 剩余空间减去自定义间距的和,除以非自定义间距的个数
+            if (_forceUseSettingSpacing) { // 如果强制使用外界设置的间距
+                CGFloat paddingDiff = diff - totalSpacing; // 自动间距之和与外界设置的间距之和的差
+                buttonW += paddingDiff * buttonW/contentW_sum; // 用上面计算出来的差值乘以原按钮宽度相对总按钮宽度的比例,得到的结果就是每个按钮宽度应该增减的值,这样可以保证各个按钮之间的宽度之比不变
+            } else { // 否则使用自己计算的间距
+                if (diff < 0) { // 小于0说明按钮宽度之和大于pageMenu的宽度
+                    buttonW -= fabs(diff) / self.buttons.count * buttonW/contentW_sum;
+                    self->_itemPadding = 0;
+                } else {
+                    self->_itemPadding = reaminAutoPadding;
+                }
             }
+            if (buttonW < 0) { buttonW = 0;}
             if (idx == 0) {
                 button.frame = CGRectMake(self->_itemPadding*0.5+lastButtonMaxX, 0, buttonW, itemScrollViewH);
             } else {
-                button.frame = CGRectMake(self->_itemPadding+lastButtonMaxX, 0, buttonW, itemScrollViewH);
+                button.frame = CGRectMake(customSpacing+lastButtonMaxX, 0, buttonW, itemScrollViewH);
             }
         }
         lastButtonMaxX = CGRectGetMaxX(button.frame);
