@@ -14,6 +14,14 @@
 * [使用者提问](#使用者提问)
 
 ## 如何安装
+#### 版本3.4.6
+```
+target 'MyApp' do
+  pod 'SPPageMenu', '~> 3.4.6'
+end
+
+说明：3.4.6版本在3.4.5版本的基础上新增了-setContent:forItemIndex:方法，修复了多次对bridgeScrollView赋值没有移除上一个观察者问题
+```
 #### 版本3.4.5
 ```
 target 'MyApp' do
