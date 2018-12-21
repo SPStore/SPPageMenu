@@ -755,8 +755,12 @@
 }
 
 - (CGFloat)customSpacingAfterItemAtIndex:(NSUInteger)itemIndex {
-    CGFloat customSpacing = [[self.customSpacings valueForKey:[NSString stringWithFormat:@"%lu",(unsigned long)itemIndex]] floatValue];
-    return customSpacing;
+    if ([self.customSpacings.allKeys containsObject:[NSString stringWithFormat:@"%lu",(unsigned long)itemIndex]]) {
+        CGFloat customSpacing = [[self.customSpacings valueForKey:[NSString stringWithFormat:@"%lu",(unsigned long)itemIndex]] floatValue];
+        return customSpacing;
+    } else {
+        return CGFLOAT_MAX;
+    }
 }
 
 - (void)setContentEdgeInsets:(UIEdgeInsets)contentInset forForItemAtIndex:(NSUInteger)itemIndex {
@@ -1497,6 +1501,11 @@
     [self moveItemScrollViewWithSelectedButton:self.selectedButton];
 }
 
+- (void)setSpacing:(CGFloat)spacing {
+    _spacing = spacing;
+    self.itemPadding = spacing;
+}
+
 - (void)setItemTitleFont:(UIFont *)itemTitleFont {
     _itemTitleFont = itemTitleFont;
     _selectedItemTitleFont = itemTitleFont;
@@ -1718,13 +1727,23 @@
         }
     }
     CGFloat diff = itemScrollViewW - contentW_sum;
+    if (diff < 0) {
+        for (int i = 0; i < buttonWidths.count; i++) {
+            CGFloat buttonW = [buttonWidths[i] floatValue];
+            buttonW -= fabs(diff)*buttonW/contentW_sum;
+            [buttonWidths replaceObjectAtIndex:i withObject:@(buttonW)];
+        }
+    }
+    contentW_sum = [[buttonWidths valueForKeyPath:@"@sum.floatValue"] floatValue];
     
     [self.buttons enumerateObjectsUsingBlock:^(SPPageMenuButton *button, NSUInteger idx, BOOL * _Nonnull stop) {
         CGFloat customWidth = [[self.customWidths valueForKey:[NSString stringWithFormat:@"%lu",(unsigned long)idx]] floatValue];
         CGFloat customSpacing = 0.0;
         if (idx > 0) {
-            customSpacing = [[self.customSpacings valueForKey:[NSString stringWithFormat:@"%lu",(unsigned long)(idx-1)]] floatValue];
-            if (customSpacing == 0.0) {
+            NSString *key = [NSString stringWithFormat:@"%lu",(unsigned long)(idx-1)];
+            if ([self.customSpacings.allKeys containsObject:key]) {
+                customSpacing = [[self.customSpacings valueForKey:key] floatValue];
+            } else {
                 customSpacing = self->_itemPadding;
             }
         }
@@ -1753,16 +1772,20 @@
             
         } else {
             buttonW = [buttonWidths[idx] floatValue];
-            CGFloat reaminAutoPadding = (diff - totalCustomSpacing)/(self.buttons.count-self.customSpacings.count); // 剩余空间减去自定义间距的和,除以非自定义间距的个数
             if (_forceUseSettingSpacing) { // 如果强制使用外界设置的间距
                 CGFloat paddingDiff = diff - totalSpacing; // 自动间距之和与外界设置的间距之和的差
                 buttonW += paddingDiff * buttonW/contentW_sum; // 用上面计算出来的差值乘以原按钮宽度相对总按钮宽度的比例,得到的结果就是每个按钮宽度应该增减的值,这样可以保证各个按钮之间的宽度之比不变
             } else { // 否则使用自己计算的间距
-                if (diff < 0) { // 小于0说明按钮宽度之和大于pageMenu的宽度
-                    buttonW -= fabs(diff) / self.buttons.count * buttonW/contentW_sum;
-                    self->_itemPadding = 0;
-                } else {
-                    self->_itemPadding = reaminAutoPadding;
+                CGFloat autoPadding = diff/self.buttons.count;
+                if (autoPadding < 0) {autoPadding = 0.0;}
+                if (totalCustomSpacing > 0) {
+                    CGFloat paddingDiff = totalCustomSpacing - autoPadding*self.customSpacings.count;
+                    buttonW -= paddingDiff * buttonW/contentW_sum;
+                }
+                self->_itemPadding = autoPadding;
+                NSString *key = [NSString stringWithFormat:@"%lu",(unsigned long)(idx-1)];
+                if (![self.customSpacings.allKeys containsObject:key]) {
+                    customSpacing = self->_itemPadding;
                 }
             }
             if (buttonW < 0) { buttonW = 0;}

@@ -220,7 +220,7 @@
     // 不可滑动的等宽排列
     pageMenu.permutationWay = SPPageMenuPermutationWayNotScrollEqualWidths;
     pageMenu.trackerWidth = 20;
-    pageMenu.itemPadding = 0;
+    pageMenu.spacing = 0;
     // 设置代理
     pageMenu.delegate = self;
     // 给pageMenu传递外界的大scrollView，内部监听self.scrollView的滚动，从而实现让跟踪器跟随self.scrollView移动的效果
@@ -232,7 +232,7 @@
 // 示例11:不可滑动的自适应内容排列，关键代码:pageMenu.permutationWay = SPPageMenuPermutationWayNotScrollAdaptContent;
 // 这种排列方式下,itemPadding属性无效，因为内部自动计算间距
 - (void)test11 {
-    self.dataArr = @[@"生活",@"音乐榜中榜音乐榜中榜音乐榜中榜音乐榜中榜音乐榜中榜",@"交通规则"];
+    self.dataArr = @[@"生活",@"音乐榜中榜",@"交通规则"];
     
     // trackerStyle:跟踪器的样式
     SPPageMenu *pageMenu = [SPPageMenu pageMenuWithFrame:CGRectMake(0, NaviH, screenW, pageMenuH) trackerStyle:SPPageMenuTrackerStyleLine];
@@ -240,9 +240,6 @@
     [pageMenu setItems:self.dataArr selectedItemIndex:1];
     // 不可滑动的自适应内容排列
     pageMenu.permutationWay = SPPageMenuPermutationWayNotScrollAdaptContent;
-//    pageMenu.itemPadding = 20;
-//    [pageMenu setWidth:200 forItemAtIndex:1];
-    [pageMenu setCustomSpacing:80 afterItemAtIndex:1];
     // 设置代理
     pageMenu.delegate = self;
     // 给pageMenu传递外界的大scrollView，内部监听self.scrollView的滚动，从而实现让跟踪器跟随self.scrollView移动的效果
@@ -365,11 +362,11 @@
     // 指定第2个item同时含有图片和文字，图片在上
     SPPageMenuButtonItem *item1 = [SPPageMenuButtonItem itemWithTitle:@"害羞" image:[UIImage imageNamed:@"Expression_2"]];
     item1.imagePosition = SPItemImagePositionTop;
-    [pageMenu setItem:item1 forItemIndex:1];
+    [pageMenu setItem:item1 forItemAtIndex:1];
     // 指定第4个item同时含有图片和文字，图片在右
 //    [pageMenu setTitle:@"可爱的小狗" image:[UIImage imageNamed:@"dog"] imagePosition:SPItemImagePositionDefault imageRatio:0.4 imageTitleSpace:0 forItemIndex:3];
     SPPageMenuButtonItem *item2 = [SPPageMenuButtonItem itemWithTitle:@"歌曲" image:[UIImage imageNamed:@"asc"] imagePosition:SPItemImagePositionRight];
-    [pageMenu setItem:item2 forItemIndex:3];
+    [pageMenu setItem:item2 forItemAtIndex:3];
     pageMenu.delegate = self;
     // 给pageMenu传递外界的大scrollView，内部监听self.scrollView的滚动，从而实现让跟踪器跟随self.scrollView移动的效果
     pageMenu.bridgeScrollView = self.scrollView;

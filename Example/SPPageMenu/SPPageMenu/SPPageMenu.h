@@ -77,8 +77,7 @@ typedef NS_ENUM(NSInteger, SPItemImagePosition) {
 @property (nonatomic, readonly) SPPageMenuTrackerStyle trackerStyle;
 #endif
 
-// item之间的间距，默认30；当排列方式permutationWay为‘SPPageMenuPermutationWayNotScrollAdaptContent’时此属性无效，无效是合理的，不可能做到“不可滑动且自适应内容”然后间距又自定义，这2者相互矛盾；
-@property (nonatomic, assign)  CGFloat itemPadding;
+@property (nonatomic, assign) CGFloat spacing; // item之间的间距
 
 @property (nonatomic, strong)          UIColor *selectedItemTitleColor;   // 选中的item标题颜色
 @property (nonatomic, strong)          UIColor *unSelectedItemTitleColor; // 未选中的item标题颜色
@@ -133,7 +132,7 @@ typedef NS_ENUM(NSInteger, SPItemImagePosition) {
 - (void)setImage:(nonnull UIImage *)image forItemAtIndex:(NSUInteger)itemIndex; // 设置指定item的图片,设置后，仅会有图片
 - (nullable UIImage *)imageForItemAtIndex:(NSUInteger)itemIndex; // 获取指定item的图片
 
-- (void)setItem:(SPPageMenuButtonItem *)item forItemAtIndex:(NSUInteger)itemIndex; // 同时为指定item设置标题和图片,其中参数item相当于一个模型，可以同时设置文字和图片
+- (void)setItem:(SPPageMenuButtonItem *)item forItemAtIndex:(NSUInteger)itemIndex; // 同时为指定item设置标题和图片
 - (nullable SPPageMenuButtonItem *)itemAtIndex:(NSUInteger)itemIndex; // 获取指定item
 
 - (void)setContent:(id)content forItemAtIndex:(NSUInteger)itemIndex; // 设置指定item的内容，content可以是NSString、UIImage或SPPageMenuButtonItem类型
@@ -179,6 +178,7 @@ typedef NS_ENUM(NSInteger, SPItemImagePosition) {
 
 // -------------- 以下方法和属性被废弃，不再建议使用 --------------
 
+@property (nonatomic, assign)  CGFloat itemPadding NS_DEPRECATED_IOS(6_0, 6_0, "Use spacing instead");;
 // 设置指定item的四周内边距,3.0版本的时候不小心多写了一个for,3.4.0版本已纠正
 - (void)setContentEdgeInsets:(UIEdgeInsets)contentEdgeInsets forForItemAtIndex:(NSUInteger)itemIndex NS_DEPRECATED_IOS(6_0, 6_0, "Use -setContentEdgeInsets:forItemAtIndex:");
 // 默认NO;关闭跟踪器的跟随效果,在外界传了scrollView进来或者调用了moveTrackerFollowScrollView的情况下,如果为YES，则当外界滑动scrollView时，跟踪器不会时刻跟随,只有滑动结束才会跟随;  3.4.0版本开始被废弃，但是依然能使用,使用后相当于设置了SPPageMenuTrackerFollowingModeEnd枚举值
