@@ -104,7 +104,6 @@ typedef NS_ENUM(NSInteger, SPItemImagePosition) {
 // 跟踪器的跟踪模式
 @property (nonatomic, assign) SPPageMenuTrackerFollowingMode trackerFollowingMode;
 
-
 // 分割线
 @property (nonatomic, readonly) UIImageView *dividingLine; // 分割线,你可以拿到该对象设置一些自己想要的属性，如颜色、图片等，如果想要隐藏分割线，拿到该对象直接设置hidden为YES或设置alpha<0.01即可(eg：pageMenu.dividingLine.hidden = YES)
 @property (nonatomic) CGFloat dividingLineHeight; // 分割线的高度
@@ -158,7 +157,7 @@ typedef NS_ENUM(NSInteger, SPItemImagePosition) {
 - (CGRect)imageRectAtPageMenuForItemAtIndex:(NSUInteger)itemIndex;  // 图片相对pageMenu位置和大小
 - (CGRect)buttonRectAtPageMenuForItemAtIndex:(NSUInteger)itemIndex; // 按钮相对pageMenu位置和大小
 
-// 设置功能按钮的内容，只能是NSString、UIImage或SPPageMenuButtonItem类型
+// 设置功能按钮的内容，content可以是NSString、UIImage或SPPageMenuButtonItem类型
 - (void)setFunctionButtonContent:(id)content forState:(UIControlState)state;
 // 为functionButton配置相关属性，如设置字体、文字颜色等；在此,attributes中,只有NSFontAttributeName、NSForegroundColorAttributeName、NSBackgroundColorAttributeName有效
 - (void)setFunctionButtonTitleTextAttributes:(nullable NSDictionary *)attributes forState:(UIControlState)state;

@@ -490,7 +490,7 @@
         if ([self haveOrNeedsTracker]) {
             [self.itemScrollView insertSubview:self.tracker atIndex:0];
             // 这里千万不能再去调用setNeedsLayout和layoutIfNeeded，因为如果外界在此之前对selectedButton进行了缩放，调用了layoutSubViews后会重新对selectedButton设置frame,先缩放再重设置frame会导致文字显示不全，所以我们直接跳过layoutSubViews调用resetSetupTrackerFrameWithSelectedButton：只设置tracker的frame
-            [self resetSetupTrackerFrameWithSelectedButton:selectedButton];
+            [self resetupTrackerFrameWithSelectedButton:selectedButton];
         }
     }
 }
@@ -926,7 +926,6 @@
             [items replaceObjectAtIndex:itemIndex withObject:image];
             self.items = items.copy;
         }
-        
         [self setNeedsLayout];
         [self layoutIfNeeded];
     }
@@ -1158,7 +1157,7 @@
 // 移动跟踪器
 - (void)moveTrackerWithSelectedButton:(SPPageMenuButton *)selectedButton {
     [UIView animateWithDuration:0.25 animations:^{
-        [self resetSetupTrackerFrameWithSelectedButton:selectedButton];
+        [self resetupTrackerFrameWithSelectedButton:selectedButton];
     }];
 }
 
@@ -1694,7 +1693,6 @@
     // 提前计算每个按钮的宽度，目的是为了计算间距
     for (int i= 0 ; i < self.buttons.count; i++) {
         SPPageMenuButton *button = self.buttons[i];
-
         CGFloat textW;
         CGFloat customWidth = [[self.customWidths valueForKey:[NSString stringWithFormat:@"%d",i]] floatValue];
         if (button == _selectedButton) {
@@ -1807,7 +1805,7 @@
         self.selectedButton.frame = selectedButtonRect;
     }
 
-    [self resetSetupTrackerFrameWithSelectedButton:self.selectedButton];
+    [self resetupTrackerFrameWithSelectedButton:self.selectedButton];
     
     self.itemScrollView.contentSize = CGSizeMake(lastButtonMaxX+_itemPadding*0.5, 0);
     
@@ -1815,10 +1813,9 @@
         
         [self moveItemScrollViewWithSelectedButton:self.selectedButton];
     }
-    
 }
 
-- (void)resetSetupTrackerFrameWithSelectedButton:(SPPageMenuButton *)selectedButton {
+- (void)resetupTrackerFrameWithSelectedButton:(SPPageMenuButton *)selectedButton {
     
     CGFloat trackerX;
     CGFloat trackerY;
