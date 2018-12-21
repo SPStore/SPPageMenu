@@ -77,7 +77,7 @@ typedef NS_ENUM(NSInteger, SPItemImagePosition) {
 @property (nonatomic, readonly) SPPageMenuTrackerStyle trackerStyle;
 #endif
 
-// item之间的间距，默认30；当排列方式permutationWay为‘SPPageMenuPermutationWayNotScrollAdaptContent’时此属性无效，无效是合理的，不可能做到“不可滑动且自适应内容”然后间距又自定义，这2者相互制约；
+// item之间的间距，默认30；当排列方式permutationWay为‘SPPageMenuPermutationWayNotScrollAdaptContent’时此属性无效，无效是合理的，不可能做到“不可滑动且自适应内容”然后间距又自定义，这2者相互矛盾；
 @property (nonatomic, assign)  CGFloat itemPadding;
 
 @property (nonatomic, strong)          UIColor *selectedItemTitleColor;   // 选中的item标题颜色
