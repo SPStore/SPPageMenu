@@ -20,7 +20,7 @@ target 'MyApp' do
   pod 'SPPageMenu', '~> 3.5.0'
 end
 
-说明：3.4.6版本在3.4.5版本的基础上改动如下:
+说明：3.5.0版本在3.4.5版本的基础上改动如下:
 1、新增7个API
 * -(void)setContent:(id)content forItemAtIndex:(NSUInteger)itemIndex;
 * - (void)setCustomSpacing:(CGFloat)spacing afterItemAtIndex:(NSUInteger)itemIndex;
