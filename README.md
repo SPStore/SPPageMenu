@@ -14,13 +14,24 @@
 * [使用者提问](#使用者提问)
 
 ## 如何安装
-#### 版本3.4.6
+#### 版本3.5.0
 ```
 target 'MyApp' do
-  pod 'SPPageMenu', '~> 3.4.6'
+  pod 'SPPageMenu', '~> 3.5.0'
 end
 
-说明：3.4.6版本在3.4.5版本的基础上新增了-setContent:forItemIndex:方法，修复了多次对bridgeScrollView赋值没有移除上一个观察者问题
+说明：3.4.6版本在3.4.5版本的基础上改动如下:
+1、新增7个API
+* -(void)setContent:(id)content forItemAtIndex:(NSUInteger)itemIndex;
+* - (void)setCustomSpacing:(CGFloat)spacing afterItemAtIndex:(NSUInteger)itemIndex;
+* - (CGFloat)customSpacingAfterItemAtIndex:(NSUInteger)itemIndex;
+* - (CGRect)titleRectRelativeToPageMenuForItemAtIndex:(NSUInteger)itemIndex; 
+* - (CGRect)imageRectRelativeToPageMenuForItemAtIndex:(NSUInteger)itemIndex; 
+* - (CGRect)buttonRectRelativeToPageMenuForItemAtIndex:(NSUInteger)itemIndex; 
+* - (void)addComponentViewInScrollView:(UIView *)componentView; 
+2、在不可滑动自适应内容的排列方式下，设置间距依然生效
+3、修复设置指定item宽度和内间距失效问题
+4、修复多次对bridgeScrollView赋值上一个KCO观察者未移除问题
 ```
 #### 版本3.4.5
 ```
