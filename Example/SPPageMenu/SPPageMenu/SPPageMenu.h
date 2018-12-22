@@ -68,7 +68,6 @@ typedef NS_ENUM(NSInteger, SPItemImagePosition) {
 - (void)setItems:(nullable NSArray *)items selectedItemIndex:(NSInteger)selectedItemIndex;
 
 @property (nonatomic) NSInteger selectedItemIndex; // 选中的item下标，改变其值可以用于切换选中的item
-
 @property(nonatomic,readonly) NSUInteger numberOfItems; // items的总个数
 
 #if TARGET_INTERFACE_BUILDER
@@ -76,6 +75,8 @@ typedef NS_ENUM(NSInteger, SPItemImagePosition) {
 #else
 @property (nonatomic, readonly) SPPageMenuTrackerStyle trackerStyle;
 #endif
+
+@property (nonatomic, assign) SPPageMenuPermutationWay permutationWay; // 排列方式
 
 @property (nonatomic, assign) CGFloat spacing; // item之间的间距
 
@@ -86,27 +87,20 @@ typedef NS_ENUM(NSInteger, SPItemImagePosition) {
 @property (nonnull, nonatomic, strong) UIFont  *selectedItemTitleFont;    // 选中的item字体
 @property (nonnull, nonatomic, strong) UIFont  *unSelectedItemTitleFont;  // 未选中的item字体
 
-// 外界的srollView，pageMenu会监听该scrollView的滚动状况，让跟踪器时刻跟随此scrollView滑动；所谓的滚动状况，是指手指拖拽滚动，非手指拖拽不算
+// 外界添加控制器view的srollView，pageMenu会监听该scrollView的滚动状况，让跟踪器时刻跟随此scrollView滑动；所谓的滚动状况，是指手指拖拽滚动，非手指拖拽不算
 @property (nonatomic, strong) UIScrollView *bridgeScrollView;
 
-@property (nonatomic, assign) SPPageMenuPermutationWay permutationWay; // 排列方式
-
-@property (nonatomic, assign) UIEdgeInsets contentInset; // 内容的四周内边距(内容不包括分割线)，默认UIEdgeInsetsZero
-
-@property(nonatomic) BOOL bounces; // 边界反弹效果，默认YES
-@property(nonatomic) BOOL alwaysBounceHorizontal; // 水平方向上，当内容没有充满scrollView时，滑动scrollView是否有反弹效果，默认NO
-
 // 跟踪器
-@property (nonatomic, readonly) UIImageView *tracker; // 跟踪器,它是一个UIImageView类型，你可以拿到该对象去设置一些自己想要的属性,例如颜色,图片等，但是设置frame无效
+@property (nonatomic, readonly) UIImageView *tracker; // 跟踪器,它是一个UIImageView类型，你可以拿到该对象去设置一些自己想要的属性,例如颜色,图片等
 @property (nonatomic, assign)  CGFloat trackerWidth; // 跟踪器的宽度
-// 设置跟踪器的高度和圆角半径，矩形和圆角矩形样式下半径参数无效。其余样式下：默认的高度为3，圆角半径为高度的一半。如果你想用默认高度，但是又不想要圆角半径，你可以设置trackerHeight为3，cornerRadius为0，这是去除默认半径的唯一办法
-- (void)setTrackerHeight:(CGFloat)trackerHeight cornerRadius:(CGFloat)cornerRadius;
-// 跟踪器的跟踪模式
-@property (nonatomic, assign) SPPageMenuTrackerFollowingMode trackerFollowingMode;
+- (void)setTrackerHeight:(CGFloat)trackerHeight cornerRadius:(CGFloat)cornerRadius; // 设置跟踪器的高度和圆角半径，矩形和圆角矩形样式下半径参数无效。其余样式下：默认的高度为3，圆角半径为高度的一半。
+@property (nonatomic, assign) SPPageMenuTrackerFollowingMode trackerFollowingMode; // 跟踪器的跟踪模式
 
 // 分割线
 @property (nonatomic, readonly) UIImageView *dividingLine; // 分割线,你可以拿到该对象设置一些自己想要的属性，如颜色、图片等，如果想要隐藏分割线，拿到该对象直接设置hidden为YES或设置alpha<0.01即可(eg：pageMenu.dividingLine.hidden = YES)
 @property (nonatomic) CGFloat dividingLineHeight; // 分割线的高度
+
+@property (nonatomic, assign) UIEdgeInsets contentInset; // 内容的四周内边距(内容不包括分割线)，默认UIEdgeInsetsZero
 
 // 选中的item缩放系数，默认为1，为1代表不缩放，[0,1)之间缩小，(1,+∞)之间放大，(-1,0)之间"倒立"缩小，(-∞,-1)之间"倒立"放大，为-1"倒立不缩放",如果依然使用了废弃的SPPageMenuTrackerStyleTextZoom样式，则缩放系数默认为1.3
 @property (nonatomic) CGFloat selectedItemZoomScale;
@@ -114,6 +108,9 @@ typedef NS_ENUM(NSInteger, SPItemImagePosition) {
 
 @property (nonatomic, assign) BOOL showFuntionButton; // 是否显示功能按钮(功能按钮显示在最右侧),默认为NO
 @property (nonatomic, assign) CGFloat funtionButtonshadowOpacity; // 功能按钮左侧的阴影透明度,如果设置小于等于0，则没有阴影
+
+@property(nonatomic) BOOL bounces; // 边界反弹效果，默认YES
+@property(nonatomic) BOOL alwaysBounceHorizontal; // 水平方向上，当内容没有充满scrollView时，滑动scrollView是否有反弹效果，默认NO
 
 @property (nonatomic, weak) id<SPPageMenuDelegate> delegate;
 
@@ -153,9 +150,11 @@ typedef NS_ENUM(NSInteger, SPItemImagePosition) {
 - (void)setBackgroundImage:(nullable UIImage *)backgroundImage barMetrics:(UIBarMetrics)barMetrics;
 - (nullable UIImage *)backgroundImageForBarMetrics:(UIBarMetrics)barMetrics; // 获取背景图片
 
-- (CGRect)titleRectAtPageMenuForItemAtIndex:(NSUInteger)itemIndex;  // 文字相对pageMenu位置和大小
-- (CGRect)imageRectAtPageMenuForItemAtIndex:(NSUInteger)itemIndex;  // 图片相对pageMenu位置和大小
-- (CGRect)buttonRectAtPageMenuForItemAtIndex:(NSUInteger)itemIndex; // 按钮相对pageMenu位置和大小
+- (CGRect)titleRectRelativeToPageMenuForItemAtIndex:(NSUInteger)itemIndex;  // 文字相对pageMenu位置和大小
+- (CGRect)imageRectRelativeToPageMenuForItemAtIndex:(NSUInteger)itemIndex;  // 图片相对pageMenu位置和大小
+- (CGRect)buttonRectRelativeToPageMenuForItemAtIndex:(NSUInteger)itemIndex; // 按钮相对pageMenu位置和大小
+
+- (void)addComponentViewInScrollView:(UIView *)componentView; // 在内置的scrollView上添加一个view
 
 // 设置功能按钮的内容，content可以是NSString、UIImage或SPPageMenuButtonItem类型
 - (void)setFunctionButtonContent:(id)content forState:(UIControlState)state;

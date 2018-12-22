@@ -416,14 +416,14 @@
     _pageMenu = pageMenu;
     
     // 获取第1个item上文字相对pageMenu的位置大小
-    CGRect titleRect = [pageMenu titleRectAtPageMenuForItemAtIndex:1];
+    CGRect titleRect = [pageMenu titleRectRelativeToPageMenuForItemAtIndex:1];
     
     UILabel *detailLabel = [[UILabel alloc] init];
     detailLabel.text = @"8384";
     detailLabel.font = [UIFont systemFontOfSize:11];
     detailLabel.textColor = [UIColor lightGrayColor];
     detailLabel.frame = CGRectMake(CGRectGetMaxX(titleRect),CGRectGetMaxY(titleRect)-16, 50, 16);
-    [pageMenu addSubview:detailLabel];
+    [pageMenu addComponentViewInScrollView:detailLabel];
 }
 
 // 示例21:给指定按钮加角标

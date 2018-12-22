@@ -803,7 +803,7 @@
     return self.backgroundImageView.image;
 }
 
-- (CGRect)titleRectAtPageMenuForItemAtIndex:(NSUInteger)itemIndex {
+- (CGRect)titleRectRelativeToPageMenuForItemAtIndex:(NSUInteger)itemIndex {
     if (itemIndex < self.buttons.count) {
         SPPageMenuButton *button = [self.buttons objectAtIndex:itemIndex];
         CGRect titleRectAtPageMenu = [button.titleLabel convertRect:button.titleLabel.bounds toView:self];
@@ -812,7 +812,7 @@
     return CGRectZero;
 }
 
-- (CGRect)imageRectAtPageMenuForItemAtIndex:(NSUInteger)itemIndex {
+- (CGRect)imageRectRelativeToPageMenuForItemAtIndex:(NSUInteger)itemIndex {
     if (itemIndex < self.buttons.count) {
         SPPageMenuButton *button = [self.buttons objectAtIndex:itemIndex];
         CGRect imageRectAtPageMenu = [button.imageView convertRect:button.imageView.bounds toView:self];
@@ -821,13 +821,17 @@
     return CGRectZero;
 }
 
-- (CGRect)buttonRectAtPageMenuForItemAtIndex:(NSUInteger)itemIndex {
+- (CGRect)buttonRectRelativeToPageMenuForItemAtIndex:(NSUInteger)itemIndex {
     if (itemIndex < self.buttons.count) {
         SPPageMenuButton *button = [self.buttons objectAtIndex:itemIndex];
         CGRect buttonRectAtPageMenu = [button convertRect:button.bounds toView:self];
         return buttonRectAtPageMenu;
     }
     return CGRectZero;
+}
+
+- (void)addComponentViewInScrollView:(UIView *)componentView {
+    [self.itemScrollView addSubview:componentView];
 }
 
 - (void)setTrackerHeight:(CGFloat)trackerHeight cornerRadius:(CGFloat)cornerRadius {
@@ -1045,7 +1049,7 @@
 }
 
 - (void)setupSubViews {
-    // 必须先添加分割线，再添加backgroundView;假如先添加backgroundView,那也就意味着backgroundView是SPPageMenu的第一个子控件,而scrollView又是backgroundView的第一个子控件,当外界在由导航控制器管理的控制器中将SPPageMenu添加为第一个子控件时，控制器会不断的往下遍历第一个子控件的第一个子控件，直到找到为scrollView为止,一旦发现某子控件的第一个子控件为scrollView,会将scrollView的内容往下偏移64;这时控制器中必须设置self.automaticallyAdjustsScrollViewInsets = NO;为了避免这样做，这里将分割线作为第一个子控件
+    // 必须先添加分割线
     SPPageMenuLine *dividingLine = [[SPPageMenuLine alloc] init];
     dividingLine.backgroundColor = [UIColor lightGrayColor];
     __weak typeof(self) weakSelf = self;
@@ -1094,7 +1098,7 @@
 - (void)buttonInPageMenuClicked:(SPPageMenuButton *)sender {
     NSInteger fromIndex = self.selectedButton ? self.selectedButton.tag-tagBaseValue : sender.tag - tagBaseValue;
     NSInteger toIndex = sender.tag - tagBaseValue;
-    // 更新下item对应的下标,必须在代理之前，否则外界在代理方法中拿到的不是最新的,必须用下划线，用self.会造成死循环
+    // 更新下item对应的下标,必须在代理之前，否则外界在代理方法中拿到的不是最新的
     _selectedItemIndex = toIndex;
     // 如果sender是新的选中的按钮，则上一次的按钮颜色为非选中颜色，当前选中的颜色为选中颜色
     if (self.selectedButton != sender) {
@@ -1128,7 +1132,6 @@
         }
     }
     [self delegatePerformMethodWithFromIndex:fromIndex toIndex:toIndex];
-
 }
 
 // 点击button让itemScrollView发生偏移
@@ -1587,6 +1590,13 @@
 
 - (void)setPermutationWay:(SPPageMenuPermutationWay)permutationWay {
     _permutationWay = permutationWay;
+    if (!_forceUseSettingSpacing) {
+        if (_permutationWay == SPPageMenuPermutationWayNotScrollEqualWidths) {
+            _spacing = _itemPadding = 0;
+        } else {
+            _spacing = _itemPadding = 30;
+        }
+    }
     [self setNeedsLayout];
     [self layoutIfNeeded];
     // 修正scrollView偏移
@@ -1700,18 +1710,16 @@
         } else {
             textW = ceil([button.titleLabel.text boundingRectWithSize:CGSizeMake(MAXFLOAT, itemScrollViewH) options:NSStringDrawingUsesLineFragmentOrigin attributes:@{NSFontAttributeName:_unSelectedItemTitleFont} context:nil].size.width);
         }
-        // CGImageGetWidth获取的图片宽度是图片在@1x、@2x、@3x的位置上的实际宽度
-        // button.currentImage.size.width获取的宽度永远是@1x位置上的宽度，比如一张图片在@3x上的位置为300,那么button.currentImage.size.width就为100
         CGFloat imageW = button.currentImage.size.width;
         CGFloat imageH = button.currentImage.size.height;
         if (imageH > itemScrollViewH) {
             imageH = itemScrollViewH;
         }
-        if (button.currentTitle && !button.currentImage) {
+        if (button.currentTitle.length && !button.currentImage) {
             contentW = textW+button.contentEdgeInsets.left+button.contentEdgeInsets.right;
         } else if(button.currentImage && !button.currentTitle) {
             contentW = imageW+button.contentEdgeInsets.left+button.contentEdgeInsets.right;
-        } else if (button.currentTitle && button.currentImage && (button.imagePosition == SPItemImagePositionRight || button.imagePosition == SPItemImagePositionLeft || button.imagePosition == SPItemImagePositionDefault)) {
+        } else if (button.currentTitle.length && button.currentImage && (button.imagePosition == SPItemImagePositionRight || button.imagePosition == SPItemImagePositionLeft || button.imagePosition == SPItemImagePositionDefault)) {
             contentW = textW + imageW + button.imageTitleSpace+button.contentEdgeInsets.left+button.contentEdgeInsets.right;
         } else if (button.currentTitle && button.currentImage && (button.imagePosition == SPItemImagePositionTop || button.imagePosition == SPItemImagePositionBottom)) {
             contentW = MAX(textW, imageW)+button.contentEdgeInsets.left+button.contentEdgeInsets.right;
@@ -1725,14 +1733,14 @@
         }
     }
     CGFloat diff = itemScrollViewW - contentW_sum;
-    if (diff < 0) {
+    if (self.permutationWay == SPPageMenuPermutationWayNotScrollAdaptContent && diff < 0) {
         for (int i = 0; i < buttonWidths.count; i++) {
             CGFloat buttonW = [buttonWidths[i] floatValue];
             buttonW -= fabs(diff)*buttonW/contentW_sum;
             [buttonWidths replaceObjectAtIndex:i withObject:@(buttonW)];
         }
+        contentW_sum = [[buttonWidths valueForKeyPath:@"@sum.floatValue"] floatValue];
     }
-    contentW_sum = [[buttonWidths valueForKeyPath:@"@sum.floatValue"] floatValue];
     
     [self.buttons enumerateObjectsUsingBlock:^(SPPageMenuButton *button, NSUInteger idx, BOOL * _Nonnull stop) {
         CGFloat customWidth = [[self.customWidths valueForKey:[NSString stringWithFormat:@"%lu",(unsigned long)idx]] floatValue];
@@ -1810,20 +1818,16 @@
     self.itemScrollView.contentSize = CGSizeMake(lastButtonMaxX+_itemPadding*0.5, 0);
     
     if (self.translatesAutoresizingMaskIntoConstraints == NO) {
-        
         [self moveItemScrollViewWithSelectedButton:self.selectedButton];
     }
 }
 
 - (void)resetupTrackerFrameWithSelectedButton:(SPPageMenuButton *)selectedButton {
-    
     CGFloat trackerX;
     CGFloat trackerY;
     CGFloat trackerW;
     CGFloat trackerH;
-    
     CGFloat selectedButtonWidth = selectedButton.frame.size.width;
-    
     switch (self.trackerStyle) {
         case SPPageMenuTrackerStyleLine:
         {
