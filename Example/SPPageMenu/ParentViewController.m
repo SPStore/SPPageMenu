@@ -463,25 +463,6 @@
     _pageMenu = pageMenu;
 }
 
-// 示例22:特别属性说明
-- (void)test22 {
-    self.dataArr = nil;
-    
-    NSString *text = @"本框架的bridgeScrollView属性是一个很重要但又容易忽略的属性，在外界的viewDidLoad中，每种示例都传了一个scrollView，即:“self.pageMenu.bridgeScrollView = self.scrollView”，这一传递，SPPageMenu内部会监听该scrollView的滚动状况，当该scrollView滚动的时候，就可以让跟踪器时刻跟随；如果你忘了或者不想设置这个属性，也可以在外界的scrollView的代理方法scrollViewDidScroll中调用接口“- (void)moveTrackerFollowScrollView:(UIScrollView *)scrollView”,这样也能实现跟踪器时刻跟随scrollView；如果不想让跟踪器时刻跟踪，而直到scrollView滑动结束才跟踪，在上面2种方式采取了任意一种的情况下，可以设置属性”pageMenu.closeTrackerFollowingMode = YES“";
-    
-    UILabel *label = [[UILabel alloc] initWithFrame:CGRectMake(10, NaviH, screenW-20, screenH-NaviH)];
-    label.numberOfLines = 0;
-    label.alpha = 0.6;
-    label.font = [UIFont systemFontOfSize:15];
-    NSMutableAttributedString *attributedString = [[NSMutableAttributedString alloc] initWithString:text];
-    NSMutableParagraphStyle *paragraphStyle = [[NSMutableParagraphStyle alloc] init];
-    paragraphStyle.firstLineHeadIndent = label.font.pointSize * 2; // 首行缩进2格
-    [paragraphStyle setLineSpacing:6]; // 行间距
-    [attributedString addAttribute:NSParagraphStyleAttributeName value:paragraphStyle range:NSMakeRange(0, [text length])];
-    label.attributedText = attributedString;
-    [self.view addSubview:label];
-}
-
 // ------------------------------------------------------------------------------------------------
 - (void)viewDidLoad {
     [super viewDidLoad];
@@ -551,9 +532,6 @@
             break;
         case 20:
             [self test21];
-            break;
-        case 21:
-            [self test22];
             break;
     }
     
