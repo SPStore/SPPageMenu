@@ -40,7 +40,7 @@ typedef NS_ENUM(NSInteger, SPItemImagePosition) {
     SPItemImagePositionBottom     // 图片在文字下侧
 };
 
-@class SPPageMenu,SPPageMenuButtonItem;
+@class SPPageMenu,SPPageMenuButton,SPPageMenuButtonItem;
 
 @protocol SPPageMenuDelegate <NSObject>
 
@@ -120,6 +120,7 @@ typedef NS_ENUM(NSInteger, SPItemImagePosition) {
 @property (nonatomic, assign) BOOL showFunctionButton; // 是否显示功能按钮(功能按钮显示在最右侧),默认为NO
 @property (nonatomic, assign) CGFloat functionButtonShadowOpacity; // 功能按钮左侧的阴影透明度,如果设置小于等于0，则没有阴影
 @property (nonatomic, strong) UIColor *functionButtonShadowColor; // 功能按钮左侧的阴影颜色,默认为黑色
+@property (nonatomic, weak) SPPageMenuButton *functionButton;
 
 @property (nonatomic, weak) id<SPPageMenuDelegate> delegate;
 

@@ -408,7 +408,6 @@
 @property (nonatomic, weak) UIImageView *backgroundImageView;
 @property (nonatomic, strong) UIImageView *dividingLine;
 @property (nonatomic, weak) SPPageMenuScrollView *itemScrollView;
-@property (nonatomic, weak) SPPageMenuButton *functionButton;
 @property (nonatomic, strong) NSMutableArray *buttons;
 @property (nonatomic, strong) SPPageMenuButton *selectedButton;
 @property (nonatomic, strong) NSMutableDictionary *setupWidths;
