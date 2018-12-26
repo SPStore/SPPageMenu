@@ -45,7 +45,7 @@
 
 @end
 
-@interface SPPageMenuButton : UIButton
+@interface SPPageMenuButton()
 
 - (instancetype)initWithImagePosition:(SPItemImagePosition)imagePosition;
 

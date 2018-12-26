@@ -189,6 +189,8 @@ typedef NS_ENUM(NSInteger, SPItemImagePosition) {
 - (void)setFunctionButtonTitle:(nullable NSString *)title image:(nullable UIImage *)image imagePosition:(SPItemImagePosition)imagePosition imageRatio:(CGFloat)ratio imageTitleSpace:(CGFloat)imageTitleSpace forState:(UIControlState)state NS_DEPRECATED_IOS(6_0, 6_0, "Use - setFunctionButtonWithItem:forState:");
 @end
 
+@interface SPPageMenuButton : UIButton
+@end
 
 // 这个类相当于模型,主要用于同时为某个按钮设置图片和文字时使用
 @interface SPPageMenuButtonItem : NSObject
