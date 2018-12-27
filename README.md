@@ -17,6 +17,27 @@
 
 ## 如何安装
 
+#### 版本 3.5.0
+
+```
+target 'MyApp' do
+  pod 'SPPageMenu', '~> 3.5.0'
+end
+
+说明：3.5.0版本在3.4.5版本的基础上改动如下:
+1、新增7个API
+* - (void)setContent:(id)content forItemAtIndex:(NSUInteger)itemIndex;
+* - (void)setCustomSpacing:(CGFloat)spacing afterItemAtIndex:(NSUInteger)itemIndex;
+* - (CGFloat)customSpacingAfterItemAtIndex:(NSUInteger)itemIndex;
+* - (CGRect)titleRectRelativeToPageMenuForItemAtIndex:(NSUInteger)itemIndex;
+* - (CGRect)imageRectRelativeToPageMenuForItemAtIndex:(NSUInteger)itemIndex;
+* - (CGRect)buttonRectRelativeToPageMenuForItemAtIndex:(NSUInteger)itemIndex;
+* - (void)addComponentViewInScrollView:(UIView *)componentView;
+2、在不可滑动自适应内容的排列方式下，设置间距依然生效
+3、修复设置指定item宽度和内间距失效问题
+4、修复多次对bridgeScrollView赋值上一个KCO观察者未移除问题
+```
+
 #### 版本 3.4.5
 
 ```
@@ -54,7 +75,7 @@ end
 
 ```
 target 'MyApp' do
-  pod 'SPPageMenu', '~> 3.4.1'
+  pod 'SPPageMenu', '~> 3.4.1'
 end
 
 3.4.1版本在3.4.0版本的基础上修复了多次调用setItems:selectedItemIndex:方法引发的问题
@@ -64,7 +85,7 @@ end
 
 ```
 target 'MyApp' do
-  pod 'SPPageMenu', '~> 3.4.0'
+  pod 'SPPageMenu', '~> 3.4.0'
 end
 
 说明：3.4.0版本在3.0版本的基础上主要改动如下：
@@ -79,7 +100,7 @@ end
 
 ```
 target 'MyApp' do
-  pod 'SPPageMenu', '~> 3.0'
+  pod 'SPPageMenu', '~> 3.0'
 end
 
 说明：3.0版本在2.5.5版本的基础上主要改动如下：
@@ -100,7 +121,7 @@ end
 
 ```
 target 'MyApp' do
-  pod 'SPPageMenu', '~> 2.5.5'
+  pod 'SPPageMenu', '~> 2.5.5'
 end
 
 说明：2.5.5版本在2.5.3版本的基础上主要改动如下：

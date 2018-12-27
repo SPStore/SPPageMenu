@@ -88,7 +88,8 @@
     // 设置代理
     pageMenu.delegate = self;
     // 给pageMenu传递外界的大scrollView，内部监听self.scrollView的滚动，从而实现让跟踪器跟随self.scrollView移动的效果
-    pageMenu.bridgeScrollView = self.scrollView;    [self.view addSubview:pageMenu];
+    pageMenu.bridgeScrollView = self.scrollView;
+    [self.view addSubview:pageMenu];
     _pageMenu = pageMenu;
 }
 
@@ -218,7 +219,7 @@
     [pageMenu setItems:self.dataArr selectedItemIndex:1];
     // 不可滑动的等宽排列
     pageMenu.permutationWay = SPPageMenuPermutationWayNotScrollEqualWidths;
-    pageMenu.itemPadding = 0;
+    pageMenu.trackerWidth = 20;
     // 设置代理
     pageMenu.delegate = self;
     // 给pageMenu传递外界的大scrollView，内部监听self.scrollView的滚动，从而实现让跟踪器跟随self.scrollView移动的效果
@@ -324,8 +325,7 @@
     // 传递数组，默认选中第2个
     [pageMenu setItems:self.dataArr selectedItemIndex:1];
     // 同时设置图片和文字，如果只想要文字，image传nil，如果只想要图片，title传nil，imagePosition和ratio传0即可
-    //[pageMenu setFunctionButtonTitle:@"更多" image:[UIImage imageNamed:@"Expression_1"] imagePosition:SPItemImagePositionTop imageRatio:0.5 imageTitleSpace:0 forState:UIControlStateNormal];
-    [pageMenu setFunctionButtonWithItem:[SPPageMenuButtonItem itemWithTitle:@"更多" image:[UIImage imageNamed:@"Expression_1"] imagePosition:SPItemImagePositionTop] forState:UIControlStateNormal];
+    [pageMenu setFunctionButtonContent:[SPPageMenuButtonItem itemWithTitle:@"更多" image:[UIImage imageNamed:@"Expression_1"] imagePosition:SPItemImagePositionTop] forState:UIControlStateNormal];
     [pageMenu setFunctionButtonTitleTextAttributes:@{NSFontAttributeName:[UIFont systemFontOfSize:13]} forState:UIControlStateNormal];
     pageMenu.showFunctionButton = YES;
     // 设置代理
@@ -362,11 +362,11 @@
     // 指定第2个item同时含有图片和文字，图片在上
     SPPageMenuButtonItem *item1 = [SPPageMenuButtonItem itemWithTitle:@"害羞" image:[UIImage imageNamed:@"Expression_2"]];
     item1.imagePosition = SPItemImagePositionTop;
-    [pageMenu setItem:item1 forItemIndex:1];
+    [pageMenu setItem:item1 forItemAtIndex:1];
     // 指定第4个item同时含有图片和文字，图片在右
 //    [pageMenu setTitle:@"可爱的小狗" image:[UIImage imageNamed:@"dog"] imagePosition:SPItemImagePositionDefault imageRatio:0.4 imageTitleSpace:0 forItemIndex:3];
     SPPageMenuButtonItem *item2 = [SPPageMenuButtonItem itemWithTitle:@"歌曲" image:[UIImage imageNamed:@"asc"] imagePosition:SPItemImagePositionRight];
-    [pageMenu setItem:item2 forItemIndex:3];
+    [pageMenu setItem:item2 forItemAtIndex:3];
     pageMenu.delegate = self;
     // 给pageMenu传递外界的大scrollView，内部监听self.scrollView的滚动，从而实现让跟踪器跟随self.scrollView移动的效果
     pageMenu.bridgeScrollView = self.scrollView;
@@ -396,8 +396,39 @@
     _pageMenu = pageMenu;
 }
 
-// 示例20:给指定按钮加角标
+// 示例20:某个按钮上添加一个副标题
 - (void)test20 {
+    self.dataArr = @[@"点菜",@"评论",@"商家",@"已购"];
+    
+    SPPageMenu *pageMenu = [SPPageMenu pageMenuWithFrame:CGRectMake(0, NaviH, screenW, pageMenuH) trackerStyle:SPPageMenuTrackerStyleLineAttachment];
+    // 传递数组，默认选中第2个
+    [pageMenu setItems:self.dataArr selectedItemIndex:0];
+    pageMenu.itemTitleFont = [UIFont  boldSystemFontOfSize:17];
+    pageMenu.selectedItemTitleColor = [UIColor blackColor];
+    pageMenu.unSelectedItemTitleColor = [UIColor grayColor];
+    pageMenu.trackerWidth = 20;
+    // 设置第一个按钮后面的自定义间距为60，增大第一个和第二个按钮之间的间距，腾出空间方便在第一个按钮的后面放置一个副标题
+    [pageMenu setCustomSpacing:60 afterItemAtIndex:1];
+    pageMenu.delegate = self;
+    pageMenu.permutationWay = SPPageMenuPermutationWayNotScrollEqualWidths;
+    // 给pageMenu传递外界的大scrollView，内部监听self.scrollView的滚动，从而实现让跟踪器跟随self.scrollView移动的效果
+    pageMenu.bridgeScrollView = self.scrollView;
+    [self.view addSubview:pageMenu];
+    _pageMenu = pageMenu;
+    
+    // 获取第1个item上文字相对pageMenu的位置大小
+    CGRect titleRect = [pageMenu titleRectRelativeToPageMenuForItemAtIndex:1];
+    
+    UILabel *detailLabel = [[UILabel alloc] init];
+    detailLabel.text = @"8384";
+    detailLabel.font = [UIFont systemFontOfSize:11];
+    detailLabel.textColor = [UIColor lightGrayColor];
+    detailLabel.frame = CGRectMake(CGRectGetMaxX(titleRect),CGRectGetMaxY(titleRect)-16, 50, 16);
+    [pageMenu addComponentViewInScrollView:detailLabel];
+}
+
+// 示例21:给指定按钮加角标
+- (void)test21 {
     self.dataArr = @[@"生活",@"军事",@"水木年华",@"综艺"];
 
     SPPageMenu *pageMenu = [SPPageMenu pageMenuWithFrame:CGRectMake(0, NaviH, screenW, pageMenuH) trackerStyle:SPPageMenuTrackerStyleNothing];
@@ -431,25 +462,6 @@
     [self.view addSubview:pageMenu];
 
     _pageMenu = pageMenu;
-}
-
-// 示例21:特别属性说明
-- (void)test21 {
-    self.dataArr = nil;
-    
-    NSString *text = @"本框架的bridgeScrollView属性是一个很重要但又容易忽略的属性，在外界的viewDidLoad中，每种示例都传了一个scrollView，即:“self.pageMenu.bridgeScrollView = self.scrollView”，这一传递，SPPageMenu内部会监听该scrollView的滚动状况，当该scrollView滚动的时候，就可以让跟踪器时刻跟随；如果你忘了或者不想设置这个属性，也可以在外界的scrollView的代理方法scrollViewDidScroll中调用接口“- (void)moveTrackerFollowScrollView:(UIScrollView *)scrollView”,这样也能实现跟踪器时刻跟随scrollView；如果不想让跟踪器时刻跟踪，而直到scrollView滑动结束才跟踪，在上面2种方式采取了任意一种的情况下，可以设置属性”pageMenu.closeTrackerFollowingMode = YES“";
-    
-    UILabel *label = [[UILabel alloc] initWithFrame:CGRectMake(10, NaviH, screenW-20, screenH-NaviH)];
-    label.numberOfLines = 0;
-    label.alpha = 0.6;
-    label.font = [UIFont systemFontOfSize:15];
-    NSMutableAttributedString *attributedString = [[NSMutableAttributedString alloc] initWithString:text];
-    NSMutableParagraphStyle *paragraphStyle = [[NSMutableParagraphStyle alloc] init];
-    paragraphStyle.firstLineHeadIndent = label.font.pointSize * 2; // 首行缩进2格
-    [paragraphStyle setLineSpacing:6]; // 行间距
-    [attributedString addAttribute:NSParagraphStyleAttributeName value:paragraphStyle range:NSMakeRange(0, [text length])];
-    label.attributedText = attributedString;
-    [self.view addSubview:label];
 }
 
 // ------------------------------------------------------------------------------------------------
@@ -522,8 +534,6 @@
         case 20:
             [self test21];
             break;
-        default:
-            break;
     }
     
     [self.view addSubview:self.scrollView];
@@ -532,7 +542,7 @@
     for (int i = 0; i < self.dataArr.count; i++) {
         if (controllerClassNames.count > i) {
             BaseViewController *baseVc = [[NSClassFromString(controllerClassNames[i]) alloc] init];
-            id object = [self.pageMenu objectForItemAtIndex:i];
+            id object = [self.pageMenu contentForItemAtIndex:i];
             if ([object isKindOfClass:[NSString class]]) {
                 baseVc.text = object;
             } else if ([object isKindOfClass:[UIImage class]]) {

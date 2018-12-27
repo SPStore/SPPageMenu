@@ -21,15 +21,15 @@ typedef NS_ENUM(NSInteger, SPPageMenuTrackerStyle) {
 };
 
 typedef NS_ENUM(NSInteger, SPPageMenuPermutationWay) {
-    SPPageMenuPermutationWayScrollAdaptContent = 0,   // 自适应内容,可以左右滑动
-    SPPageMenuPermutationWayNotScrollEqualWidths,     // 等宽排列,不可以滑动,整个内容被控制在pageMenu的范围之内,等宽是根据pageMenu的总宽度对每个item均分
-    SPPageMenuPermutationWayNotScrollAdaptContent     // 自适应内容,不可以滑动,整个内容被控制在pageMenu的范围之内,这种排列方式下,自动计算item之间的间距,itemPadding属性无效
+    SPPageMenuPermutationWayScrollAdaptContent = 0,  // 自适应内容,可以左右滑动
+    SPPageMenuPermutationWayNotScrollEqualWidths,    // 等宽排列,不可以滑动,整个内容被控制在pageMenu的范围之内,等宽是根据pageMenu的总宽度对每个按钮均分
+    SPPageMenuPermutationWayNotScrollAdaptContent    // 自适应内容,不可以滑动,整个内容被控制在pageMenu的范围之内,这种排列方式下,自动计算item之间的间距,itemPadding属性无效
 };
 
 typedef NS_ENUM(NSInteger, SPPageMenuTrackerFollowingMode) {
     SPPageMenuTrackerFollowingModeAlways = 0,   // 外界scrollView拖动时，跟踪器时刻跟随外界scrollView移动
-    SPPageMenuTrackerFollowingModeEnd,     // 外界scrollVie拖动w结束后，跟踪器才开始移动
-    SPPageMenuTrackerFollowingModeHalf     // 外界scrollView拖动距离超过屏幕一半时，跟踪器开始移动
+    SPPageMenuTrackerFollowingModeEnd,     // 外界scrollVie拖动结束后，跟踪器才开始移动
+    SPPageMenuTrackerFollowingModeHalf     // 外界scrollView拖动到一半时，跟踪器开始移动
 };
 
 typedef NS_ENUM(NSInteger, SPItemImagePosition) {
@@ -68,7 +68,6 @@ typedef NS_ENUM(NSInteger, SPItemImagePosition) {
 - (void)setItems:(nullable NSArray *)items selectedItemIndex:(NSInteger)selectedItemIndex;
 
 @property (nonatomic) NSInteger selectedItemIndex; // 选中的item下标，改变其值可以用于切换选中的item
-
 @property(nonatomic,readonly) NSUInteger numberOfItems; // items的总个数
 
 #if TARGET_INTERFACE_BUILDER
@@ -77,8 +76,9 @@ typedef NS_ENUM(NSInteger, SPItemImagePosition) {
 @property (nonatomic, readonly) SPPageMenuTrackerStyle trackerStyle;
 #endif
 
-// item之间的间距，默认30；当排列方式permutationWay为‘SPPageMenuPermutationWayNotScrollAdaptContent’时此属性无效，无效是合理的，不可能做到“不可滑动且自适应内容”然后间距又自定义，这2者相互制约；
-@property (nonatomic, assign)  CGFloat itemPadding;
+@property (nonatomic, assign) SPPageMenuPermutationWay permutationWay; // 排列方式
+
+@property (nonatomic, assign) CGFloat spacing; // item之间的间距
 
 @property (nonatomic, strong)          UIColor *selectedItemTitleColor;   // 选中的item标题颜色
 @property (nonatomic, strong)          UIColor *unSelectedItemTitleColor; // 未选中的item标题颜色
@@ -87,29 +87,20 @@ typedef NS_ENUM(NSInteger, SPItemImagePosition) {
 @property (nonnull, nonatomic, strong) UIFont  *selectedItemTitleFont;    // 选中的item字体
 @property (nonnull, nonatomic, strong) UIFont  *unSelectedItemTitleFont;  // 未选中的item字体
 
-// 外界的srollView，pageMenu会监听该scrollView的滚动状况，让跟踪器时刻跟随此scrollView滑动；所谓的滚动状况，是指手指拖拽滚动，非手指拖拽不算
+// 外界添加控制器view的srollView，pageMenu会监听该scrollView的滚动状况，让跟踪器时刻跟随此scrollView滑动；所谓的滚动状况，是指手指拖拽滚动，非手指拖拽不算
 @property (nonatomic, strong) UIScrollView *bridgeScrollView;
 
-@property (nonatomic, assign) SPPageMenuPermutationWay permutationWay; // 排列方式
-
-@property (nonatomic, assign) UIEdgeInsets contentInset; // 内容的四周内边距(内容不包括分割线)，默认UIEdgeInsetsZero
-
-@property(nonatomic) BOOL bounces; // 边界反弹效果，默认YES
-@property(nonatomic) BOOL alwaysBounceHorizontal; // 水平方向上，当内容没有充满scrollView时，滑动scrollView是否有反弹效果，默认YES
-
-
 // 跟踪器
-@property (nonatomic, readonly) UIImageView *tracker; // 跟踪器,它是一个UIImageView类型，你可以拿到该对象去设置一些自己想要的属性,例如颜色,图片等，但是设置frame无效
+@property (nonatomic, readonly) UIImageView *tracker; // 跟踪器,它是一个UIImageView类型，你可以拿到该对象去设置一些自己想要的属性,例如颜色,图片等
 @property (nonatomic, assign)  CGFloat trackerWidth; // 跟踪器的宽度
-// 设置跟踪器的高度和圆角半径，矩形和圆角矩形样式下半径参数无效。其余样式下：默认的高度为3，圆角半径为高度的一半。如果你想用默认高度，但是又不想要圆角半径，你可以设置trackerHeight为3，cornerRadius为0，这是去除默认半径的唯一办法
-- (void)setTrackerHeight:(CGFloat)trackerHeight cornerRadius:(CGFloat)cornerRadius;
-
-// 跟踪器的跟踪模式
-@property (nonatomic, assign) SPPageMenuTrackerFollowingMode trackerFollowingMode;
+- (void)setTrackerHeight:(CGFloat)trackerHeight cornerRadius:(CGFloat)cornerRadius; // 设置跟踪器的高度和圆角半径，矩形和圆角矩形样式下半径参数无效。其余样式下：默认的高度为3，圆角半径为高度的一半。
+@property (nonatomic, assign) SPPageMenuTrackerFollowingMode trackerFollowingMode; // 跟踪器的跟踪模式
 
 // 分割线
 @property (nonatomic, readonly) UIImageView *dividingLine; // 分割线,你可以拿到该对象设置一些自己想要的属性，如颜色、图片等，如果想要隐藏分割线，拿到该对象直接设置hidden为YES或设置alpha<0.01即可(eg：pageMenu.dividingLine.hidden = YES)
 @property (nonatomic) CGFloat dividingLineHeight; // 分割线的高度
+
+@property (nonatomic, assign) UIEdgeInsets contentInset; // 内容的四周内边距(内容不包括分割线)，默认UIEdgeInsetsZero
 
 // 选中的item缩放系数，默认为1，为1代表不缩放，[0,1)之间缩小，(1,+∞)之间放大，(-1,0)之间"倒立"缩小，(-∞,-1)之间"倒立"放大，为-1"倒立不缩放",如果依然使用了废弃的SPPageMenuTrackerStyleTextZoom样式，则缩放系数默认为1.3
 @property (nonatomic) CGFloat selectedItemZoomScale;
@@ -122,29 +113,36 @@ typedef NS_ENUM(NSInteger, SPItemImagePosition) {
 @property (nonatomic, strong) UIColor *functionButtonShadowColor; // 功能按钮左侧的阴影颜色,默认为黑色
 @property (nonatomic, weak) SPPageMenuButton *functionButton;
 
+@property (nonatomic) BOOL bounces; // 边界反弹效果，默认YES
+@property (nonatomic) BOOL alwaysBounceHorizontal; // 水平方向上，当内容没有充满scrollView时，滑动scrollView是否有反弹效果，默认NO
+
 @property (nonatomic, weak) id<SPPageMenuDelegate> delegate;
 
 // 插入item,插入和删除操作时,如果itemIndex超过了了items的个数,则不做任何操作
-- (void)insertItemWithTitle:(nullable NSString *)title atIndex:(NSUInteger)itemIndex animated:(BOOL)animated;
-- (void)insertItemWithImage:(nullable UIImage *)image atIndex:(NSUInteger)itemIndex animated:(BOOL)animated;
-- (void)insertItem:(nullable SPPageMenuButtonItem *)item atIndex:(NSUInteger)itemIndex animated:(BOOL)animated;
+- (void)insertItemWithTitle:(nonnull NSString *)title atIndex:(NSUInteger)itemIndex animated:(BOOL)animated;
+- (void)insertItemWithImage:(nonnull UIImage *)image atIndex:(NSUInteger)itemIndex animated:(BOOL)animated;
+- (void)insertItem:(nonnull SPPageMenuButtonItem *)item atIndex:(NSUInteger)itemIndex animated:(BOOL)animated;
 // 如果移除的正是当前选中的item(当前选中的item下标不为0),删除之后,选中的item会切换为上一个item
 - (void)removeItemAtIndex:(NSUInteger)itemIndex animated:(BOOL)animated;
 - (void)removeAllItems;
 
-- (void)setTitle:(nullable NSString *)title forItemAtIndex:(NSUInteger)itemIndex; // 设置指定item的标题,设置后，仅会有文字
+- (void)setTitle:(nonnull NSString *)title forItemAtIndex:(NSUInteger)itemIndex; // 设置指定item的标题,设置后，仅会有文字
 - (nullable NSString *)titleForItemAtIndex:(NSUInteger)itemIndex; // 获取指定item的标题
 
-- (void)setImage:(nullable UIImage *)image forItemAtIndex:(NSUInteger)itemIndex; // 设置指定item的图片,设置后，仅会有图片
+- (void)setImage:(nonnull UIImage *)image forItemAtIndex:(NSUInteger)itemIndex; // 设置指定item的图片,设置后，仅会有图片
 - (nullable UIImage *)imageForItemAtIndex:(NSUInteger)itemIndex; // 获取指定item的图片
 
-- (void)setItem:(SPPageMenuButtonItem *)item forItemIndex:(NSUInteger)itemIndex; // 同时为指定item设置标题和图片,其中参数item相当于一个模型，可以同时设置文字和图片
+- (void)setItem:(SPPageMenuButtonItem *)item forItemAtIndex:(NSUInteger)itemIndex; // 同时为指定item设置标题和图片
 - (nullable SPPageMenuButtonItem *)itemAtIndex:(NSUInteger)itemIndex; // 获取指定item
 
-- (id)objectForItemAtIndex:(NSUInteger)itemIndex; // 获取指定item，该方法获取的item可能是NSString、UIImage或SPPageMenuButtonItem类型
+- (void)setContent:(id)content forItemAtIndex:(NSUInteger)itemIndex; // 设置指定item的内容，content可以是NSString、UIImage或SPPageMenuButtonItem类型
+- (id)contentForItemAtIndex:(NSUInteger)itemIndex; // 获取指定item的内容，该方法返回值可能是NSString、UIImage或SPPageMenuButtonItem类型
 
 - (void)setWidth:(CGFloat)width forItemAtIndex:(NSUInteger)itemIndex; // 设置指定item的宽度(如果width为0,item会根据内容自动计算width)
 - (CGFloat)widthForItemAtIndex:(NSUInteger)itemIndex; // 获取指定item的宽度
+
+- (void)setCustomSpacing:(CGFloat)spacing afterItemAtIndex:(NSUInteger)itemIndex; // 设置指定item后面的自定义间距
+- (CGFloat)customSpacingAfterItemAtIndex:(NSUInteger)itemIndex; // 获取指定item后面的自定义间距
 
 - (void)setEnabled:(BOOL)enaled forItemAtIndex:(NSUInteger)itemIndex; // 设置指定item的enabled状态
 - (BOOL)enabledForItemAtIndex:(NSUInteger)itemIndex; // 获取指定item的enabled状态
@@ -152,13 +150,18 @@ typedef NS_ENUM(NSInteger, SPItemImagePosition) {
 - (void)setContentEdgeInsets:(UIEdgeInsets)contentEdgeInsets forItemAtIndex:(NSUInteger)itemIndex; // 设置指定item的四周内边距
 - (UIEdgeInsets)contentEdgeInsetsForItemAtIndex:(NSUInteger)itemIndex; // 获取指定item的四周内边距
 
-// 设置背景图片，barMetrics只有为UIBarMetricsDefault时才生效，如果外界传进来的backgroundImage调用过- resizableImageWithCapInsets:且参数capInsets不为UIEdgeInsetsZero，则直接用backgroundImage作为背景图; 否则内部会自动调用- resizableImageWithCapInsets:进行拉伸
+// 设置背景图片，barMetrics只有为UIBarMetricsDefault时才生效，如果外界传进来的backgroundImage调用过-resizableImageWithCapInsets:且参数capInsets不为UIEdgeInsetsZero，则直接用backgroundImage作为背景图; 否则内部会自动调用-resizableImageWithCapInsets:进行拉伸
 - (void)setBackgroundImage:(nullable UIImage *)backgroundImage barMetrics:(UIBarMetrics)barMetrics;
 - (nullable UIImage *)backgroundImageForBarMetrics:(UIBarMetrics)barMetrics; // 获取背景图片
 
-// 同时为functionButton设置标题和图片
-- (void)setFunctionButtonWithItem:(SPPageMenuButtonItem *)item forState:(UIControlState)state;
+- (CGRect)titleRectRelativeToPageMenuForItemAtIndex:(NSUInteger)itemIndex;  // 文字相对pageMenu位置和大小
+- (CGRect)imageRectRelativeToPageMenuForItemAtIndex:(NSUInteger)itemIndex;  // 图片相对pageMenu位置和大小
+- (CGRect)buttonRectRelativeToPageMenuForItemAtIndex:(NSUInteger)itemIndex; // 按钮相对pageMenu位置和大小
 
+- (void)addComponentViewInScrollView:(UIView *)componentView; // 在内置的scrollView上添加一个view
+
+// 设置功能按钮的内容，content可以是NSString、UIImage或SPPageMenuButtonItem类型
+- (void)setFunctionButtonContent:(id)content forState:(UIControlState)state;
 // 为functionButton配置相关属性，如设置字体、文字颜色等；在此,attributes中,只有NSFontAttributeName、NSForegroundColorAttributeName、NSBackgroundColorAttributeName有效
 - (void)setFunctionButtonTitleTextAttributes:(nullable NSDictionary *)attributes forState:(UIControlState)state;
 
@@ -175,9 +178,9 @@ typedef NS_ENUM(NSInteger, SPItemImagePosition) {
 - (void)moveTrackerFollowScrollView:(UIScrollView *)scrollView;
 
 
-
 // -------------- 以下方法和属性被废弃，不再建议使用 --------------
 
+@property (nonatomic, assign)  CGFloat itemPadding NS_DEPRECATED_IOS(6_0, 6_0, "Use spacing instead");;
 // 设置指定item的四周内边距,3.0版本的时候不小心多写了一个for,3.4.0版本已纠正
 - (void)setContentEdgeInsets:(UIEdgeInsets)contentEdgeInsets forForItemAtIndex:(NSUInteger)itemIndex NS_DEPRECATED_IOS(6_0, 6_0, "Use -setContentEdgeInsets:forItemAtIndex:");
 // 默认NO;关闭跟踪器的跟随效果,在外界传了scrollView进来或者调用了moveTrackerFollowScrollView的情况下,如果为YES，则当外界滑动scrollView时，跟踪器不会时刻跟随,只有滑动结束才会跟随;  3.4.0版本开始被废弃，但是依然能使用,使用后相当于设置了SPPageMenuTrackerFollowingModeEnd枚举值
@@ -187,6 +190,10 @@ typedef NS_ENUM(NSInteger, SPItemImagePosition) {
 - (void)setTitle:(nullable NSString *)title image:(nullable UIImage *)image imagePosition:(SPItemImagePosition)imagePosition imageRatio:(CGFloat)ratio imageTitleSpace:(CGFloat)imageTitleSpace forItemIndex:(NSUInteger)itemIndex NS_DEPRECATED_IOS(6_0, 6_0, "Use -setItem: forItemIndex:");
 - (void)setFunctionButtonTitle:(nullable NSString *)title image:(nullable UIImage *)image imagePosition:(SPItemImagePosition)imagePosition imageRatio:(CGFloat)ratio forState:(UIControlState)state NS_DEPRECATED_IOS(6_0, 6_0, "Use - setFunctionButtonWithItem:forState:");
 - (void)setFunctionButtonTitle:(nullable NSString *)title image:(nullable UIImage *)image imagePosition:(SPItemImagePosition)imagePosition imageRatio:(CGFloat)ratio imageTitleSpace:(CGFloat)imageTitleSpace forState:(UIControlState)state NS_DEPRECATED_IOS(6_0, 6_0, "Use - setFunctionButtonWithItem:forState:");
+- (id)objectForItemAtIndex:(NSUInteger)itemIndex NS_DEPRECATED_IOS(6_0, 6_0, "Use -contentForItemAtIndex:");
+- (void)setFunctionButtonWithItem:(SPPageMenuButtonItem *)item forState:(UIControlState)state NS_DEPRECATED_IOS(6_0, 6_0, "Use -setFunctionButtonContent:forState:");
+- (void)setItem:(SPPageMenuButtonItem *)item forItemIndex:(NSUInteger)itemIndex NS_DEPRECATED_IOS(6_0, 6_0, "Use -setItem:forItemAtIndex:");
+- (void)setContent:(id)content forItemIndex:(NSUInteger)itemIndex NS_DEPRECATED_IOS(6_0, 6_0, "Use -setContent:forItemAtIndex:");
 @end
 
 @interface SPPageMenuButton : UIButton
@@ -201,7 +208,7 @@ typedef NS_ENUM(NSInteger, SPItemImagePosition) {
 + (instancetype)itemWithTitle:(NSString *)title image:(UIImage *)image imagePosition:(SPItemImagePosition)imagePosition;
 
 @property (nonatomic, copy) NSString *title;
-@property (nonatomic, strong) UIImage *image;
+@property (nonatomic, copy) UIImage *image;
 // 图片的位置
 @property (nonatomic, assign) SPItemImagePosition imagePosition;
 // 图片与标题之间的间距,默认0.0
