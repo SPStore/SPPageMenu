@@ -31,7 +31,7 @@ end
 * - (void)addComponentViewInScrollView:(UIView *)componentView; 
 2、在不可滑动自适应内容的排列方式下，设置间距依然生效
 3、修复设置指定item宽度和内间距失效问题
-4、修复多次对bridgeScrollView赋值上一个KCO观察者未移除问题
+4、修复多次对bridgeScrollView赋值上一个KO观察者未移除问题
 ```
 #### 版本3.4.5
 ```
