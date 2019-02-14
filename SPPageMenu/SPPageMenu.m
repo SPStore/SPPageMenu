@@ -1778,7 +1778,7 @@
 
         } else {
             buttonW = [buttonWidths[idx] floatValue];
-            if (_forceUseSettingSpacing) { // 如果强制使用外界设置的间距
+            if (self->_forceUseSettingSpacing) { // 如果强制使用外界设置的间距
                 CGFloat paddingDiff = diff - totalSpacing; // 自动间距之和与外界设置的间距之和的差
                 buttonW += paddingDiff * buttonW/contentW_sum; // 用上面计算出来的差值乘以原按钮宽度相对总按钮宽度的比例,得到的结果就是每个按钮宽度应该增减的值,这样可以保证各个按钮之间的宽度之比不变
             } else { // 否则使用自己计算的间距
