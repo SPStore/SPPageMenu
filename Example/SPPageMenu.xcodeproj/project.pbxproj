@@ -25,9 +25,9 @@
 		095E9C1E1FA6F8CC0097A889 /* SevenViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 095E9C101FA6F8CC0097A889 /* SevenViewController.m */; };
 		095E9C1F1FA6F8CC0097A889 /* SixViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 095E9C121FA6F8CC0097A889 /* SixViewController.m */; };
 		095E9C211FA6F8CC0097A889 /* ThidViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 095E9C171FA6F8CC0097A889 /* ThidViewController.m */; };
-		095E9C291FA6F92D0097A889 /* SPPageMenu.m in Sources */ = {isa = PBXBuildFile; fileRef = 095E9C281FA6F92D0097A889 /* SPPageMenu.m */; };
 		6A8808C1213D361D00C3553F /* mateor.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 6A8808BF213D361C00C3553F /* mateor.jpg */; };
 		6A9270122179BCF400831045 /* JSBadgeView.m in Sources */ = {isa = PBXBuildFile; fileRef = 6A9270102179BCF400831045 /* JSBadgeView.m */; };
+		881633B7224A6B850004BE0C /* SPPageMenu.m in Sources */ = {isa = PBXBuildFile; fileRef = 881633B5224A6B850004BE0C /* SPPageMenu.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -84,11 +84,11 @@
 		095E9C121FA6F8CC0097A889 /* SixViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SixViewController.m; sourceTree = "<group>"; };
 		095E9C161FA6F8CC0097A889 /* ThidViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ThidViewController.h; sourceTree = "<group>"; };
 		095E9C171FA6F8CC0097A889 /* ThidViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ThidViewController.m; sourceTree = "<group>"; };
-		095E9C271FA6F92D0097A889 /* SPPageMenu.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SPPageMenu.h; sourceTree = "<group>"; };
-		095E9C281FA6F92D0097A889 /* SPPageMenu.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SPPageMenu.m; sourceTree = "<group>"; };
 		6A8808BF213D361C00C3553F /* mateor.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = mateor.jpg; sourceTree = "<group>"; };
 		6A9270102179BCF400831045 /* JSBadgeView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = JSBadgeView.m; sourceTree = "<group>"; };
 		6A9270112179BCF400831045 /* JSBadgeView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JSBadgeView.h; sourceTree = "<group>"; };
+		881633B5224A6B850004BE0C /* SPPageMenu.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SPPageMenu.m; sourceTree = "<group>"; };
+		881633B6224A6B850004BE0C /* SPPageMenu.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SPPageMenu.h; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -139,7 +139,7 @@
 		091A68741FA1CAC100DAA561 /* SPPageMenu */ = {
 			isa = PBXGroup;
 			children = (
-				095E9C261FA6F92D0097A889 /* SPPageMenu */,
+				881633B4224A6B850004BE0C /* SPPageMenu */,
 				091A687B1FA1CAC100DAA561 /* ViewController.h */,
 				091A687C1FA1CAC100DAA561 /* ViewController.m */,
 				091229F71FA5F13000AEE295 /* ParentViewController.h */,
@@ -209,15 +209,6 @@
 			path = ChildViewControllers;
 			sourceTree = "<group>";
 		};
-		095E9C261FA6F92D0097A889 /* SPPageMenu */ = {
-			isa = PBXGroup;
-			children = (
-				095E9C271FA6F92D0097A889 /* SPPageMenu.h */,
-				095E9C281FA6F92D0097A889 /* SPPageMenu.m */,
-			);
-			path = SPPageMenu;
-			sourceTree = "<group>";
-		};
 		6A92700F2179BCF400831045 /* JSBadgeView */ = {
 			isa = PBXGroup;
 			children = (
@@ -225,6 +216,16 @@
 				6A9270102179BCF400831045 /* JSBadgeView.m */,
 			);
 			path = JSBadgeView;
+			sourceTree = "<group>";
+		};
+		881633B4224A6B850004BE0C /* SPPageMenu */ = {
+			isa = PBXGroup;
+			children = (
+				881633B5224A6B850004BE0C /* SPPageMenu.m */,
+				881633B6224A6B850004BE0C /* SPPageMenu.h */,
+			);
+			name = SPPageMenu;
+			path = ../../SPPageMenu;
 			sourceTree = "<group>";
 		};
 		DC317C5E213C0BB9000F4159 /* Images */ = {
@@ -322,7 +323,7 @@
 			};
 			buildConfigurationList = 091A686D1FA1CAC100DAA561 /* Build configuration list for PBXProject "SPPageMenu" */;
 			compatibilityVersion = "Xcode 3.2";
-			developmentRegion = English;
+			developmentRegion = en;
 			hasScannedForEncodings = 0;
 			knownRegions = (
 				en,
@@ -378,11 +379,11 @@
 				095E9C191FA6F8CC0097A889 /* EightViewController.m in Sources */,
 				6A9270122179BCF400831045 /* JSBadgeView.m in Sources */,
 				095E9C181FA6F8CC0097A889 /* BaseViewController.m in Sources */,
-				095E9C291FA6F92D0097A889 /* SPPageMenu.m in Sources */,
 				091229F91FA5F13000AEE295 /* ParentViewController.m in Sources */,
 				095E9C1E1FA6F8CC0097A889 /* SevenViewController.m in Sources */,
 				091A687D1FA1CAC100DAA561 /* ViewController.m in Sources */,
 				095E9C1A1FA6F8CC0097A889 /* FirstViewController.m in Sources */,
+				881633B7224A6B850004BE0C /* SPPageMenu.m in Sources */,
 				091A687A1FA1CAC100DAA561 /* AppDelegate.m in Sources */,
 				095E9C1C1FA6F8CC0097A889 /* FourViewController.m in Sources */,
 				095E9C1F1FA6F8CC0097A889 /* SixViewController.m in Sources */,
