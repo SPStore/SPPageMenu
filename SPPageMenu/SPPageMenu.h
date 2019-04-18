@@ -70,11 +70,7 @@ typedef NS_ENUM(NSInteger, SPItemImagePosition) {
 @property (nonatomic) NSInteger selectedItemIndex; // 选中的item下标，改变其值可以用于切换选中的item
 @property(nonatomic,readonly) NSUInteger numberOfItems; // items的总个数
 
-#if TARGET_INTERFACE_BUILDER
-@property (nonatomic, readonly) IBInspectable NSInteger trackerStyle; // 该枚举属性支持storyBoard/xib,方便在storyBoard/xib中创建时直接设置
-#else
 @property (nonatomic, readonly) SPPageMenuTrackerStyle trackerStyle;
-#endif
 
 @property (nonatomic, assign) SPPageMenuPermutationWay permutationWay; // 排列方式
 
