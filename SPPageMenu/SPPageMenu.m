@@ -1265,8 +1265,12 @@
 // 这个方法才开始真正滑动跟踪器，上面都是做铺垫
 - (void)moveTrackerWithProgress:(CGFloat)progress fromIndex:(NSInteger)fromIndex toIndex:(NSInteger)toIndex currentOffsetX:(CGFloat)currentOffsetX beginOffsetX:(CGFloat)beginOffsetX {
 
-    UIButton *fromButton = self.buttons[fromIndex];
-    UIButton *toButton = self.buttons[toIndex];
+    if (self.buttons.count < 2) {
+        return;
+    }
+
+    UIButton *fromButton = self.buttons[fromIndex < self.buttons.count ? fromIndex : self.buttons.count-1];
+    UIButton *toButton = self.buttons[toIndex < self.buttons.count ? toIndex : self.buttons.count-1];
 
     // 2个按钮之间的距离
     CGFloat xDistance = toButton.center.x - fromButton.center.x;
